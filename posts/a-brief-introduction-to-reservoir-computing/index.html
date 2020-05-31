@@ -160,9 +160,7 @@
     <time datetime="2020-05-26T22:17:09&#43;0200">May 26, 2020</time> · 9 min read
   </div>
 
-  <!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package <a href="https://github.com/SciML/ReservoirComputing.jl">ReservoirComputing.jl</a> as example tool. Since this package is a work in progress and it is currently the main project I am working on as part of <a href="https://summerofcode.withgoogle.com/projects/#5374375945043968">Google Summer of Code</a> this is but the first post of many detailing the implementations that will be done in this direction.</p>
+  <p>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package <a href="https://github.com/SciML/ReservoirComputing.jl">ReservoirComputing.jl</a> as example tool. Since this package is a work in progress and it is currently the main project I am working on as part of <a href="https://summerofcode.withgoogle.com/projects/#5374375945043968">Google Summer of Code</a> this is but the first post of many detailing the implementations that will be done in this direction.</p>
 <h1 id="what-is-reservoir-computing">What is Reservoir Computing?</h1>
 <p>Reservoir Computing is an umbrella term used to identify a general framework of computation derived from Recurrent Neural Networks (RNN), indipendently developed by Jaeger <a href="#1">[1]</a> and Maass et al. <a href="#2">[2]</a>. These papers introduced the concepts of Echo State Networks (ESN) and Liquid State Machines (LSM) respectively. Further improvements over these two models constitute what is now called the field of Reservoir Computing. The main idea lies in leveraging a fixed non-linear system, of higher dimension than the input, onto wich to input signal is mapped. After this mapping is only necessary to use a simple readout layer to harvest the state of the reservoir and to train it to the desered output. In principle, given a system complex enough, this architecture should be capable of any computation <a href="#3">[3]</a>. The intuition was born from the fact that in training RNNs most of the times the weights showing most change were the ones in the last layer <a href="#4">[4]</a>. In the next section we will also see that ESNs actually use a fixed random RNN as the reservoir. Given the static nature of this implementations usually ESNs are able to yield faster results and in same cases even better, in particular when dealing with chaotic time series predictions <a href="#5">[5]</a>.</p>
 <p>Not every complex system is suited to be a good reservoir though. A good reservoir is one that is able to separate inputs; different external inputs should drive the system to different regions of the configuration space <a href="#3">[3]</a>. This is called the <strong>separability condition</strong>. Furthermore an important property for the reservoirs of ESNs is the <strong>Echo State property</strong> which states that inputs to the reservoir echo in the system forever, or util they dissipate. A more formal definition of this property can be found in <a href="#6">[6]</a>.</p>
@@ -273,11 +271,7 @@ Pathak, Jaideep, et al. &ldquo;Using machine learning to replicate chaotic attra
   </div>
 </footer>
 
-</body>
-<script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-</html>
+
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
