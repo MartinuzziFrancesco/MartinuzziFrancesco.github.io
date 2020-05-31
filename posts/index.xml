@@ -17,7 +17,7 @@
       <pubDate>Tue, 26 May 2020 22:17:09 +0200</pubDate>
       
       <guid>https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/</guid>
-      <description>Motivation </description>
+      <description>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.</description>
     </item>
     
   </channel>
