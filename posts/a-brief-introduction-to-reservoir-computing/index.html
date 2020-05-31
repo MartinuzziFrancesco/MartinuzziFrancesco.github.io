@@ -15,7 +15,7 @@
 <meta itemprop="description" content="This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.">
 <meta itemprop="datePublished" content="2020-05-26T22:17:09&#43;02:00" />
 <meta itemprop="dateModified" content="2020-05-26T22:17:09&#43;02:00" />
-<meta itemprop="wordCount" content="1671">
+<meta itemprop="wordCount" content="1676">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -160,7 +160,16 @@
     <time datetime="2020-05-26T22:17:09&#43;0200">May 26, 2020</time> · 8 min read
   </div>
 
-  <p>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package <a href="https://github.com/SciML/ReservoirComputing.jl">ReservoirComputing.jl</a> as example tool. Since this package is a work in progress and it is currently the main project I am working on as part of <a href="https://summerofcode.withgoogle.com/projects/#5374375945043968">Google Summer of Code</a> this is but the first post of many detailing the implementations that will be done in this direction.</p>
+  
+
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js" integrity="sha384-2BKqo+exmr9su6dir+qCw08N2ZKRucY4PrGQPPWU1A7FtlCGjmEGFqXCv5nyM5Ij" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+<p>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package <a href="https://github.com/SciML/ReservoirComputing.jl">ReservoirComputing.jl</a> as example tool. Since this package is a work in progress and it is currently the main project I am working on as part of <a href="https://summerofcode.withgoogle.com/projects/#5374375945043968">Google Summer of Code</a> this is but the first post of many detailing the implementations that will be done in this direction.</p>
 
 <h1 id="what-is-reservoir-computing">What is Reservoir Computing?</h1>
 
@@ -176,40 +185,43 @@
 
 <p>This intends to be a quick overview of the theory behind the ESN model to get the reader acquainted with the concepts and workings of this particular model, and it is by no means comprehensive. For in depth reviews and explanations please refer to <a href="#7">[7]</a> and <a href="#8">[8]</a>. All of the information laid out in this section is adapted from this two sources, unless stated otherwise.</p>
 
-<p>Let us suppose to have an input signal $u(t) \in R^M$ where $t = 1, ..., T$ is the discrete time and T the number of data points in the training set. In order to project this input into the reservoir we will need an input to reservoir coupler, called $W_{\text{in}} \in R^{N \times M}$. Usually this matrix is built in the same way the reservior is, and at the same time. For the implementation used in ReservoirComputing.jl we have followed the same construction used in <a href="#9">[9]</a> where the i-th of the M input signals is connected to N/M reservoir nodes with connection weights in the i-th column of $W_{\text{in}}$. The non zero elements are chosen randomly from an uniform distribution and then scaled in the range $[-\sigma, sigma]$.</p>
+<p>Let us suppose to have an input signal <span  class="math">\(\textbf{u}(t) \in R^M\)</span> where <span  class="math">\(t = 1, ..., T\)</span> is the discrete time and T the number of data points in the training set. In order to project this input into the reservoir we will need an input to reservoir coupler, called <span  class="math">\(\textbf{W}_{\text{in}} \in R^{N \times M}\)</span>. Usually this matrix is built in the same way the reservior is, and at the same time. For the implementation used in ReservoirComputing.jl we have followed the same construction used in <a href="#9">[9]</a> where the i-th of the M input signals is connected to N/M reservoir nodes with connection weights in the i-th column of <span  class="math">\(\textbf{W}_{\text{in}}\)</span>. The non zero elements are chosen randomly from an uniform distribution and then scaled in the range <span  class="math">\([-\sigma , \sigma ]\)</span>.</p>
 
-<p>The reservoir is constitued by N neurons connected in a Erdos Renyi graph configuration and is represented by an adjacency matrix $W$ of size $N \times N$ with values drawn from a uniform random distribution on the interval $/$ <a href="5">[5]</a>. This is the most important aspect of the ESN so in order to build it in an efficient manner we must first understand all of its components.</p>
+<p>The reservoir is constitued by N neurons connected in a Erdos Renyi graph configuration and is represented by an adjacency matrix <span  class="math">\(\textbf{W}\)</span> of size <span  class="math">\(N \times N\)</span> with values drawn from a uniform random distribution on the interval <span  class="math">\([-1, 1]\)</span> <a href="5">[5]</a>. This is the most important aspect of the ESN so in order to build it in an efficient manner we must first understand all of its components.</p>
 
 <ul>
-<li>The size $N$ is of course the single most important one: the more challenging the task the bigger the size should be. Of course a bigger matrix will mean more computational time so the advice of Lukoševičius is to start small and then scale.</li>
+<li>The size <span  class="math">\(N\)</span> is of course the single most important one: the more challenging the task the bigger the size should be. Of course a bigger matrix will mean more computational time so the advice of Lukoševičius is to start small and then scale.</li>
 <li>The sparsity of the reservoir. In most papers we see that each reservoir node is connected to a small number of other nodes, ranging from 5 to 12. The sparseness, beside theoretical implications, is also useful to speed up computations.</li>
-<li>Spectral radius. After the generation of a random sparse reservoir matrix its spectral radius $\rho (W)$ is computed and W is divided by it. This allows us to obtain a matrix with a unit spectral radius, that we can scale to a more suited value. Altough there are exceptions (when the inputs u(t) are nonzero for example), a spectral radius smaller than unity $\rho (W) &lt; 1$ ensures the echo state property. More generally this parameter should be selected to maximize the performance, keeping the unitary value as a useful reference point.</li>
+<li>Spectral radius. After the generation of a random sparse reservoir matrix its spectral radius <span  class="math">\(\rho (\textbf{W})\)</span> is computed and <span  class="math">\(\textbf{W}\)</span> is divided by it. This allows us to obtain a matrix with a unit spectral radius, that we can scale to a more suited value. Altough there are exceptions (when the inputs \textbf{u}(t) are nonzero for example), a spectral radius smaller than unity <span  class="math">\(\rho (\textbf{W}) < 1\)</span> ensures the echo state property. More generally this parameter should be selected to maximize the performance, keeping the unitary value as a useful reference point.</li>
 </ul>
 
 <p>After the construction of the input layer and the reservoir we can focus on harvesting the states. The update equations of the ESN are:</p>
 
-<p><span  class="math">\(x(t+\Delta t) = (1-\alpha)x(t)+\alpha f(W x(t)+W_{\text{in}} u(t))\)</span>
-<span  class="math">\(v(t+\Delta t) = g(W_{\text{out}} x(t))\)</span></p>
+<p><span  class="math">\[\textbf{x}(t+\Delta t) = (1-\alpha) \textbf{x}(t)+\alpha f( \textbf{W} \textbf{x}(t)+ \textbf{W}_{\text{in}} \textbf{u}(t))\]</span></p>
+
+<p><span  class="math">\[\textbf{v}(t+\Delta t) = g( \textbf{W}_{\text{out}} \textbf{x}(t))\]</span></p>
 
 <p>where</p>
 
 <ul>
-<li>$v(t) \in R^{M}$ is the predicted output</li>
-<li>$x(t) \in R^{N}$ is the state vector</li>
-<li>$W_{\text{out}} \in R^{M \times N}$ is the output layer</li>
-<li>$f$ and $g$ are two activation functions, most commonly the hyperbolic tangent and identity respectively</li>
-<li>$\alpha$ is the leaking rate</li>
+<li><span  class="math">\(\textbf{v}(t) \in R^{M}\)</span> is the predicted output</li>
+<li><span  class="math">\(\textbf{x}(t) \in R^{N}\)</span> is the state vector</li>
+<li><span  class="math">\(\textbf{W}_{\text{out}} \in R^{M \times N}\)</span> is the output layer</li>
+<li><span  class="math">\(f\)</span> and <span  class="math">\(g\)</span> are two activation functions, most commonly the hyperbolic tangent and identity respectively</li>
+<li><span  class="math">\(\alpha\)</span> is the leaking rate</li>
 </ul>
 
-<p>The computation of $W_{\text{out}}$ can be expressend in terms of solving a system of linear equations</p>
+<p>The computation of <span  class="math">\(\textbf{W}_{\text{out}}\)</span> can be expressend in terms of solving a system of linear equations</p>
 
-<p><span  class="math">\[Y^{\text{target}}=W_{\text{out}} X\]</span></p>
+<p><span  class="math">\[\textbf{Y}^{\text{target}}=\textbf{W}_{\text{out}} \textbf{X}\]</span></p>
 
-<p>where X is the states matrix, built using the single states vector $x(t)$ as column for every $t=1, ..., T$, and $Y^{\text{target}}$ is built in the same way only using $y^{\text{target}}(t)$. The solution of choice for this problem is usually the <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization">Tikhonov regularization</a>, also called ridge regression which has the following close form:
-<span  class="math">\(W_{\text{out}} = Y^{\text{target}} X^{\text{T}}(X X^{\text{T}} + \beta I)^{-1}\)</span>
-where $I$ is the identity matrix and $\beta$ is a regularization coefficient.</p>
+<p>where <span  class="math">\(\textbf{X}\)</span> is the states matrix, built using the single states vector <span  class="math">\(\textbf{x}(t)\)</span> as column for every <span  class="math">\(t=1, ..., T\)</span>, and <span  class="math">\(\textbf{Y}^{\text{target}}\)</span> is built in the same way only using <span  class="math">\(\textbf{y}^{\text{target}}(t)\)</span>. The solution of choice for this problem is usually the <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization">Tikhonov regularization</a>, also called ridge regression which has the following close form:</p>
 
-<p>In short this is the core theory behind the ESNs. In order to visualize how they wark let's look at an example</p>
+<p><span  class="math">\[\textbf{W}_{\text{out}} = \textbf{Y}^{\text{target}} \textbf{X}^{\text{T}}(\textbf{X} \textbf{X}^{\text{T}} + \beta \textbf{I})^{-1}\]</span></p>
+
+<p>where <span  class="math">\(\textbf{I}\)</span> is the identity matrix and <span  class="math">\(\beta\)</span> is a regularization coefficient.</p>
+
+<p>In short this is the core theory behind the ESNs. In order to visualize how they work let's look at an example.</p>
 
 <h2 id="lorentz-system-prediction">Lorentz system prediction</h2>
 
