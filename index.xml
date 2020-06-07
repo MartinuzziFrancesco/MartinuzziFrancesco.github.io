@@ -13,10 +13,10 @@
     
     <item>
       <title>First GSoC week: lasso, Elastic Net and Huber loss</title>
-      <link>https://martinuzzifrancesco.github.io/posts/02_gsoc_week/</link>
+      <link>https://martinuzzifrancesco.github.io/posts/01_gsoc_week/</link>
       <pubDate>Sun, 07 Jun 2020 19:06:37 +0200</pubDate>
       
-      <guid>https://martinuzzifrancesco.github.io/posts/02_gsoc_week/</guid>
+      <guid>https://martinuzzifrancesco.github.io/posts/01_gsoc_week/</guid>
       <description>The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network.</description>
     </item>
     
