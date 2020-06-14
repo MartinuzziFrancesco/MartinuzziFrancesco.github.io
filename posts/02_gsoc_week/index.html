@@ -15,7 +15,7 @@
 <meta itemprop="description" content="The second week of the Google Summer of Code project with ReservoirComputing.">
 <meta itemprop="datePublished" content="2020-06-14T15:07:04&#43;02:00" />
 <meta itemprop="dateModified" content="2020-06-14T15:07:04&#43;02:00" />
-<meta itemprop="wordCount" content="1516">
+<meta itemprop="wordCount" content="1525">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -176,17 +176,17 @@ where</p>
 <p>The most used function in SVR is called \(\epsilon\)-insensitive loss function <a href="#3">[3]</a>:</p>
 <p>$$L = 0 \ \text{ if } |f(x)-y| &lt; \epsilon$$
 $$L = |f(x)-y| - \epsilon \text{ otherwise }$$</p>
-<p>More specifically we can consider the following problem</p>
+<p>More specifically we can consider the equation</p>
 <p>$$\text{min}||\textbf{w}||^2+C\sum_{j=1^{N_t}}(\xi _j+\hat{\xi}_j)$$</p>
 <p>with constraints (for \(j=1,&hellip;,N_t\)):
 $$(\textbf{w}^T \textbf{x}_j+b)-y_j \le \epsilon - \xi_j$$
-$$y_i-(\textbf{w}^T \textbf{x}_j+b) \le \epsilon - \xi_j$$
+$$y_j-(\textbf{w}^T \textbf{x}_j+b) \le \epsilon - \xi_j$$
 $$\xi _j,\hat{\xi}_j \ge 0$$</p>
 <p>the solution of which can be found using the following dual problem</p>
 <p>$$\text{min}_{\alpha , \alpha^*} \frac{1}{2} \sum_{i, j = 1}^{N_t}(\alpha_i-\alpha_i^*)(\alpha_j-\alpha_j^*)\textbf{x}^T\textbf{x}-\sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) y_i + \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) \epsilon$$</p>
 <p>with constraints:</p>
 <p>$$0 \le \alpha _i, \alpha _i^* \le C, \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*)=0$$</p>
-<p>We can clearly see that to solve this task one has to resort to quadratic programming. The solution will have the following form</p>
+<p>We can clearly see that to solve this task one has to resort to quadratic programming. The solution will have the form</p>
 <p>$$f(\textbf{x}) = \sum_{i=1}^{N_p}(\alpha_i-\alpha_i^*) k(\textbf{x}_i, \textbf{x})$$</p>
 <p>where \(k\) is a so-called kernel function, an implicit mapping of the data into an higher dimension, used to turn a non linear problem into a linear one. This is the &ldquo;kernel trick&rdquo;, where the mapping is not explicitly done, but is obtained using function that only require the computation of the inner products. Common kernels includes:</p>
 <ul>
@@ -195,8 +195,8 @@ $$\xi _j,\hat{\xi}_j \ge 0$$</p>
 <li>Gaussian Radial Basis Function \( k(\textbf{x}_i, \textbf{x}_j) = e^{ \lambda ||\textbf{x}_i - \textbf{x}_j||^2} \)</li>
 </ul>
 <h2 id="support-vector-echo-state-machines">Support Vector Echo State Machines</h2>
-<p>We can see that the intuition behind the Reservoir Computing approach is similar to the kernel methods: using a fixed Recurrent Neural Network (for the case of the ESN) we are also mapping the input into an higher dimension. Therefore the connection was almost immediate and the idea developed in <a href="#4">[4]</a> was to perform a linear SVR in the higer dimensional reservoir state space.</p>
-<p>In the paper different loss function are analized: quadratic loss function, \( \epsilon \)-insensitive loss function and the Huber loss function. A new method of prediction is also proposed, called the direct method. This method is a variation of the one step ahead prediction, in wich the desired output is not the next step, but a h steps ahead one. The input-output training sequences can be described as \( \textbf{d}(k), \textbf{x}(k+h), k=1, 2, 3,&hellip;, N_t \) where \( \textbf{d}(k) \) is the embedding of the target time series and \( \textbf{x}(k+h) \) is the h steps ahead target output for training/testing.</p>
+<p>We can see that the intuition behind the Reservoir Computing approach is similar to the kernel methods: using a fixed Recurrent Neural Network (for the case of the ESN) we are also mapping the input into a higher dimension. Therefore the connection between the two models was almost immediate and the idea developed in <a href="#4">[4]</a> was to perform a linear SVR in the higer dimensional reservoir state space.</p>
+<p>In the paper different loss function are analized: quadratic loss function, \( \epsilon \)-insensitive loss function and the Huber loss function. A new method of prediction is also proposed, called the direct method. This method is a variation of the one step ahead prediction, in which the desired output is not the next step, but a \( h \) steps ahead one. The input-output training sequences can be described as \( \textbf{d}(k), \textbf{x}(k+h), k=1, 2, 3,&hellip;, N_t \) where \( \textbf{d}(k) \) is the embedding of the target time series and \( \textbf{x}(k+h) \) is the \( h \) steps ahead target output for training/testing.</p>
 <h1 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h1>
 <p>The implementation of SVESM into the library is done leveraging the LIBSVM.jl package, a wrapper for the <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">package</a> of the same name written in C++. With this we were able to implement the \( \epsilon \)-insensitive loss function based SVR, creating a new <code>SVESMtrain</code> function as well as a <code>SVESM_direct_predict</code> function. The <code>SVESMtrain</code> takes as input</p>
 <ul>
@@ -218,9 +218,9 @@ $$\xi _j,\hat{\xi}_j \ge 0$$</p>
 <ul>
 <li>\(\beta = -0.1 \)</li>
 <li>\(\alpha = 0.2 \)</li>
-<li>\(\delta = 17 \)
-The timeseries is then embedded</li>
+<li>\(\delta = 17 \)</li>
 </ul>
+<p>The timeseries is then embedded</p>
 <p>$$\textbf{d}(k) = [x(k), x(k-\tau), x(k-2 \tau), x(k-3 \tau)]$$
 with dimension 4 and \(\tau = 6\). The target output is \( y_d(k) = x(k+84) \). We are going to evaluate the precision of our prediction using nmrse, defined as
 $$\textbf{nmrse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n \cdot \sigma ^2}}$$</p>
@@ -231,9 +231,9 @@ $$\textbf{nmrse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n \cdot \sigma
 <li>\(T_d \) is the number of test examples</li>
 <li>\(\sigma ^2 \) is the variance of the original time series</li>
 </ul>
-<p>The data is obtained using Range Kutta of order 4 with a stepsize of 0.1.</p>
-<p>We will perform three tests, and in all three we are also going to give the results of SVR using different kernel to make a comparison with the results obtained by SVESM. The first test is conducted on noiseless test and trining samples. In the second one we will add noise in the training portion of \( \textbf{d}(k) \), and in the last noise will be added both in training and tasting. The target values remain noiseless in all three tests. The noise level is determined by the ratio of the standard deviation of the noise and the signal standard deviation, and it is 20%.</p>
-<p>Before the exposition of the results we need to address the fact that sadly in the original paper only a few parameters are given: the size of the reservoir, sparseness and spectral radius of the reservoir matrix and the scaling of the input weights. Missing parameters like \( C \) or \( \epsilon \) for the SVESM training of course means that our results are not comparable with those showed in the paper. Nevertheless, using the default parameters, the results obtained show that the model proposed can outperform SVR with bot polynomial and radial basis kernels in all three tests.</p>
+<p>The data is obtained using Runge Kutta of order 4 with a stepsize of 0.1.</p>
+<p>We will perform three tests, and in all three we are also going to give the results of SVR using different kernel to make a comparison with the results obtained by SVESM. The first test is conducted on noiseless test and training samples. In the second one we will add noise in the training portion of \( \textbf{d}(k) \), and in the last noise will be added both in training and testing. The target values remain noiseless in all three tests. The noise level is determined by the ratio of the standard deviation of the noise and the signal standard deviation, and it is chosen to be 20%.</p>
+<p>Before the exposition of the results we need to address the fact that sadly in the original paper only a few parameters are given: the size of the reservoir, sparseness and spectral radius of the reservoir matrix and the scaling of the input weights. Missing parameters like \( C \) or \( \epsilon \) for the SVESM training of course means that our results are not comparable with those showed in the paper. Nevertheless, using the default parameters, the results obtained show that the model proposed can outperform SVR with both polynomial and radial basis kernels in all three tests.</p>
 <p>The parameters used for the ESN are as follows</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">const</span> shift <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
 <span style="color:#66d9ef">const</span> train_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
