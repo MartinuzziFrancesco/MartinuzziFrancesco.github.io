@@ -6,13 +6,22 @@
     <description>Recent content on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 07 Jun 2020 19:06:37 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jun 2020 15:07:04 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>First GSoC week: lasso, Elastic Net and Huber loss</title>
+      <title>GSoC week 2: Support Vector Regression in Echo State Networks</title>
+      <link>https://martinuzzifrancesco.github.io/posts/02_gsoc_week/</link>
+      <pubDate>Sun, 14 Jun 2020 15:07:04 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/02_gsoc_week/</guid>
+      <description>The second week of the Google Summer of Code project with ReservoirComputing.</description>
+    </item>
+    
+    <item>
+      <title>GSoC week 1: lasso, Elastic Net and Huber loss</title>
       <link>https://martinuzzifrancesco.github.io/posts/01_gsoc_week/</link>
       <pubDate>Sun, 07 Jun 2020 19:06:37 +0200</pubDate>
       

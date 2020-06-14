@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Hugo 0.72.0" />
 
-  <title>First GSoC week: lasso, Elastic Net and Huber loss &middot; Francesco Martinuzzi</title>
+  <title>GSoC week 2: Support Vector Regression in Echo State Networks &middot; Francesco Martinuzzi</title>
 
   <meta name="description" content="" />
 
   
 
-<meta itemprop="name" content="First GSoC week: lasso, Elastic Net and Huber loss">
-<meta itemprop="description" content="The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network.">
-<meta itemprop="datePublished" content="2020-06-07T19:06:37&#43;02:00" />
-<meta itemprop="dateModified" content="2020-06-07T19:06:37&#43;02:00" />
-<meta itemprop="wordCount" content="1480">
+<meta itemprop="name" content="GSoC week 2: Support Vector Regression in Echo State Networks">
+<meta itemprop="description" content="The second week of the Google Summer of Code project with ReservoirComputing.">
+<meta itemprop="datePublished" content="2020-06-14T15:07:04&#43;02:00" />
+<meta itemprop="dateModified" content="2020-06-14T15:07:04&#43;02:00" />
+<meta itemprop="wordCount" content="1516">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -25,17 +25,17 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/images/"/>
 
-<meta name="twitter:title" content="First GSoC week: lasso, Elastic Net and Huber loss"/>
-<meta name="twitter:description" content="The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network."/>
+<meta name="twitter:title" content="GSoC week 2: Support Vector Regression in Echo State Networks"/>
+<meta name="twitter:description" content="The second week of the Google Summer of Code project with ReservoirComputing."/>
 
 
-<meta property="og:title" content="First GSoC week: lasso, Elastic Net and Huber loss" />
-<meta property="og:description" content="The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network." />
+<meta property="og:title" content="GSoC week 2: Support Vector Regression in Echo State Networks" />
+<meta property="og:description" content="The second week of the Google Summer of Code project with ReservoirComputing." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/02_gsoc_week/" />
 <meta property="og:image" content="https://martinuzzifrancesco.github.io/images/"/>
-<meta property="article:published_time" content="2020-06-07T19:06:37+02:00" />
-<meta property="article:modified_time" content="2020-06-07T19:06:37+02:00" /><meta property="og:site_name" content="Francesco Martinuzzi" />
+<meta property="article:published_time" content="2020-06-14T15:07:04+02:00" />
+<meta property="article:modified_time" content="2020-06-14T15:07:04+02:00" /><meta property="og:site_name" content="Francesco Martinuzzi" />
 
 
 
@@ -154,98 +154,141 @@
 
   <main class="content container">
   <div class="post">
-  <h1>First GSoC week: lasso, Elastic Net and Huber loss</h1>
+  <h1>GSoC week 2: Support Vector Regression in Echo State Networks</h1>
 
   <div class="post-date">
-    <time datetime="2020-06-07T19:06:37&#43;0200">Jun 7, 2020</time> · 7 min read
+    <time datetime="2020-06-14T15:07:04&#43;0200">Jun 14, 2020</time> · 8 min read
   </div>
 
-  <p>The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network. More specifically were added the possibility to add a \( l_1 \) regularization to the loss function (Lasso regression), both \( l_1 \) and \( l_2 \) regularizations (Elastic Net regression) and also added the possibility to choose the Huber loss function.
-As in the last post we will start from a brief theoretical background to explain the code and then we will showcase some examples taken from the literature.</p>
+  <p>The second week of the Google Summer of Code project with ReservoirComputing.jl dealt with the implementation of a Support Vector based regression for the Echo State Network model, resulting in the Support Vector Echo-State Machine (SVESM). In this post we will quickly touch on the theory behind Support Vector Regression (SVR), and then we will see the results of the implementation into the library. At the end a couple of examples are given, togheter with a comparison between SVR and SVESMs.</p>
 <h1 id="theoretical-background">Theoretical Background</h1>
-<p>In the <a href="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/">Brief Introduction to Reservoir Computing</a> we showed how it was possible to get the output layer from a linear regression over the states and the desired output using <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization">Ridge regression</a>:</p>
-<p>$$\textbf{W}_{\text{out}} = \textbf{Y}^{\text{target}} \textbf{X}^{\text{T}}(\textbf{X} \textbf{X}^{\text{T}} + \beta \textbf{I})^{-1}$$
-but by doing so we actually jumped a few steps, and in the example it wasn&rsquo;t even used actually, it was just an <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares">Ordinary Least Squares</a>(OLS). To know the difference we have to take a little step back. Inherently generalised linear regression models are an optimisation problem of the form</p>
-<p>$$L(\textbf{y}, \textbf{X} \theta)+P(\theta)$$</p>
+<h2 id="support-vector-regression">Support Vector Regression</h2>
+<p>What follows is just an overview of the theory behind SVR, which takes for granted a priori knowledge of the reader of the more general concepts of Support Vector Machines. A more knowledgable and in depth exposition can be found in <a href="#1">[1]</a> and <a href="#2">[2]</a>. Most of the information presented in this section is taken from these papers unless stated otherwise.</p>
+<p>In a general setting, a regression task can be expressed as the minimization of the following primal objective function:
+$$C \sum_{j=1}^{N}L[\textbf{x}_j, y_{dj}, f ] + ||\textbf{w}||^2$$
+where</p>
+<ul>
+<li>\(L\) is a general loss function</li>
+<li>\(f\) is the prediction function defined by \(\textbf{W}\) and \(b\)</li>
+<li>\(C\) is a regularization constant</li>
+</ul>
+<p>If the loss function is quadratic the objective function can be minimized by means of linear algebra, and the methodology is called Ridge Regression.</p>
+<p>The most used function in SVR is called \(\epsilon\)-insensitive loss function <a href="#3">[3]</a>:</p>
+<p>$$L = 0 \ \text{ if } |f(x)-y| &lt; \epsilon$$
+$$L = |f(x)-y| - \epsilon \text{ otherwise }$$</p>
+<p>More specifically we can consider the following problem</p>
+<p>$$\text{min}||\textbf{w}||^2+C\sum_{j=1^{N_t}}(\xi _j+\hat{\xi}_j)$$</p>
+<p>with constraints (for \(j=1,&hellip;,N_t\)):
+$$(\textbf{w}^T \textbf{x}_j+b)-y_j \le \epsilon - \xi_j$$
+$$y_i-(\textbf{w}^T \textbf{x}_j+b) \le \epsilon - \xi_j$$
+$$\xi _j,\hat{\xi}_j \ge 0$$</p>
+<p>the solution of which can be found using the following dual problem</p>
+<p>$$\text{min}_{\alpha , \alpha^*} \frac{1}{2} \sum_{i, j = 1}^{N_t}(\alpha_i-\alpha_i^*)(\alpha_j-\alpha_j^*)\textbf{x}^T\textbf{x}-\sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) y_i + \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) \epsilon$$</p>
+<p>with constraints:</p>
+<p>$$0 \le \alpha _i, \alpha _i^* \le C, \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*)=0$$</p>
+<p>We can clearly see that to solve this task one has to resort to quadratic programming. The solution will have the following form</p>
+<p>$$f(\textbf{x}) = \sum_{i=1}^{N_p}(\alpha_i-\alpha_i^*) k(\textbf{x}_i, \textbf{x})$$</p>
+<p>where \(k\) is a so-called kernel function, an implicit mapping of the data into an higher dimension, used to turn a non linear problem into a linear one. This is the &ldquo;kernel trick&rdquo;, where the mapping is not explicitly done, but is obtained using function that only require the computation of the inner products. Common kernels includes:</p>
+<ul>
+<li>Linear \( k(\textbf{x}_i, \textbf{x}_j) = \textbf{x}_i \cdot \textbf{x}_j\)</li>
+<li>Polynomial \(k(\textbf{x}_i, \textbf{x}_j) = (\textbf{x}_i \cdot \textbf{x}_j)^d \)</li>
+<li>Gaussian Radial Basis Function \( k(\textbf{x}_i, \textbf{x}_j) = e^{ \lambda ||\textbf{x}_i - \textbf{x}_j||^2} \)</li>
+</ul>
+<h2 id="support-vector-echo-state-machines">Support Vector Echo State Machines</h2>
+<p>We can see that the intuition behind the Reservoir Computing approach is similar to the kernel methods: using a fixed Recurrent Neural Network (for the case of the ESN) we are also mapping the input into an higher dimension. Therefore the connection was almost immediate and the idea developed in <a href="#4">[4]</a> was to perform a linear SVR in the higer dimensional reservoir state space.</p>
+<p>In the paper different loss function are analized: quadratic loss function, \( \epsilon \)-insensitive loss function and the Huber loss function. A new method of prediction is also proposed, called the direct method. This method is a variation of the one step ahead prediction, in wich the desired output is not the next step, but a h steps ahead one. The input-output training sequences can be described as \( \textbf{d}(k), \textbf{x}(k+h), k=1, 2, 3,&hellip;, N_t \) where \( \textbf{d}(k) \) is the embedding of the target time series and \( \textbf{x}(k+h) \) is the h steps ahead target output for training/testing.</p>
+<h1 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h1>
+<p>The implementation of SVESM into the library is done leveraging the LIBSVM.jl package, a wrapper for the <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">package</a> of the same name written in C++. With this we were able to implement the \( \epsilon \)-insensitive loss function based SVR, creating a new <code>SVESMtrain</code> function as well as a <code>SVESM_direct_predict</code> function. The <code>SVESMtrain</code> takes as input</p>
+<ul>
+<li>svr: a <code>AbstractSVR</code> object that can be both <code>EpsilonSVR</code> or <code>NuSVR</code>. This implementation also allows the user to choose a kernel other than the linear one like the one used in the paper. Actually in comparisons done in other papers, different kernels have been used with SVESMs.</li>
+<li>esn: the previously constructed ESN</li>
+<li>y_target: the one-dimensional target output \( \textbf{x}(k+h) \)</li>
+</ul>
+<p>The <code>SVESM_direct_predict</code> function takes as input</p>
+<ul>
+<li>esn: the previously constructed ESN</li>
+<li>test_in: the testing portion of the input data \( \textbf{d}(k) \)</li>
+<li>m: the output from <code>SVESMtrain</code></li>
+</ul>
+<p>The quadratic loss function and Huber loss function are already implemented and the ESN can be trained using one of them through <code>ESNtrain(Ridge(), esn)</code> or <code>ESNtrain(RobustHuber(), esn)</code>.</p>
+<h1 id="examples">Examples</h1>
+<p>Following the example used in the paper we will try to predict the 84 steps ahead <a href="http://www.scholarpedia.org/article/Mackey-Glass_equation">Mackey Glass</a> system. It can be described by</p>
+<p>$$\frac{dx}{dt} = \beta x(t)+\frac{\alpha x(t-\delta)}{1+x(t-\delta)^2}$$</p>
+<p>and the values adopted in <a href="#4">[4]</a> are</p>
+<ul>
+<li>\(\beta = -0.1 \)</li>
+<li>\(\alpha = 0.2 \)</li>
+<li>\(\delta = 17 \)
+The timeseries is then embedded</li>
+</ul>
+<p>$$\textbf{d}(k) = [x(k), x(k-\tau), x(k-2 \tau), x(k-3 \tau)]$$
+with dimension 4 and \(\tau = 6\). The target output is \( y_d(k) = x(k+84) \). We are going to evaluate the precision of our prediction using nmrse, defined as
+$$\textbf{nmrse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n \cdot \sigma ^2}}$$</p>
 <p>where</p>
 <ul>
-<li>\( \textbf{y} \) is the target</li>
-<li>\( \textbf{X} \) is the design matrix</li>
-<li>\( \theta \) is a vector of coefficient to determine</li>
-<li>\( L \) is a loss function</li>
-<li>\( P \) is a penalty function</li>
+<li>\(y_d(i) \) is the target value</li>
+<li>\(y(i) \) is the predicted value</li>
+<li>\(T_d \) is the number of test examples</li>
+<li>\(\sigma ^2 \) is the variance of the original time series</li>
 </ul>
-<h2 id="ols-and-penalization">OLS and penalization</h2>
-<p>In the case of Ridge regression the loss function is the OLS, to wich is added a \( l_2 \) regularization. The function to minimize is of the form</p>
-<p>$$||\textbf{y} - \textbf{X} \theta ||_2^2 + \lambda || \theta  ||_2^2$$</p>
-<p>where \( ||.||_2 \) is the \( l_2 \) norm and \( \lambda \) is a penalization coefficient. In the Lorenz system example the lambda parameter was set to zero so in fact we were actually fitting using only the first part of the above expression, that corresponds to OLS, as said before. The formula we showed in the opening is actually quite different from this second definition, but this is because even though this is an optimisation problem the Ridge regression has a closed form solution. So if we imagine to have a matrix of targets \(\textbf{Y}\) and \(\theta = \textbf{W}_{\text{out}} \) then the first definition can be derived from the second.</p>
-<p>Another form of regression based on the OLS loss function is <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)">Lasso</a> (least absolute shrinkage and selection operator) which uses the \( l_1 \) norm as regularization. The function to minimize will hence have the form</p>
-<p>$$||\textbf{y} - \textbf{X} \theta ||_2^2 + \lambda || \theta  ||_1$$</p>
-<p>This two methods can be linearly combined in order to obtain the <a href="https://en.wikipedia.org/wiki/Elastic_net_regularization">Elastic Net regression</a> method, of the form</p>
-<p>$$||\textbf{y} - \textbf{X} \theta ||_2^2 + \lambda || \theta  ||_2^2 + \gamma || \theta  ||_1$$</p>
-<p>This last two methods, contrarily to Ridge regression, do not present a closed form and so one has to use other solutions to the optimization problem, such as <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a> or <a href="https://en.wikipedia.org/wiki/Proximal_gradient_method">proximal gradient method</a>.</p>
-<h2 id="huber-loss-function">Huber loss function</h2>
-<p>Of course one can choose other alternatives to the OLS loss function, and one of the most common is the <a href="https://en.wikipedia.org/wiki/Huber_loss">Huber loss</a> function. Used in robust regression is known to respond well in the presence of outliers. The function is defined as follows</p>
-<p>$$L_{\sigma}(a) = \frac{1}{2}a^2   \text{  for  } |a| \le \sigma$$
-$$L_{\sigma}(a) = \sigma (|a| - \frac{1}{2} \sigma ) \text{   otherwise}$$</p>
-<p>To this function we can apply the same regularization function priorly defined, the \( l_2 \) and \( l_1 \) norm if one so choses.</p>
-<h2 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h2>
-<p>The implementation in the library has been done leveraging the incredible job done by the MLJLinearModels.jl team. The <code>ESNtrain()</code> function can now take as argument the following structs:</p>
-<ul>
-<li><code>Ridge(lambda, solver)</code></li>
-<li><code>Ridge(lambda, solver)</code></li>
-<li><code>ElastNet(lambda, gamma, solver)</code></li>
-<li><code>RobustHuber(delta, lambda, gamma, solver)</code></li>
-</ul>
-<p>where lambda gamma and delta are defined in the theoretical sections above and solver is a solver of the MLJLinearModels library. One must be careful to use the suitable solver for every loss and regularization combination. Further information can be found in the <a href="https://alan-turing-institute.github.io/MLJLinearModels.jl/stable/">MLJLinearModels documentation</a>.</p>
-<h1 id="examples">Examples</h1>
-<p>The Lasso regression was first proposed in <a href="#1">[1]</a> and in <a href="#2">[2]</a> a variation is proposed on it and there are also comparison with Elastic Net regression. Other comparison are carried out in <a href="#3">[3]</a>, which is the paper we will follow as methodology. The Huber loss function is used for comparison in <a href="#4">[4]</a>, but to my knowledge has not been adopted in other papers.</p>
-<p>Trying to follow the data preparation used in <a href="#3">[3]</a> we use the Rossler system this time to carry out our tests. The system is defined by the equations
-$$\frac{dx}{dt} = -y -z$$
-$$\frac{dy}{dt} = x + ay$$
-$$\frac{dz}{dt} = b + z(x - c)$$
-andit exhibits chaotic behavior for \( a = 0.2 \), \( b = 0.2 \) and \( c = 5.7 \). Using Range Kutta of order 4 from the initial positions \( (-1, 0, 3) \) the time series is generated with step size set to 0.005. In the paper the attractor is reconstructed in the phase space using embedding dimensions \( (3, 3, 3) \) and time delays \( (13, 13, 13) \) for the \(x, y, z\) series respectively. After, all the 9 resulting timeseries are rescaled in the range \( [-1, 1] \) and will all be used in the training of the ESN. Since the data preparation was unusual for me I spent a couple of hours wrapping my head around it. If one wants to know more about time delays and embeddings a good brief introduction is given in <a href="#5">[5]</a>. Thankfully <a href="https://juliadynamics.github.io/DynamicalSystems.jl/latest/">DynamicalSystems.jl</a> makes lifes easier when dealing with this type of problems and using <code>embed()</code> I was quickly able to create the data as expressed in the paper. <a href="https://juliastats.org/StatsBase.jl/stable/">StatsBase.jl</a> dealt with the rescaling part.</p>
-<p>The parameter for the ESN are then set as follows</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> ReservoirComputing
-shift <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+<p>The data is obtained using Range Kutta of order 4 with a stepsize of 0.1.</p>
+<p>We will perform three tests, and in all three we are also going to give the results of SVR using different kernel to make a comparison with the results obtained by SVESM. The first test is conducted on noiseless test and trining samples. In the second one we will add noise in the training portion of \( \textbf{d}(k) \), and in the last noise will be added both in training and tasting. The target values remain noiseless in all three tests. The noise level is determined by the ratio of the standard deviation of the noise and the signal standard deviation, and it is 20%.</p>
+<p>Before the exposition of the results we need to address the fact that sadly in the original paper only a few parameters are given: the size of the reservoir, sparseness and spectral radius of the reservoir matrix and the scaling of the input weights. Missing parameters like \( C \) or \( \epsilon \) for the SVESM training of course means that our results are not comparable with those showed in the paper. Nevertheless, using the default parameters, the results obtained show that the model proposed can outperform SVR with bot polynomial and radial basis kernels in all three tests.</p>
+<p>The parameters used for the ESN are as follows</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">const</span> shift <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
+<span style="color:#66d9ef">const</span> train_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
+<span style="color:#66d9ef">const</span> test_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>
+<span style="color:#66d9ef">const</span> h <span style="color:#f92672">=</span> <span style="color:#ae81ff">84</span>
 
-sparsity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>
-approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>
-radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.9</span>
-activation <span style="color:#f92672">=</span> tanh
-sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.01</span>
-train_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">3900</span>
-predict_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
-lambda <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">5</span>)
-gamma <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">5</span>)
-alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
-nla_type <span style="color:#f92672">=</span> NLADefault()
-extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+<span style="color:#66d9ef">const</span> approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">700</span>
+<span style="color:#66d9ef">const</span> sparsity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.02</span>
+<span style="color:#66d9ef">const</span> activation <span style="color:#f92672">=</span> tanh
+<span style="color:#66d9ef">const</span> radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.98</span>
+<span style="color:#66d9ef">const</span> sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.25</span>
 
-h <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-</code></pre></div><p>The test was based on a h steps ahead prediction, which differs from the normal prediction because after every h steps of the ESN running autonomosly after training, the actual data is fed into the model, &ldquo;correcting&rdquo; the results. This way one has also to feed test data into to model, and the error is consequently quite low. As we can see the <code>h</code> parameter is set on 1, since that is the step used in the paper. The model only predicts one step in the future this way, for every step of the prediction.</p>
-<p>To test the difference between values we used a user-defined <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">Root Mean Square Deviation</a> (RMSE) for the x coordinate, following paper guidelines. The results are as follows, given as a mean of 20 different initiations of random reservoirs:</p>
-<p>$$  \text{rmse}_{\text{RESN}} = 9.033 \cdot 10^{-5} $$
-$$  \text{rmse}_{\text{LESN}} = 0.006 $$
-$$  \text{rmse}_{\text{EESN}} = 0.006 $$
-$$  \text{rmse}_{\text{HESN}} = 9.040 \cdot 10^{-5} $$</p>
-<p>where RESN is the Ridge regression trained ESN, LESN is the Lasso trained ESN, EESN is the Elastic Net trained ESN and HESN is the ESN trained with Huber function with \( \delta = 0.8\) and \( l_2 \) norm.</p>
-<p>We can also take a look at a plot of the x coordinate bot actual and predicted, but as one can expect from a rmse so small there is almost no difference.</p>
-<p><img src="https://user-images.githubusercontent.com/10376688/83980445-41690e00-a916-11ea-8e0b-b65edd7a57d0.png" alt="Rossler_coord"></p>
-<p>The results obtained, while not in line with what is showed in the literature, are actually far better, by several orders of magnitude in some instances. While not obtaining the comparison with the papers is somewhat not optimal, there are some problems with the paper examined: the presence of several blunders in the final published draft, sometimes really evident, do not give ground to the dismissal of results but can raise eyebrows to the transparency of the methods or data utilized.
-In conclusion, the implementations to the ESN show promising results, but a more thorough exploration and examination needs to be done in order to really showcase their true utility. There will be time for that after GSoC ends, hopefully.</p>
+<span style="color:#66d9ef">const</span> alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+<span style="color:#66d9ef">const</span> nla_type <span style="color:#f92672">=</span> NLADefault()
+<span style="color:#66d9ef">const</span> extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+ 
+W <span style="color:#f92672">=</span> init_reservoir_givensp(approx_res_size, radius, sparsity)
+W_in <span style="color:#f92672">=</span> init_dense_input_layer(approx_res_size, size(train_in, <span style="color:#ae81ff">1</span>), sigma)
+esn <span style="color:#f92672">=</span> ESN(W, train_in, W_in, activation, alpha, nla_type, extended_states)
+</code></pre></div><h2 id="noiseless-training-and-testing">Noiseless training and testing</h2>
+<p>Using a dataset of lenght 500 we can see that the results for the noiseless training and testing are</p>
+<pre><code>SVESM nmrse for the noiseless test: 0.343
+SVM Poly kernel nmrse for the noiseless test: 0.489
+SVM RadialBasis kernel nmrse for the noiseless test: 0.393
+</code></pre><p>We can also plot the results to better appreciate the results (the lenght of the prediction chosen for the plots is higher in order to better visualize the differences in trajectories):</p>
+<p><img src="https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png" alt="svesm_noiseless_comparison"></p>
+<p><img src="https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png" alt="svm_noiseless_comparison"></p>
+<p>From the results it is clear that the SVESM performs better.</p>
+<h2 id="noisy-training-and-noiseless-testing">Noisy training and noiseless testing</h2>
+<p>Adding normally distributed white noise to the training input dataset we obtain the following results for the nmrse:</p>
+<pre><code>Training on noisy data and testing on noiseless data...
+SVESM nmrse for noisy training and noiseless testing: 0.415
+SVM Poly kernel nmrse for noisy training and noiseless testing: 0.643
+SVM RadialBasis kernel nmrse for noisy training and noiseless testing: 0.557
+</code></pre><p>The plots are</p>
+<p><img src="https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png" alt="svesm_noisytrain_comparison"></p>
+<p><img src="https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png" alt="svm_noisytrain_comparison"></p>
+<p>Also in this case the performance of the SVESM is superior to SVR.</p>
+<h2 id="noisy-training-and-testing">Noisy training and testing</h2>
+<p>For the last comparison the results are as follows</p>
+<pre><code>Training and testing on noisy data...
+SVESM nmrse for noisy training and testing: 0.439
+SVM Poly kernel nmrse for noisy training and testing: 0.724
+SVM RadialBasis kernel nmrse for noisy training and testing: 0.648
+</code></pre><p>And in this case as well the proposed model outperforms SVR.</p>
 <p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don&rsquo;t hesitate to contact me!</p>
 <h2 id="references">References</h2>
 <p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
-Han, Min, Wei-Jie Ren, and Mei-Ling Xu. &ldquo;An improved echo state network via L1-norm regularization.&rdquo; Acta Automatica Sinica 40.11 (2014): 2428-2435.</p>
+Drucker, Harris, et al. &ldquo;Support vector regression machines.&rdquo; Advances in neural information processing systems. 1997.</p>
 <p><!-- raw HTML omitted -->[2]<!-- raw HTML omitted -->
-Xu, Meiling, Min Han, and Shunshoku Kanae. &ldquo;L 1/2 Norm Regularized Echo State Network for Chaotic Time Series Prediction.&rdquo; International Conference on Neural Information Processing. Springer, Cham, 2016.</p>
+Smola, Alex J., and Bernhard Schölkopf. &ldquo;A tutorial on support vector regression.&rdquo; Statistics and computing 14.3 (2004): 199-222.</p>
 <p><!-- raw HTML omitted -->[3]<!-- raw HTML omitted -->
-Xu, Meiling, and Min Han. &ldquo;Adaptive elastic echo state network for multivariate time series prediction.&rdquo; IEEE transactions on cybernetics 46.10 (2016): 2173-2183.</p>
+VladimirN. Vapnik, The Nature of Statistical Learning Theory, Springer, 1995.</p>
 <p><!-- raw HTML omitted -->[4]<!-- raw HTML omitted -->
-Guo, Yu, et al. &ldquo;Robust echo state networks based on correntropy induced loss function.&rdquo; Neurocomputing 267 (2017): 295-303.</p>
-<p><!-- raw HTML omitted -->[5]<!-- raw HTML omitted -->
-<a href="http://www.scholarpedia.org/article/Attractor_reconstruction">http://www.scholarpedia.org/article/Attractor_reconstruction</a></p>
+Shi, Zhiwei, and Min Han. &ldquo;Support vector echo-state machine for chaotic time-series prediction.&rdquo; IEEE transactions on neural networks 18.2 (2007): 359-372.</p>
 
 </div>
 
