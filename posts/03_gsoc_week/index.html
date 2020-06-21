@@ -15,7 +15,7 @@
 <meta itemprop="description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN).">
 <meta itemprop="datePublished" content="2020-06-21T16:12:50&#43;02:00" />
 <meta itemprop="dateModified" content="2020-06-21T16:12:50&#43;02:00" />
-<meta itemprop="wordCount" content="1224">
+<meta itemprop="wordCount" content="1212">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -254,11 +254,9 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <pre><code>ESGP RBF rmse: 0.0298
 ESN ridge rmse: 0.1718
 SVESM RBF rmse: 0.1922
-</code></pre><p>We can clearly see that the proposed model is outperforming the other models proposed. We can of course plot the results to have a better feedback</p>
-<p><img src="https://user-images.githubusercontent.com/10376688/85236433-2a4e1400-b41e-11ea-933f-37ffc68540fd.png" alt="full_pred"></p>
-<p>From the plot is even more clear that the ESGP is more capable of reproducing the behaviour of the Mackey-Glass system. Like in the paper the worst performing model for this specific task is the SVESM.</p>
-<p>We mentioned that one of the improvements of this models was the measure of uncertainty relative to the prediction. The <code>ESGPpredict</code> function also returns the variance of the prediction, that can be plotted alongside the results:</p>
+</code></pre><p>We can clearly see that the proposed model is outperforming the other models proposed. We mentioned that one of the improvements of this models was the measure of uncertainty relative to the prediction. The <code>ESGPpredict</code> function also returns the variance of the prediction, that can be plotted alongside the results:</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png" alt="full_pred2"></p>
+<p>From the plot is even more clear that the ESGP is more capable of reproducing the behaviour of the Mackey-Glass system. Like in the paper the worst performing model for this specific task is the SVESM.</p>
 <p>Beside a better analysis of the parameters to use in this case, it would also be interesting to see a comparison between the normal GPR with different kernel functions and the ESGP with the same kernel functions.</p>
 <p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p>
 <h2 id="documentation">Documentation</h2>
