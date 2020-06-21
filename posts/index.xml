@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 14 Jun 2020 15:07:04 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jun 2020 16:12:50 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 3: Echo State Gaussian Processes</title>
+      <link>https://martinuzzifrancesco.github.io/posts/03_gsoc_week/</link>
+      <pubDate>Sun, 21 Jun 2020 16:12:50 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/03_gsoc_week/</guid>
+      <description>Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&amp;rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN).</description>
+    </item>
     
     <item>
       <title>GSoC week 2: Support Vector Regression in Echo State Networks</title>
