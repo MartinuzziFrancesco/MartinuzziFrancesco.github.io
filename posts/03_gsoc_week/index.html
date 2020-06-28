@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.72.0" />
+  <meta name="generator" content="Hugo 0.73.0" />
 
   <title>GSoC week 3: Echo State Gaussian Processes &middot; Francesco Martinuzzi</title>
 
@@ -228,7 +228,7 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <li>\( dt = 0.1 \)</li>
 </ul>
 <p>Furthermore the time series is rescaled in the range \( [-1, 1] \) by application of a tangent hyperbolic transform \( y_{ESN}(\text{t}) = \text{tanh}(\text{y}(t)-1) \). To evaluate the precision of our results we are going to use root mean square deviation (rmse), defined as:</p>
-<p>$$\textbf{nmrse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n}}$$</p>
+<p>$$\textbf{rmse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n}}$$</p>
 <p>where</p>
 <ul>
 <li>\(y_d(i) \) is the target value</li>

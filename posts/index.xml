@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 21 Jun 2020 16:12:50 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jun 2020 21:02:54 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 4: SVD-based Reservoir</title>
+      <link>https://martinuzzifrancesco.github.io/posts/04_gsoc_week/</link>
+      <pubDate>Sun, 28 Jun 2020 21:02:54 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/04_gsoc_week/</guid>
+      <description>The standard construction of the reservoir matrix \( \textbf{W} \) for Echo State Networks (ESN) is based on initializing \( \textbf{W} \) using specific schemes, usually generating random numbers and then rescaling it to make sure that the spectral radius is less or equal to a chosen number.</description>
+    </item>
     
     <item>
       <title>GSoC week 3: Echo State Gaussian Processes</title>
