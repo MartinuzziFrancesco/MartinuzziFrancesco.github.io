@@ -15,7 +15,7 @@
 <meta itemprop="description" content="The standard construction of the reservoir matrix \( \textbf{W} \) for Echo State Networks (ESN) is based on initializing \( \textbf{W} \) using specific schemes, usually generating random numbers and then rescaling it to make sure that the spectral radius is less or equal to a chosen number.">
 <meta itemprop="datePublished" content="2020-06-28T21:02:54&#43;02:00" />
 <meta itemprop="dateModified" content="2020-06-28T21:02:54&#43;02:00" />
-<meta itemprop="wordCount" content="1156">
+<meta itemprop="wordCount" content="1155">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -180,9 +180,8 @@
 </ul>
 <h1 id="examples">Examples</h1>
 <h2 id="original-esn">Original ESN</h2>
-<p>Testing the SVD construction on the original ESN we can try to reproduce the Lorenz attractor, with similar paramenters as given in the <a href="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/">Introduction to Reservoir Computing</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> ReservoirComputing
-approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+<p>Testing the SVD construction on the original ESN we can try to reproduce the Lorenz attractor, with similar parameters as given in the <a href="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/">Introduction to Reservoir Computing</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
 radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
 sparsity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
 max_value <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
@@ -192,11 +191,11 @@ beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
 alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
 nla_type <span style="color:#f92672">=</span> NLADefault()
 extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
-</code></pre></div><p>The values of the largest singular value for the construction of the SVD based reservoir is equal to the spectral radius of the standard reservoir, that in this case is greatest than one. A plot of the results shows:</p>
+</code></pre></div><p>The values of the largest singular value for the construction of the SVD based reservoir is equal to the spectral radius of the standard reservoir, that in this case is greater than one. A plot of the results shows:</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/85957829-fd0ae400-b990-11ea-9339-08416158cdf9.png" alt="lorenz_coord"></p>
 <p>This construction is capable of reproducing the Lorenz system in the short term, and behaves better in the long term than the standard implementation, or at least in this example it does. A more in depth analysis is needed for the consistency of the results and the behavior of the SVD reservoir when the largest singular value is set greater than one and when one of the non linear algorithms is applied.</p>
 <h2 id="ridge-esn-svesm-and-esgp">Ridge ESN, SVESM and ESGP</h2>
-<p>In order to test this implementation for others ESN architecturs currently implemented in ReservoirComputing.jl we choose to use the same examples as last <a href="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/">week</a>, based on the Mackey-Glass system:</p>
+<p>In order to test this implementation for others ESN architectures currently implemented in ReservoirComputing.jl we choose to use the same examples as last <a href="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/">week</a>, based on the Mackey-Glass system:</p>
 <p>$$\frac{dx}{dt} = \beta x(t)+\frac{\alpha x(t-\delta)}{1+x(t-\delta)^2}$$</p>
 <p>with the same values:</p>
 <ul>
@@ -238,8 +237,8 @@ SVD reservoir: 0.146
 rmse SVESM:
 Classic reservoir: 0.232
 SVD reservoir: 0.245
-</code></pre><p>For the ESGP this procedure yields far worst performances than the standard counterpart.For the ridge ESN and SVESM the results are almost identical.</p>
-<p>The results obtained are interesting and for sure more testing is needed. Some sperimentation on the h steps ahead prediction could be done, as well as giving different values for the spectral radius and largest singular value, sinche in all the examples examined the spectral radius was chosen following the literature, and hence could be more optimized that the largest values that we used.</p>
+</code></pre><p>For the ESGP this procedure yields far worst performances than the standard counterpart. For the ridge ESN and SVESM the results are almost identical.</p>
+<p>The results obtained are interesting and for sure more testing is needed. Some sperimentation on the h steps ahead prediction could be done, as well as giving different values for the spectral radius and largest singular value, since in all the examples examined the spectral radius was chosen following the literature, and hence could be more optimized that the largest values that we used.</p>
 <h2 id="documentation">Documentation</h2>
 <p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
 Yang, Cuili, et al. &ldquo;Design of polynomial echo state networks for time series prediction.&rdquo; Neurocomputing 290 (2018): 148-160.</p>
