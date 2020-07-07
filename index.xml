@@ -6,10 +6,19 @@
     <description>Recent content on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 28 Jun 2020 21:02:54 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2020 21:54:29 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data-driven prediction of chaotic systems: comparison of Echo State Network variations </title>
+      <link>https://martinuzzifrancesco.github.io/posts/05_gsoc_week/</link>
+      <pubDate>Sun, 05 Jul 2020 21:54:29 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/05_gsoc_week/</guid>
+      <description>This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code.</description>
+    </item>
     
     <item>
       <title>GSoC week 4: SVD-based Reservoir</title>

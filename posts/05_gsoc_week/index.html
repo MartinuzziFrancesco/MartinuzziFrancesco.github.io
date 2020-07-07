@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.73.0" />
+
+  <title>Data-driven prediction of chaotic systems: comparison of Echo State Network variations  &middot; Francesco Martinuzzi</title>
+
+  <meta name="description" content="" />
+
+  
+
+<meta itemprop="name" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations ">
+<meta itemprop="description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code.">
+<meta itemprop="datePublished" content="2020-07-05T21:54:29&#43;02:00" />
+<meta itemprop="dateModified" content="2020-07-05T21:54:29&#43;02:00" />
+<meta itemprop="wordCount" content="3765">
+<meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/images/"/>
+
+<meta name="twitter:title" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations "/>
+<meta name="twitter:description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code."/>
+
+
+<meta property="og:title" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations " />
+<meta property="og:description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/05_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/images/"/>
+<meta property="article:published_time" content="2020-07-05T21:54:29+02:00" />
+<meta property="article:modified_time" content="2020-07-05T21:54:29+02:00" /><meta property="og:site_name" content="Francesco Martinuzzi" />
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="https://martinuzzifrancesco.github.io/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="https://martinuzzifrancesco.github.io/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="https://martinuzzifrancesco.github.io/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #536060;
+  }
+
+  .read-more-link a {
+    border-color: #536060;
+  }
+
+  .pagination li a {
+    color: #536060;
+    border: 1px solid #536060;
+  }
+
+  .pagination li.active a {
+    background-color: #536060;
+  }
+
+  .pagination li a:hover {
+    background-color: #536060;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #536060;
+  }
+</style>
+
+
+
+  
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+        
+        <div class="author-image">
+          <img src="https://martinuzzifrancesco.github.io/images/prova.jpg" class="img-circle img-headshot center" alt="Profile Picture">
+        </div>
+        
+      
+
+      <h1>Francesco Martinuzzi</h1>
+
+      
+      <p class="lead">Physicist learning how to make machines learn</p>
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://martinuzzifrancesco.github.io/">Home</a>
+        </li>
+        <li>
+          <a href="/posts/"> Posts </a>
+        </li><li>
+          <a href="/about/"> About </a>
+        </li><li>
+          <a href="/contact/"> Contact </a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://github.com/MartinuzziFrancesco" rel="me" title="GitHub">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://twitter.com/MartinuzziFra" rel="me" title="Twitter">
+        <i class="fab fa-twitter" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1>Data-driven prediction of chaotic systems: comparison of Echo State Network variations </h1>
+
+  <div class="post-date">
+    <time datetime="2020-07-05T21:54:29&#43;0200">Jul 5, 2020</time> · 18 min read
+  </div>
+
+  <p>This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a>. The theoretical background for all the proposed models has already been covered in past posts, so we will not touch on it in this one to keep things as thight as possible; if one is interested all my previous posts can be found <a href="https://martinuzzifrancesco.github.io/posts/">here</a>. The ESNs are known for their capability of yielding good short term predictions and long term reconstructions of chaotic systems: in order to prove this  we are going to test all the proposed models using the <a href="https://en.wikipedia.org/wiki/Lorenz_system">Lorenz system</a>.</p>
+<p>In order to determine the accuracy of the results we will use two different methods:</p>
+<ul>
+<li>For the short term accuracy we chose an arbitrary time horizon and the difference between the actual timeseries, obtained solving the differential equations of the Lorenz system, and the predicted timeseries will be evaluated using the Root Mean Square Deviation (RMSE). The rmse implementation in Julia is done with the following function</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">function</span> rmse(y, yt)
+    rmse <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+    <span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(y, <span style="color:#ae81ff">1</span>)
+        rmse <span style="color:#f92672">+=</span> (y[i]<span style="color:#f92672">-</span>yt[i])<span style="color:#f92672">^</span><span style="color:#ae81ff">2.0</span>
+    <span style="color:#66d9ef">end</span>
+    rmse <span style="color:#f92672">=</span> sqrt(rmse<span style="color:#f92672">/</span>(size(y, <span style="color:#ae81ff">1</span>)))
+    <span style="color:#66d9ef">return</span> rmse
+<span style="color:#66d9ef">end</span>
+</code></pre></div><ul>
+<li>For the long term climate we chose to follow the approach of Pathak <a href="#1">[1]</a> and we will show the return map of successive maxima of \( z(t) \). To get this data we leveraged the function <code>findlocalmaxima</code> of the package Images.jl. The Julia function used to get the vector of local maxima is defined as follows</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> Images
+<span style="color:#66d9ef">function</span> local_maxima(input_data)
+    maxs_cart <span style="color:#f92672">=</span> findlocalmaxima(input_data)
+    maxs <span style="color:#f92672">=</span> [idx[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> idx <span style="color:#66d9ef">in</span> maxs_cart]
+    max_values <span style="color:#f92672">=</span> []
+    <span style="color:#66d9ef">for</span> max <span style="color:#66d9ef">in</span> maxs
+        push!(max_values, input_data[max])
+    <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">return</span> max_values
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>The data used for all the training and prediction for the ESN in this work is obtained in the following way:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">u0 <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1.0</span>,<span style="color:#ae81ff">0.0</span>,<span style="color:#ae81ff">0.0</span>]                       
+tspan <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0.0</span>,<span style="color:#ae81ff">2000.0</span>)                      
+p <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10.0</span>,<span style="color:#ae81ff">28.0</span>,<span style="color:#ae81ff">8</span><span style="color:#f92672">/</span><span style="color:#ae81ff">3</span>]
+<span style="color:#75715e">#define lorenz system </span>
+<span style="color:#66d9ef">function</span> lorenz(du,u,p,t)
+    du[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> p[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>(u[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">-</span>u[<span style="color:#ae81ff">1</span>])
+    du[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> u[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>(p[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">-</span>u[<span style="color:#ae81ff">3</span>]) <span style="color:#f92672">-</span> u[<span style="color:#ae81ff">2</span>]
+    du[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> u[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>u[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">-</span> p[<span style="color:#ae81ff">3</span>]<span style="color:#f92672">*</span>u[<span style="color:#ae81ff">3</span>]
+<span style="color:#66d9ef">end</span>
+<span style="color:#75715e">#solve and take data</span>
+prob <span style="color:#f92672">=</span> ODEProblem(lorenz, u0, tspan, p)  
+sol <span style="color:#f92672">=</span> solve(prob, RK4(), adaptive<span style="color:#f92672">=</span><span style="color:#66d9ef">false</span>, dt<span style="color:#f92672">=</span><span style="color:#ae81ff">0.02</span>)   
+v <span style="color:#f92672">=</span> sol<span style="color:#f92672">.</span>u
+data <span style="color:#f92672">=</span> <span style="color:#66d9ef">Matrix</span>(hcat(v<span style="color:#f92672">...</span>))
+shift <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+train_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">5000</span>
+predict_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">1250</span>
+return_map_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">20000</span>
+train <span style="color:#f92672">=</span> data[<span style="color:#f92672">:</span>, shift<span style="color:#f92672">:</span>shift<span style="color:#f92672">+</span>train_len<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+test <span style="color:#f92672">=</span> data[<span style="color:#f92672">:</span>, shift<span style="color:#f92672">+</span>train_len<span style="color:#f92672">:</span>shift<span style="color:#f92672">+</span>train_len<span style="color:#f92672">+</span>predict_len<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+return_map <span style="color:#f92672">=</span> data[<span style="color:#f92672">:</span>,shift<span style="color:#f92672">+</span>train_len<span style="color:#f92672">:</span>shift<span style="color:#f92672">+</span>train_len<span style="color:#f92672">+</span>return_map_size<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>];
+</code></pre></div><p>Where the <code>test</code> data will be used for display and the first 400 timesteps for the short term prediction. The <code>return_map</code> data will instead be used for the creation of the return maps.</p>
+<h1 id="ordinary-esn">Ordinary ESN</h1>
+<p>The Ordinary Least Squares (OLS) trained ESN is the model used in <a href="#1">[1]</a> to accurately predict the Lorenz system in the short term and replicate its climate in the long term. We will use the same construction given in their paper, and most of these parameters will be used also for the other variation presented in this post. The parameters and the training for the ESN are as follows</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> ReservoirComputing
+<span style="color:#66d9ef">using</span> Random 
+
+approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(esn, beta)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out)
+</code></pre></div><pre><code>1.963047 seconds (5.79 M allocations: 310.671 MiB, 4.29% gc time)
+</code></pre><p>We can plot a comparison to have a visual feedback for the coordinates</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86641679-9cf0ef00-bfdb-11ea-838e-42ee25f6e2d4.png" alt="oesn_coords">
+From just a quick eye test we can see that the short term prediction is rather good, and in the long term the behaviour seems to be in line with the numerical solution. For the short term prediction we are going to use the already defined <code>rmse</code> function an all three the variables to check the accuracy. The arbitrary length of the short time horizon is set to 400 and will stay the same all throughout this work.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>0.9484793317137318
+1.4450094312490096
+1.769172087306121
+</code></pre><p>Since the values are the lower the better we can be satisfied with what we obtained. This numbers will mostly be used for comparisons between models and their significance by themselves is very limited, also because this is the result of a single run. To show model consistency a more deep analisys has to be conducted, but aslo this aspect will be discussed in the ending section.</p>
+<p>To have quantitative confirmation that our models is capable of predicting a reliable synthetic dataset we are going to predict the system using the <code>return_map</code> dataset, and then plot the consecutives maxima of the \( z(t) \) coordinate.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86643189-c6f6e100-bfdc-11ea-9756-a8a7bb6e1ccf.png" alt="oesn_map"></p>
+<p>It is nice to see that our results are in line with what is displayed in the paper <a href="#2">[2]</a>.</p>
+<h2 id="ridge-esn">Ridge ESN</h2>
+<p>One usual problem that can be encountered when dealing with OLS is the insurgence of numerical instabilities when inverting \( (\textbf{X} \textbf{X}^T) \) <a href="#2">[2]</a> where \( \textbf{X} \) is the feature matrix (states matrix in the case of ESNs). A solution to this is to apply a regularization to the loss function, and one of the most common is the \( L_2 \) regularization. This way we obtain what is called ridge regression or Tikhonov regularization. The ridge ESN is trained in an equal manner as the OLS ESN we discussed above, only setting a parameter <code>beta</code> different than zero. The parameter that we chose is by no mean optimized and it is chosen by manual search, and this holds sadly for all the parameters in the models here presented. In the Conclusions section we will talk a little more about this aspect of this work.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.001</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(esn, beta)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out);
+</code></pre></div><pre><code>2.223003 seconds (5.79 M allocations: 310.671 MiB, 2.85% gc time)
+</code></pre><p>This methods is just a little slower, as it has to be expected. It is still an acceptable by any means. Plotting the results we obtain:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86644987-4afd9880-bfde-11ea-9994-efc19c408fdc.png" alt="resn_coords">
+The behaviour is similar to the standard ESN, but let&rsquo;s taka a look at the short and long term.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>5.3658081215986
+6.552586461430827
+4.995926155420491
+</code></pre><p>It was clearly visible before that the short term behaviour was not as good as the standard counterpart. The long term predictions are still acceptable, as we can see here:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86645536-c52e1d00-bfde-11ea-8ebc-4b9029d0ff96.png" alt="resn_map"></p>
+<p>Clearly in this case the original architecture proves superior in the short term, but in the long term the both are really viable. Depending on the situation and dataset the ridge ESN can be a valide choice for accuracy and speed of training, and it could also be the only viable choice between the two, if the problem is ill-posed.</p>
+<h2 id="lasso-esn">Lasso ESN</h2>
+<p>Another common regularization for the OLS regression is the \( L_1 \) regularization, resulting in a regression model called Lasso. This is a stronger regularization, and it shows from the results. The ESN is built in the same way as before, only this time the parameter <code>beta</code> indicates the Lasso regularizer. Since the expression doesn&rsquo;t have a closed form solution we will need a different solver, in this case <code>ProxGrad</code>. For this we will need to import a different package, called MLJLinearModels.jl.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> MLJLinearModels
+approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">7</span>)
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(Lasso(beta, ProxGrad(max_iter<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>)), esn)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out)
+</code></pre></div><pre><code>24.400234 seconds (9.82 M allocations: 1.534 GiB, 1.17% gc time)
+</code></pre><p>The training time is slower than the couple of models we showed before. This difference is mainly to the already mentioned lack of closed form solution for the Lasso regression. Let us plot the results to start the analysis the results.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86646913-ee02e200-bfdf-11ea-95de-5e8a52ee09a4.png" alt="lasso_coords">
+It is clear that this regularization is not capable of returning an accurate prediction, both short term and long term. Let&rsquo;s print the rmse</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>11.769042467212172
+13.599065187854675
+10.651859641213985
+</code></pre><p>and plot the return map</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86647220-2c000600-bfe0-11ea-8479-46f931fff980.png" alt="lasso_map"></p>
+<p>From this results is clear that the \( L_1 \) regularization is not capable of good short term prediction and in the long term yields a periodic timeseries, as we can see from the return map, only showing values in 5 contained regions.</p>
+<h1 id="huber-loss-function">Huber loss function</h1>
+<p>Not only the squared function can be used as a loss function: in literature it has also been proposed the use of the Huber loss function, supposedly more strong in the presence of outliers. The dataset we are using is free of them, but this function should still be able to give accurate results. Since we can apply regularization also in this case, we are going to explore the two cases already explored for the squared function: \( L_2 \) regularization and \( L_1 \) regularization.</p>
+<h2 id="-l_2--normalization">\( L_2 \) Normalization</h2>
+<p>Again leveraging the MLJLinearModels package we can construct our ESN</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.001</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(RobustHuber(<span style="color:#ae81ff">0.5</span>, beta, <span style="color:#ae81ff">0.0</span>, Newton()), esn)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out)
+</code></pre></div><pre><code>9.397286 seconds (14.37 M allocations: 1.748 GiB, 2.88% gc time)
+</code></pre><p>The training time is less than the Lasso regularization, but more than the OLS and Ridge training. Plotting the data we obtain:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86648435-26ef8680-bfe1-11ea-963d-5da5b57f26e2.png" alt="huber_coords"></p>
+<p>Let&rsquo;s go explore the rmse for the short term:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>5.36580225918975
+6.552573774882654
+4.995989255679152
+</code></pre><p>The results seems similar to the Ridge ESN. For the long tem the return map shows the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86648579-471f4580-bfe1-11ea-84cf-af89c1443b3d.png" alt="huber_map"></p>
+<p>Even though they are not as clear cut as the OLS ESN and Ridge ESN the long term behaviour is still acceptable.</p>
+<h2 id="-l_1--normalization">\( L_1 \) Normalization</h2>
+<p>Since the Lasso ESN showed the worst results of all the model seen until now this could indicate that the \( L_1 \) norm is not suited for this task. To have confirmation of this intuition we can train the ESN with the \( L_1 \) norm to see if it yields better results than the Lasso ESN.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">7</span>)
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(RobustHuber(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.0</span>, beta, ProxGrad(max_iter<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>)), esn)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out)
+</code></pre></div><pre><code>30.699361 seconds (12.60 M allocations: 3.398 GiB, 1.40% gc time)
+</code></pre><p>As expected the raining time is in line with the Lasso ESN. Plotting the results we can see that sadly they are worst the the Lasso counterpart</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86649348-f65c1c80-bfe1-11ea-93a6-dc252b21a2ea.png" alt="huberl1_coords"></p>
+<p>Calculating the rmse for the first 400 steps returns</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>8.247263444106135
+9.896322405158461
+12.569601968865513
+</code></pre><p>And the return map clearly shows a periodic long term behaviour:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86649575-2c999c00-bfe2-11ea-9a14-008e62d980f4.png" alt="huberl1_map"></p>
+<p>The periodicity is more pronounced than the Lasso ESN, making this model the worst performing so far on this task.</p>
+<h2 id="different-reservoir-construction">Different reservoir construction</h2>
+<p>For all the model proposed we used the standard construction of the reservoir, based on the rescaling of the spectral radius to be less than a given value. In literature there are other alternatives explored and in the ReservoirComputing.jl package is present the implementation of an algorithm for the construction of the reservoir matrix based on the Single Value Decomposition (SVD), proposed in <a href="#4">[4]</a>. We are going to give the results using this construction only for the OLS ESN, but a more wide study could be done comparing the performances of all the proposed models using the two different implementation of the reservoir.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+max_value <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+sparsity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+beta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLAT2()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+W_in <span style="color:#f92672">=</span> init_dense_input_layer(approx_res_size, size(train, <span style="color:#ae81ff">1</span>), sigma)
+W_new <span style="color:#f92672">=</span> pseudoSVD(approx_res_size, max_value, sparsity, reverse_sort <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>)
+esn <span style="color:#f92672">=</span> ESN(W_new, train, W_in, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+<span style="color:#a6e22e">@time</span> W_out <span style="color:#f92672">=</span> ESNtrain(esn, beta)
+output <span style="color:#f92672">=</span> ESNpredict(esn, predict_len, W_out)
+</code></pre></div><pre><code>0.994207 seconds (3.18 M allocations: 188.436 MiB, 3.64% gc time)
+</code></pre><p>The training time is as fast as the normal OLS ESN, as it is to be expected. Plotting the result we obtain</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86665455-f06d3800-bfef-11ea-8129-7e94186ad550.png" alt="noesn_coords">
+From the plot it seems that the model is producing an acceptable Lorenz system surrogate dataset. The short term will not be the best but in the log term maybe the model could behave as the OLS ESN.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>8.299351042330624
+9.954728072605832
+9.507147274321735
+</code></pre><p>Not as good as the normal reservoir counterpart, but let&rsquo;s look at the return map for the long term behaviour:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map <span style="color:#f92672">=</span> ESNpredict(esn, return_map_size, W_out)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86666199-a173d280-bff0-11ea-8ba7-c46906606627.png" alt="noesn_map"></p>
+<p>Event though it seemed that the predicted coordinates had a similar behaviour as the actual Lorenz system the return map clearly shows that in the long term the behaviour is not consistent. This approach to reservoir construction is of course pretty novel and has to pass several optimization steps for its parameters in order to be production ready, but this first test is somewhat disappointing.</p>
+<h1 id="echo-state-gaussian-processes">Echo State Gaussian Processes</h1>
+<p>Firstly proposed in <a href="#3">[3]</a> the Echo State Gaussian Processes (ESGP) can be considered an extension of the ESN. In the original paper only the Radial Basis function is explored for the prediction, but in this post we wanted to give a couple of examples of others kernels, so we will use also the Matern kernel and the Polynomial kernel for the prediction of the Lorenz system. The construction of this model is based on GaussianProcesses, so in the first run we will need to import that package as well.</p>
+<h2 id="radial-basis-kernel">Radial Basis kernel</h2>
+<p>Starting from the kernel used in the original paper, we also set the non linear algorithm to the default one, equal to none. The behaviour with different algorithms for this family of models has not been investigated and could be subject of future works, but for now we will just limit the work to the standard one. Keeping the other parameters equal the ESGP can be built in the following way</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> GaussianProcesses
+<span style="color:#75715e">#model parameters</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLADefault()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+<span style="color:#75715e">#create echo state network</span>
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+
+mean <span style="color:#f92672">=</span> MeanZero()
+kernel <span style="color:#f92672">=</span> SE(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>)
+<span style="color:#a6e22e">@time</span> gp <span style="color:#f92672">=</span> ESGPtrain(esn, mean, kernel, lognoise <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2.0</span>, optimize <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>);
+output, sigmas <span style="color:#f92672">=</span> ESGPpredict(esn, predict_len, gp)
+</code></pre></div><pre><code>43.323255 seconds (6.81 M allocations: 2.053 GiB, 2.53% gc time)
+</code></pre><p>The slowest time so far, but maybe the results will be worth the extra seconds it took to train</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86651927-3cb27b00-bfe4-11ea-94aa-33299e4d5db5.png" alt="radialbasis_coords">
+The results do not look bad, in the short term sadly emerges a discrepancy early on that will lower the rmse values</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>10.5883475480527
+11.759694995689005
+6.745353916847517
+</code></pre><p>As expected the rmses are not the greatest, but the model can still recover with a nice display of long term behaviour</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map, sigma_map <span style="color:#f92672">=</span> ESGPpredict(esn, return_map_size, gp)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86664190-c36c5580-bfee-11ea-98dd-ff1e420430e2.png" alt="radialbasis_map"></p>
+<p>and indeed it does, outside of a single point in a strange location the model seems to capture the Lorenz climate quite well, not quite as good as the OLS ESN or even the Ridge ESN.</p>
+<h2 id="matern-kernel">Matern kernel</h2>
+<p>Another common kernel is the Matern kernel, and training the ESGP using this kernel is a straightforward process, identical to the one we just followed for the Radial Basis kernel:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#75715e">#model parameters</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLADefault()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+<span style="color:#75715e">#create echo state network</span>
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+
+mean <span style="color:#f92672">=</span> MeanZero()
+kernel <span style="color:#f92672">=</span> Matern(<span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>)
+<span style="color:#a6e22e">@time</span> gp <span style="color:#f92672">=</span> ESGPtrain(esn, mean, kernel, lognoise <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2.0</span>, optimize <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>);
+output, sigmas <span style="color:#f92672">=</span> ESGPpredict(esn, predict_len, gp)
+</code></pre></div><pre><code>40.309179 seconds (1.08 M allocations: 1.761 GiB, 7.58% gc time)
+</code></pre><p>Plotting the results</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86654732-78e6db00-bfe6-11ea-9fbd-e117b2abbcd5.png" alt="matern_coords">
+The results seems similar to the ones obtained using the Radial Basis kernel. To be sure of this we need to calculate the rmse</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>7.150484170664864
+8.520570924338477
+7.037257939507858
+</code></pre><p>The lower rmses shows a better short term prediction. Plotting the return map to analize the long term results</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map, sigma_map <span style="color:#f92672">=</span> ESGPpredict(esn, return_map_size, gp)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86655320-e8f56100-bfe6-11ea-8c82-83b92eec4943.png" alt="matern_map">
+The return map is not a clear cut as we saw in other models, but for the mojority of the times it seems that the model is still capable of retaining the climate of the Lorenz system.</p>
+<h2 id="polynomial-kernel">Polynomial kernel</h2>
+<p>The last kernel for the ESGP is the Polynomial kernel. We are now familiar with the construction</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#75715e">#model parameters</span>
+degree <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>
+approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>
+activation <span style="color:#f92672">=</span> tanh
+sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+nla_type <span style="color:#f92672">=</span> NLADefault()
+extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+<span style="color:#75715e">#create echo state network</span>
+Random<span style="color:#f92672">.</span>seed!(<span style="color:#ae81ff">4242</span>)
+esn <span style="color:#f92672">=</span> ESN(approx_res_size, train, degree, radius, 
+    activation <span style="color:#f92672">=</span> activation, alpha <span style="color:#f92672">=</span> alpha, sigma <span style="color:#f92672">=</span> sigma, nla_type <span style="color:#f92672">=</span> nla_type, extended_states <span style="color:#f92672">=</span> extended_states)
+
+mean <span style="color:#f92672">=</span> MeanZero()
+kernel <span style="color:#f92672">=</span> Poly(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">2</span>)
+<span style="color:#a6e22e">@time</span> gp <span style="color:#f92672">=</span> ESGPtrain(esn, mean, kernel, lognoise <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2.0</span>, optimize <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>);
+output, sigmas <span style="color:#f92672">=</span> ESGPpredict(esn, predict_len, gp)
+</code></pre></div><pre><code>16.979100 seconds (4.27 M allocations: 3.025 GiB, 10.13% gc time)
+</code></pre><p>Plotting the results</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">plot(transpose(output),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)
+plot!(transpose(test),layout<span style="color:#f92672">=</span>(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86655904-5dc89b00-bfe7-11ea-97b9-1887bdd2c2bc.png" alt="poly_coords">
+we can see a nice prediction on the short term. Using once again the rmse</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">for</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>size(data, <span style="color:#ae81ff">1</span>)
+    println(rmse(test[i,<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>], output[i, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">400</span>]))
+<span style="color:#66d9ef">end</span>
+</code></pre></div><pre><code>0.9128150765679983
+1.3969462542792563
+1.6437787377104938
+</code></pre><p>The short term rmse are the best out of the ESGP kernel used until now. Taking a look also to the long term we can see the following</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">output_map, sigma_map <span style="color:#f92672">=</span> ESGPpredict(esn, return_map_size, gp)
+max_esn <span style="color:#f92672">=</span> local_maxima(output_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+max_ode <span style="color:#f92672">=</span> local_maxima(return_map[<span style="color:#ae81ff">3</span>,<span style="color:#f92672">:</span>])
+scatter(max_ode[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_ode[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+scatter!(max_esn[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], max_esn[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>], label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+xlims!((<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>))
+ylims!(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">47</span>)
+</code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/86656626-e5160e80-bfe7-11ea-9d77-8754ea0a60f2.png" alt="poly_map"></p>
+<p>The results are in line with the OLS ESN. Considering that the results of the OLS ESN were obtained following a published paper and underwent major optimization while the parameters we have chosen are the fruit of a quick manul search we can say that this model could outperform the ESN for chaotic time series prediction.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p>This post is just scratching the surface on the studies needed for this family of models. As we mentioned numerous times throughout the post, the parameter optimization that was done for this wark was passable at best, being a manual search starting from values optimized for a specific model (OLS ESN). This fact was most evident when testing the SVD based reservoir construction: even though it is a very similar resulting matrix the results were suboptimal. This could have been just an error in the selection of the parameters, and with a more suiting set this construction could perform as well as the standard one.</p>
+<p>But even with more carefully chosen parameters it is necessary to do multiple runs and obtain a large pool of statistics in order to label a model variation more efficient than the other: in this post we have seen that the Polynomial ESGP has returned amazing results, but changing the seed and using a different reservoir the best model could very well be the radial basis ESGP, or the Huber ESN. This work was based on the single run of all the models because is more intended to be a showcase of the new implementations done for the GSoC project, and the reproducibility was the most important aspect of it.</p>
+<p>Sadly in this post we weren&rsquo;t able to showcase the Support Vector Echo State Machines (SVESMs) but the results they obtained wasn&rsquo;t in line with any of the proposed models, and it performed way worst than even the \( L_1 \) trained ESNs. The paper proposing the models leveraged it to solve a different family of problems, so it could be that this task is not suited for this particular variation of the ESN.</p>
+<p>Regarding the ESGP the possible directions for future studies are really numerous: there are a vast number of other avaiable kernels that we didn&rsquo;t explore, and even in the one we used the possibility to optimize the parameter is built in in the model, and in our case wasn&rsquo;t used just for time limitations. Not only it is possible to obtain better results that the one we showed purely by parameter optimization but also by using different kernels at the same time: in the Gaussian Processes is usual to see different kernels combined togheter, through moltiplication and addition. This possibility adds an incredible perspective to this model, and I hope futures studies will takle it.</p>
+<p>As usual thanks for reading, if you spot any mistake or are just curios about the model and implementation don&rsquo;t hesitate to contact me.</p>
+<h2 id="documentation">Documentation</h2>
+<p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
+Pathak, Jaideep, et al. &ldquo;Using machine learning to replicate chaotic attractors and calculate Lyapunov exponents from data.&rdquo; Chaos: An Interdisciplinary Journal of Nonlinear Science 27.12 (2017): 121102.</p>
+<p><!-- raw HTML omitted -->[2]<!-- raw HTML omitted -->
+Lukoševičius, Mantas. &ldquo;A practical guide to applying echo state networks.&rdquo; Neural networks: Tricks of the trade. Springer, Berlin, Heidelberg, 2012. 659-686.</p>
+<p><!-- raw HTML omitted -->[3]<!-- raw HTML omitted -->
+Chatzis, Sotirios P., and Yiannis Demiris. &ldquo;Echo state Gaussian process.&rdquo; IEEE Transactions on Neural Networks 22.9 (2011): 1435-1445.</p>
+<p><!-- raw HTML omitted -->[4]<!-- raw HTML omitted -->
+Yang, Cuili, et al. &ldquo;Design of polynomial echo state networks for time series prediction.&rdquo; Neurocomputing 290 (2018): 148-160.</p>
+
+</div>
+
+
+  </main>
+
+  <footer>
+  <div>
+    &copy; Martinuzzi Francesco 2020
+    ·
+    
+    <a href="https://creativecommons.org/licenses/by-sa/4.0"
+       target="_blank">CC BY-SA 4.0</a>
+    
+    
+  </div>
+</footer>
+
+</body>
+
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script> 
+
+
+</html>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+  
+
+  
+</body>
+</html>
