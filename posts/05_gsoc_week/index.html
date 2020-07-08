@@ -12,7 +12,7 @@
   
 
 <meta itemprop="name" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations ">
-<meta itemprop="description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code.">
+<meta itemprop="description" content="This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of Google Summer of Code.">
 <meta itemprop="datePublished" content="2020-07-05T21:54:29&#43;02:00" />
 <meta itemprop="dateModified" content="2020-07-05T21:54:29&#43;02:00" />
 <meta itemprop="wordCount" content="3765">
@@ -26,11 +26,11 @@
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 <meta name="twitter:title" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations "/>
-<meta name="twitter:description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code."/>
+<meta name="twitter:description" content="This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of Google Summer of Code."/>
 
 
 <meta property="og:title" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations " />
-<meta property="og:description" content="This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of Google Summer of Code." />
+<meta property="og:description" content="This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of Google Summer of Code." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/05_gsoc_week/" />
 <meta property="og:image" content="https://martinuzzifrancesco.github.io/images/"/>
@@ -160,7 +160,7 @@
     <time datetime="2020-07-05T21:54:29&#43;0200">Jul 5, 2020</time> · 18 min read
   </div>
 
-  <p>This post is meant to be a high level comparison of different variations of the Echo State Netowrk (ESN) model, implemented in the first month of <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a>. The theoretical background for all the proposed models has already been covered in past posts, so we will not touch on it in this one to keep things as thight as possible; if one is interested all my previous posts can be found <a href="https://martinuzzifrancesco.github.io/posts/">here</a>. The ESNs are known for their capability of yielding good short term predictions and long term reconstructions of chaotic systems: in order to prove this  we are going to test all the proposed models using the <a href="https://en.wikipedia.org/wiki/Lorenz_system">Lorenz system</a>.</p>
+  <p>This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a>. The theoretical background for all the proposed models has already been covered in past posts, so we will not touch on it in this one to keep things as thight as possible; if one is interested all my previous posts can be found <a href="https://martinuzzifrancesco.github.io/posts/">here</a>. The ESNs are known for their capability of yielding good short term predictions and long term reconstructions of chaotic systems: in order to prove this  we are going to test all the proposed models using the <a href="https://en.wikipedia.org/wiki/Lorenz_system">Lorenz system</a>.</p>
 <p>In order to determine the accuracy of the results we will use two different methods:</p>
 <ul>
 <li>For the short term accuracy we chose an arbitrary time horizon and the difference between the actual timeseries, obtained solving the differential equations of the Lorenz system, and the predicted timeseries will be evaluated using the Root Mean Square Deviation (RMSE). The rmse implementation in Julia is done with the following function</li>
