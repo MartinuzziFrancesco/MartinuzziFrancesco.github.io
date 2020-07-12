@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 05 Jul 2020 21:54:29 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jul 2020 14:37:22 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 6: minimum complexity echo state network</title>
+      <link>https://martinuzzifrancesco.github.io/posts/06_gsoc_week/</link>
+      <pubDate>Sun, 12 Jul 2020 14:37:22 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/06_gsoc_week/</guid>
+      <description>Up until now we used reservoir generated mainly through a random process, and this approach requires a lot of fine parameter tuning.</description>
+    </item>
     
     <item>
       <title>Data-driven prediction of chaotic systems: comparison of Echo State Network variations </title>
