@@ -6,10 +6,19 @@
     <description>Recent content on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 12 Jul 2020 14:37:22 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 19 Jul 2020 17:27:05 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 7: Reservoir Computing with Cellular Automata Part 1</title>
+      <link>https://martinuzzifrancesco.github.io/posts/07_gsoc_week/</link>
+      <pubDate>Sun, 19 Jul 2020 17:27:05 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/07_gsoc_week/</guid>
+      <description>In the past few years a new framework based on the concept of Reservoir Computing has been proposed: the Cellular Automata based Reservoir Computer (ReCA) [1].</description>
+    </item>
     
     <item>
       <title>GSoC week 6: minimum complexity echo state network</title>
