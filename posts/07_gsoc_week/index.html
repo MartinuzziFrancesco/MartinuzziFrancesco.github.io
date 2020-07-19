@@ -15,7 +15,7 @@
 <meta itemprop="description" content="In the past few years a new framework based on the concept of Reservoir Computing has been proposed: the Cellular Automata based Reservoir Computer (ReCA) [1].">
 <meta itemprop="datePublished" content="2020-07-19T17:27:05&#43;02:00" />
 <meta itemprop="dateModified" content="2020-07-19T17:27:05&#43;02:00" />
-<meta itemprop="wordCount" content="2032">
+<meta itemprop="wordCount" content="2030">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -209,15 +209,15 @@
 <p>For the output signal, all the channel are zero, but the third one which is one for all the steps with the exception of the last five, where the message from the input is repeated. A task is successful when the system is capable of reproducing all the $32 \times (5+\text{T}_0) \times 4$ bits of the output.</p>
 <p>Below we can see an illustration <a href="#3">[3]</a> of the data contained in the 5 bit memory task:</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/87881469-b04b8380-c9f9-11ea-96c8-737c9bebdefd.png" alt="5bittask"></p>
-<p>Using a distractor period of \( \text{T}_0 = 200 \) and a value of \( \text{L}_d = 40 \) we tried to reproduce the results present in the literature. In the table below are presented the successful run out of 100 performed, and the values in square indicates the number of generations and permutations, and are chosen in accordance to the values presented in the papers analized.</p>
+<p>Using a distractor period of \( \text{T}_0 = 200 \) and a value of \( \text{L}_d = 40 \) we tried to reproduce the results in the literature. In the table below are shown the successful run out of 100 performed, and the values in square indicates the number of generations and permutations, and are chosen in accordance to the values presented in the papers analized.</p>
 <p>The lines of code needed for the training and prediction of the 5 bit memory task with the ReCA are the following:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia">reca <span style="color:#f92672">=</span> RECA_discrete(input, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">8</span>)
 W_out <span style="color:#f92672">=</span> ESNtrain(reca, <span style="color:#ae81ff">0.01</span>, train_data <span style="color:#f92672">=</span> convert(<span style="color:#66d9ef">AbstractArray</span>{<span style="color:#66d9ef">Float64</span>}, output))
 result <span style="color:#f92672">=</span> RECAdirect_predict_discrete(reca, W_out, input)
-</code></pre></div><p>Where <code>input</code> and <code>output</code> are the dataset explained above, and the parameters to change for the results are <code>rule</code>, <code>generations</code> and <code>permutations</code>, in this example set to 60, 8, 8. Doing a cylce over each of them, for 100 runs we obtain the results below:</p>
+</code></pre></div><p>Where <code>input</code> and <code>output</code> are the datasets explained above, and the parameters to change for the results are <code>rule</code>, <code>generations</code> and <code>permutations</code>, in this example set to 60, 8, 8. Doing a cylce over each of them, for 100 runs we obtain the results below:</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/87881657-f6edad80-c9fa-11ea-9c25-2db29128b7ac.png" alt="table"></p>
-<p>The values are in line with the results found in the literature, with little differences that could be attributed mainly to the training method. As already noted in the original paper, the computational pawer increases with the increasing of values of generations and permutations. It seems though that more generations is preferrable over more permutations, since the (8, 16) correct runs are consistently less than the (16, 8) ones.</p>
-<p>This model is really interesting, since it shows the capabilities of the Reservoir Computing approach. This family of models is still in its infancy, and a method for prediction of a continuous dataset is still missing. We hope that the implementation given in this package could help to move the research in this direction.</p>
+<p>The values are in line with the results found in the literature, with little differences that could be attributed mainly to the training method. As already noted in the original paper, the computational power increases with the increasing of values of generations and permutations. It seems though that more generations is preferable over more permutations, since the (8, 16) correct runs are consistently less than the (16, 8) ones.</p>
+<p>This model is really interesting, since it shows the capabilities of the Reservoir Computing approach. This family of models is still in its infancy, and a method for prediction of a continuous dataset is still missing. We hope that the implementation given in this package could help move the research in this direction.</p>
 <p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p>
 <h2 id="documentation">Documentation</h2>
 <p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
