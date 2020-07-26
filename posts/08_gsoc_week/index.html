@@ -15,7 +15,7 @@
 <meta itemprop="description" content="Continuing the work started last week we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir.">
 <meta itemprop="datePublished" content="2020-07-26T18:14:43+02:00" />
 <meta itemprop="dateModified" content="2020-07-26T18:14:43+02:00" />
-<meta itemprop="wordCount" content="1181">
+<meta itemprop="wordCount" content="1207">
 <meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
 
 
@@ -161,10 +161,10 @@
     <time datetime="2020-07-26T18:14:43&#43;0200">Jul 26, 2020</time> · 6 min read
   </div>
 
-  <p>Continuing the work started <a href="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/">last week</a> we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir. As always a little theorical introduction is given and after we will illustrate the use of the model implemented in ReservoirComputing.jl.</p>
+  <p>Continuing the work started <a href="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/">last week</a> we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir. As always a little theorical introduction is given and then we will illustrate the use of the model implemented in ReservoirComputing.jl.</p>
 <h1 id="reservoir-computing-with-two-dimensional-cellular-automata">Reservoir Computing with Two Dimensional Cellular Automata</h1>
 <h2 id="two-dimensional-cellular-automata-conways-game-of-life">Two Dimensional Cellular Automata (Conway&rsquo;s Game of Life)</h2>
-<p>In the previous week we used Elementary CA (ECA) to train our model, and this time we want to see if we are able to obtain similar results using a two dimensional CA. Aa proposed in <a href="#1">[1]</a> we are going to use Conway&rsquo;s Game of Life <a href="#2">[2]</a> (GoL), so a little introduction to this model is essential to proceed.</p>
+<p>In the previous week we used Elementary CA (ECA) to train our model, and this time we want to see if we are able to obtain similar results using a two dimensional CA. As proposed in <a href="#1">[1]</a> we are going to use Conway&rsquo;s Game of Life <a href="#2">[2]</a> (GoL), so a little introduction to this model is essential to proceed.</p>
 <p>Conway&rsquo;s Game of Life (GoL) is an example of two-dimensional CA with a Moore neighborhood with range $r=1$ <a href="#2">[3]</a>, defined as:</p>
 <p>$$ N^{M}_{(x_0, y_0)} = {(x, y):|x-x_0| \le r, |y-y_0| \le r  } $$</p>
 <p>where $(x_0, y_0)$ is the given cell. In the standard GoL format each cell in the grid can be in either of two states: dead or alive (identified respectively with 0 and 1). The transition rules are determined as follows:</p>
@@ -193,21 +193,21 @@ generations <span style="color:#f92672">=</span> <span style="color:#ae81ff">250
 </code></pre></div><p><img src="https://user-images.githubusercontent.com/10376688/88486631-53167b80-cf7f-11ea-8dd9-aa6e848f278c.gif" alt="tmp"></p>
 <p>As we can see, starting from a random position, we obtained an evolving GoL system.</p>
 <h2 id="game-of-life-reservoir-architecture">Game of Life reservoir Architecture</h2>
-<p>Since the data used for testing in the literature is also binary in nature, in order to feed it to the reservoir, the method proposed in <a href="#1">[1]</a> was based on randomly projecting the input data into the reservoir, whose size should follow that of the input data. This means that for an input of dimension $L_{in}=4$ the size of the reservoir would have been $m=2 \times 2$. This procedure was repeated a number R of times, effectively creating R different reservoirs. These reservoirs were then connected and the information was allowed to flow between them, in order to obtain an higher dimensional reservoir. This architecture has showed the capability to correctly solve the 5 bit and 20 bit memory task.</p>
+<p>Since the data used for testing in the literature is also binary in nature, in order to feed it to the reservoir, the method proposed in <a href="#1">[1]</a> was based on randomly projecting the input data into the reservoir, whose size should follow that of the input data. This means that for an input of dimension $L_{in}=4$ the size of the reservoir would have been $m=2 \times 2$. This procedure was repeated a number $R$ of times, effectively creating $R$ different reservoirs. These reservoirs were then connected and the information was allowed to flow between them, in order to obtain an higher dimensional reservoir. This architecture has showed the capability to correctly solve the 5 bit and 20 bit memory task.</p>
 <p>In the implementation in ReservoirComputing.jl we want to propose an expansion of the encoding method, also capable of solving the 5 bit memory task. Following intuitions given by more recent papers in the field of ReCA, in particular <a href="#5">[5]</a> and <a href="#6">[6]</a>, we decided to input the data to the reservoir using $T$ random projections into an higher dimension matrix. This way the initial state has room to expand and memory of the precedent state is conserved. The procedure is similar to that described by <a href="#1">[1]</a>, and is illustrated in the figure.</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/88486877-30856200-cf81-11ea-986b-555291eabeff.png" alt="encoding"></p>
-<p>Let $\text{X}_1$ be the first input vector. This will be randomly mapped onto a matrix of zeros T times using a fixed mapping scheme $[\text{P}_1, \text{P}_2, &hellip;, \text{P}_{\text{R}}]$ in order to form the initial configuration $\text{A}_0^{(1)}$ for the GoL. The transition function Z, the rules of GoL, is then applied for I generations:</p>
+<p>Let $\text{X}_1$ be the first input vector. This will be randomly mapped onto a matrix of zeros $T$ times using a fixed mapping scheme $[\text{P}_1, \text{P}_2, &hellip;, \text{P}_{\text{R}}]$ in order to form the initial configuration $\text{A}_0^{(1)}$ for the GoL. The transition function $Z$, the rules of GoL, is then applied for $I$ generations:</p>
 <p>$$\text{A}_{1}^{(1)}=\text{Z}(\text{A}_0^{(1)})$$</p>
 <p>$$ \text{A}_{2}^{(1)} = \text{Z}(\text{A}_{1}^{(1)}) $$</p>
 <p>$$ \vdots $$</p>
 <p>$$ \text{A}_{\text{I}}^{(1)} = \text{Z}(\text{A}_{\text{I}-1}^{(1)}) $$</p>
 <p>This constitutes the evolution of the CA given the input $\text{X}_1$. In order to create the state vector we need to vectorize and concatenate the matrices we obtained. Identifying with $\text{A}_{0, 1}^{(1)}$ the first column of $\text{A}_0^{(1)}$, let $c$ be the total number of columns of $\text{A}_0^{(1)}$, then the vectorization of $\text{A}_0^{(1)}$ will be</p>
 <p>$$\text{v}\text{A}_0^{(1)} = [\text{A}_{0, 1}^{(1)}, \text{A}_{0, 2}^{(1)}, &hellip;, \text{A}_{0, c}^{(1)}]$$</p>
-<p>This procedure is done for every timestep I, and at the end the vector state $\textbf{x}^{(1)}$ will be</p>
+<p>This procedure is done for every timestep $I$, and at the end the vector state $\textbf{x}^{(1)}$ will be</p>
 <p>$$\textbf{x}^{(1)} = [\text{v}\text{A}_0^{(1)}, \text{v}\text{A}_1^{(1)}, &hellip;, \text{v}\text{A}_{I}^{(1)}]$$</p>
 <p>An illustration of this process can be seen in figure.</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/88486881-4561f580-cf81-11ea-8298-25b203609908.png" alt="stateharvest"></p>
-<p>To feed the second input vector $\text{X}_2$ we use the same mapping created in the first step. Instead of using a initial empty matrix this time we will project the input over the matrix representing the last evolution of the prior step, $\text{A}_{\text{I}}^{(1)}$. The matrix thus obtained is evolved as described above, to obtain the state vectors for the second input vector. This procedure is repeated for every input vector.</p>
+<p>To feed the second input vector $\text{X}_2$ we use the same mapping created in the first step. Instead of using an initial empty matrix this time we will project the input over the matrix representing the last evolution of the prior step, $\text{A}_{\text{I}}^{(1)}$. The matrix thus obtained is evolved as described above, to obtain the state vectors for the second input vector. This procedure is repeated for every input vector.</p>
 <p>The training is carried out using Ridge Regression.</p>
 <h1 id="example">Example</h1>
 <p>For example we will try to reproduce the 5 bit memory task, described <a href="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/">last week</a>. If you want to follow along and experiment with the model, the data can be found <a href="https://github.com/SciML/ReservoirComputing.jl/files/4978264/5bit200.zip">here</a>: the <code>5bitinput.txt</code> is the input data and the <code>5bitoutput</code> is the desired output. To read the data we can use the following</p>
@@ -226,6 +226,7 @@ reca_output <span style="color:#f92672">==</span> output
 </code></pre><p>It seems that for architecture used in this example the task is easily solvable. A more deep investigation can be made iterating over different values of reservoir size, permutations and generations, but it can take some time. The results for 100 runs for some of the combinations are given in the table below:</p>
 <p><img src="https://user-images.githubusercontent.com/10376688/88487945-02585000-cf8a-11ea-8a3c-6c34dfb8eef5.png" alt="table2"></p>
 <p>where (n, m) stands for n = generations and m = permutations. The sizes chosen for the system are 26, 28 and 30. As we can see for some of these parameters the 5 bit memory task is solved 100 times out of 100 runs.</p>
+<p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p>
 <h2 id="documentation">Documentation</h2>
 <p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
 Yilmaz, Ozgur. &ldquo;Reservoir computing using cellular automata.&rdquo; arXiv preprint arXiv:1410.0162 (2014).</p>
