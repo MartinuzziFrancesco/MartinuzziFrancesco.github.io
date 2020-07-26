@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 19 Jul 2020 17:27:05 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 26 Jul 2020 18:14:43 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 8: Reservoir Computing with Cellular Automata Part 2</title>
+      <link>https://martinuzzifrancesco.github.io/posts/08_gsoc_week/</link>
+      <pubDate>Sun, 26 Jul 2020 18:14:43 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/08_gsoc_week/</guid>
+      <description>Continuing the work started last week we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir.</description>
+    </item>
     
     <item>
       <title>GSoC week 7: Reservoir Computing with Cellular Automata Part 1</title>
