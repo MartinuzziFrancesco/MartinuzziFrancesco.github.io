@@ -6,10 +6,19 @@
     <description>Recent content on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 02 Aug 2020 16:45:38 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 13 Aug 2020 14:41:28 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GSoC week 10: Reservoir Memory Machines</title>
+      <link>https://martinuzzifrancesco.github.io/posts/10_gsoc_week/</link>
+      <pubDate>Thu, 13 Aug 2020 14:41:28 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/10_gsoc_week/</guid>
+      <description>For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year [1].</description>
+    </item>
     
     <item>
       <title>GSoC week 9: Cycle Reservoirs with Regular Jumps</title>
