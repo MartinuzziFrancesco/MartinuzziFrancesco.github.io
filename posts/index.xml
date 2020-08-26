@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Francesco Martinuzzi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 16 Aug 2020 21:14:36 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 25 Aug 2020 16:52:06 +0200</lastBuildDate>
     
 	<atom:link href="https://martinuzzifrancesco.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Google Summer of Code 2020 Final Report</title>
+      <link>https://martinuzzifrancesco.github.io/posts/12_gsoc_week/</link>
+      <pubDate>Tue, 25 Aug 2020 16:52:06 +0200</pubDate>
+      
+      <guid>https://martinuzzifrancesco.github.io/posts/12_gsoc_week/</guid>
+      <description>Introduction My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing.</description>
+    </item>
     
     <item>
       <title>GSoC week 11: Gated Recurring Unit-based reservoir</title>
