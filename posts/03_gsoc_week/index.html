@@ -1,177 +1,116 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="Hugo 0.74.3" />
-
-  <title>GSoC week 3: Echo State Gaussian Processes &middot; Francesco Martinuzzi</title>
-
-  <meta name="description" content="" />
-
-  
-
-<meta itemprop="name" content="GSoC week 3: Echo State Gaussian Processes">
-<meta itemprop="description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN).">
-<meta itemprop="datePublished" content="2020-06-21T16:12:50+02:00" />
-<meta itemprop="dateModified" content="2020-06-21T16:12:50+02:00" />
-<meta itemprop="wordCount" content="1212">
-<meta itemprop="image" content="https://martinuzzifrancesco.github.io/images/"/>
-
-
-
-<meta itemprop="keywords" content="" />
-
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>GSoC week 3: Echo State Gaussian Processes - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 3: Echo State Gaussian Processes" />
+<meta property="og:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.
+Gaussian Process Regression The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-21T16:12:50+02:00" />
+<meta property="article:modified_time" content="2020-06-21T16:12:50+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/images/"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
 <meta name="twitter:title" content="GSoC week 3: Echo State Gaussian Processes"/>
-<meta name="twitter:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN)."/>
+<meta name="twitter:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.
+Gaussian Process Regression The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs."/>
+<meta name="application-name" content="Francesco Martinuzzi">
+<meta name="apple-mobile-web-app-title" content="Francesco Martinuzzi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" /><link rel="prev" href="https://martinuzzifrancesco.github.io/posts/02_gsoc_week/" /><link rel="next" href="https://martinuzzifrancesco.github.io/posts/04_gsoc_week/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "GSoC week 3: Echo State Gaussian Processes",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/martinuzzifrancesco.github.io\/posts\/03_gsoc_week\/"
+        },"image": ["https:\/\/martinuzzifrancesco.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1231 ,
+        "url": "https:\/\/martinuzzifrancesco.github.io\/posts\/03_gsoc_week\/","datePublished": "2020-06-21T16:12:50+02:00","dateModified": "2020-06-21T16:12:50+02:00","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/martinuzzifrancesco.github.io\/images\/avatar.png",
+                    "width":  892 ,
+                    "height":  892 
+                }},"author": {
+                "@type": "Person",
+                "name": "Francesco Martinuzzi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-
-<meta property="og:title" content="GSoC week 3: Echo State Gaussian Processes" />
-<meta property="og:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN)." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" />
-<meta property="og:image" content="https://martinuzzifrancesco.github.io/images/"/>
-<meta property="article:published_time" content="2020-06-21T16:12:50+02:00" />
-<meta property="article:modified_time" content="2020-06-21T16:12:50+02:00" /><meta property="og:site_name" content="Francesco Martinuzzi" />
-
-
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="https://martinuzzifrancesco.github.io/css/print.css"
-        media="print">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="https://martinuzzifrancesco.github.io/css/poole.css">
-
-  <link type="text/css"
-        rel="stylesheet"
-        href="https://martinuzzifrancesco.github.io/css/hyde.css">
-
-  
-<style type="text/css">
-  .sidebar {
-    background-color: #536060;
-  }
-
-  .read-more-link a {
-    border-color: #536060;
-  }
-
-  .pagination li a {
-    color: #536060;
-    border: 1px solid #536060;
-  }
-
-  .pagination li.active a {
-    background-color: #536060;
-  }
-
-  .pagination li a:hover {
-    background-color: #536060;
-    opacity: 0.75;
-  }
-
-  footer a,
-  .content a,
-  .related-posts li a:hover {
-    color: #536060;
-  }
-</style>
-
-
-
-  
-
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
-
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-        crossorigin="anonymous" />
-
-  <link rel="apple-touch-icon-precomposed"
-        sizes="144x144"
-        href="/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  </head>
-<body>
-  <aside class="sidebar">
-  <div class="container">
-    <div class="sidebar-about">
-      
-        
-        <div class="author-image">
-          <img src="https://martinuzzifrancesco.github.io/images/prova.jpg" class="img-circle img-headshot center" alt="Profile Picture">
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
         </div>
-        
-      
-
-      <h1>Francesco Martinuzzi</h1>
-
-      
-      <p class="lead">Physicist learning how to make machines learn</p>
-      
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="What have I done"> Posts </a><a class="menu-item" href="/about/" title="Who am I"> About </a><a class="menu-item" href="/research/" title="What do I do"> Research </a><a class="menu-item" href="/contact/" title="How to reach me"> Contact </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li>
-          <a href="https://martinuzzifrancesco.github.io/">Home</a>
-        </li>
-        <li>
-          <a href="/posts/"> Posts </a>
-        </li><li>
-          <a href="/about/"> About </a>
-        </li><li>
-          <a href="/contact/"> Contact </a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="social-icons">
-      
-      <a href="https://github.com/MartinuzziFrancesco" rel="me" title="GitHub">
-        <i class="fab fa-github" aria-hidden="true"></i>
-      </a>
-      
-      <a href="https://twitter.com/MartinuzziFra" rel="me" title="Twitter">
-        <i class="fab fa-twitter" aria-hidden="true"></i>
-      </a>
-      
-    </section>
-  </div>
-</aside>
-
-
-  <main class="content container">
-  <div class="post">
-  <h1>GSoC week 3: Echo State Gaussian Processes</h1>
-
-  <div class="post-date">
-    <time datetime="2020-06-21T16:12:50&#43;0200">Jun 21, 2020</time> · 6 min read
-  </div>
-
-  <p>Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.</p>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="What have I done">Posts</a><a class="menu-item" href="/about/" title="Who am I">About</a><a class="menu-item" href="/research/" title="What do I do">Research</a><a class="menu-item" href="/contact/" title="How to reach me">Contact</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">GSoC week 3: Echo State Gaussian Processes</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Francesco Martinuzzi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="21216-621-06">21216-621-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1231 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</a></li>
+    <li><a href="#example">Example</a></li>
+    <li><a href="#documentation">Documentation</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.</p>
 <h1 id="gaussian-process-regression">Gaussian Process Regression</h1>
 <p>The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs.
-An in depth chapter on GP regression can be found in <a href="#1">[1]</a>. A good introduction is also given in the paper that illustrates the implementation of Echo State Gaussian Processes (ESGP) <a href="#2">[2]</a>. In this introduction we will heavily follow the second reference, to keep the notation consistent.</p>
+An in depth chapter on GP regression can be found in <a href="#1" rel="">[1]</a>. A good introduction is also given in the paper that illustrates the implementation of Echo State Gaussian Processes (ESGP) <a href="#2" rel="">[2]</a>. In this introduction we will heavily follow the second reference, to keep the notation consistent.</p>
 <p>A Gaussian Process (GP) is defined as a collection of random variables, any finite of which have a joint Gaussian distribution.
 A (GP) is completely specified by its mean function and covariance function:
 $$m(\textbf{x}) = \mathbb{E}[f(\textbf{x})]$$
 $$k(\textbf{x}, \textbf{x}') = \mathbb{E}[(f(\textbf{x})-m(\textbf{x}))(f(\textbf{x}')-m(\textbf{x}'))] $$
 and the GP can be written as
 $$f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}'))$$
-An usual choice for the mean function is the zero mean function \( m(\textbf{x} = 0) \), and for the covariance function there is a large variety of kernel functions to choose from. In fact there are so many that one can be overwhelmed by the choice; if this is the case, a good introduction and overview can be found in <a href="#3">[3]</a>.</p>
+An usual choice for the mean function is the zero mean function \( m(\textbf{x} = 0) \), and for the covariance function there is a large variety of kernel functions to choose from. In fact there are so many that one can be overwhelmed by the choice; if this is the case, a good introduction and overview can be found in <a href="#3" rel="">[3]</a>.</p>
 <p>Given our data, consisting in the samples \( ( (\textbf{x}_i, y_i) | i = 1,&hellip;,N ) \), where \( \textbf{x}_i \) is the d-dimensional observation and \( y_i \) is the correleted target values, we want to be able to predict \( y_* \) given \( \textbf{x}_* \). The response variables \( y_i \) are assumed to be dependent on the predictors \( \textbf{x}_i \):</p>
 <p>$$y_i \sim \mathcal{N} (f(\textbf{x}_i), \sigma ^2), i=1,&hellip;,N$$</p>
 <p>Once defined mean and kernel functions one can obtain the predicted mean and variance:
@@ -179,11 +118,11 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <p>$$\sigma ^2 _* = k(\textbf{x}_*, \textbf{x} _*) - \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{-1} \textbf{k}(\textbf{x}_*)$$</p>
 <p>where \( \textbf{K}(X, X) \) is the matrix of the covariances (design matrix). The optimization of the hyperparameters is usually done by maximization of the model marginal likelihood.</p>
 <h1 id="echo-state-gaussian-processes">Echo State Gaussian Processes</h1>
-<p>Using the definition given in the paper <a href="#2">[2]</a> an ESGP is a GP the covariance of which is taken as a kernel function over the states of a ESN, postulated to capture the dynamics within a set of sequentially interdependent observations. In this case the feature mapping is explicit, no kernel trick is adopted.</p>
+<p>Using the definition given in the paper <a href="#2" rel="">[2]</a> an ESGP is a GP the covariance of which is taken as a kernel function over the states of a ESN, postulated to capture the dynamics within a set of sequentially interdependent observations. In this case the feature mapping is explicit, no kernel trick is adopted.</p>
 <p>One of the improvements of this approach against strandard linear regression is the possibility to obtain a measure of uncertainty for the obtained predictions. Furthermore, one can consider this a generalization of simple regression: in fact using a simple linear kernel and setting \( \sigma ^2 = 0 \) the results should be the same of those obtained by plain linear regression.</p>
 <p>The paper shows results obtained using the Gaussian RBF kernel, but the high number of kernel available and the possibility to use combination of them makes this approach really versatile and, as of now, somewhat understudied.</p>
 <h2 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h2>
-<p>Building on the package <a href="https://github.com/STOR-i/GaussianProcesses.jl">GaussianProcesses</a> it was possible to create a <code>ESGPtrain</code> function as well as a <code>ESGPpredict</code> and a <code>ESGPpredict_h_steps</code> function, with a similar behaviour to the ESN counterpart. The <code>ESGPtrain</code> function takes as input:</p>
+<p>Building on the package <a href="https://github.com/STOR-i/GaussianProcesses.jl" target="_blank" rel="noopener noreffer">GaussianProcesses</a> it was possible to create a <code>ESGPtrain</code> function as well as a <code>ESGPpredict</code> and a <code>ESGPpredict_h_steps</code> function, with a similar behaviour to the ESN counterpart. The <code>ESGPtrain</code> function takes as input:</p>
 <ul>
 <li>
 <p>esn: the previously defined ESN</p>
@@ -198,7 +137,7 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <p>lognoise: optional value with default = -2</p>
 </li>
 <li>
-<p>optimize: optional value with default = false. If = true the hyperparameters are optimized using <a href="https://github.com/JuliaNLSolvers/Optim.jl">Optim.jl</a>. Since gradients are available for all mean and kernel functions, gradient based optimization techniques are recommended.</p>
+<p>optimize: optional value with default = false. If = true the hyperparameters are optimized using <a href="https://github.com/JuliaNLSolvers/Optim.jl" target="_blank" rel="noopener noreffer">Optim.jl</a>. Since gradients are available for all mean and kernel functions, gradient based optimization techniques are recommended.</p>
 </li>
 <li>
 <p>optimizer: optional value with default = Optim.LBFGS()</p>
@@ -219,9 +158,9 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <li>test_data: the testing data, to be given as input to the model every h-th step.</li>
 </ul>
 <h2 id="example">Example</h2>
-<p>Similarly to last week the example is based on the <a href="http://www.scholarpedia.org/article/Mackey-Glass_equation">Mackey Glass</a> system. It can be described by</p>
+<p>Similarly to last week the example is based on the <a href="http://www.scholarpedia.org/article/Mackey-Glass_equation" target="_blank" rel="noopener noreffer">Mackey Glass</a> system. It can be described by</p>
 <p>$$\frac{dx}{dt} = \beta x(t)+\frac{\alpha x(t-\delta)}{1+x(t-\delta)^2}$$</p>
-<p>and the values adopted in <a href="#2">[2]</a> are</p>
+<p>and the values adopted in <a href="#2" rel="">[2]</a> are</p>
 <ul>
 <li>\(\beta = -0.1 \)</li>
 <li>\(\alpha = 0.2 \)</li>
@@ -237,79 +176,109 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <li>\(T_d \) is the number of test examples</li>
 </ul>
 <p>The ESN parameters are as follows</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">const</span> shift <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-<span style="color:#66d9ef">const</span> train_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">6000</span>
-<span style="color:#66d9ef">const</span> test_len <span style="color:#f92672">=</span><span style="color:#ae81ff">1500</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">6000</span>
+<span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span><span class="mi">1500</span>
 
-<span style="color:#66d9ef">const</span> approx_res_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">400</span>
-<span style="color:#66d9ef">const</span> sparsity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
-<span style="color:#66d9ef">const</span> activation <span style="color:#f92672">=</span> tanh
-<span style="color:#66d9ef">const</span> radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.99</span>
-<span style="color:#66d9ef">const</span> sigma <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+<span class="k">const</span> <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="k">const</span> <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="k">const</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
+<span class="k">const</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.99</span>
+<span class="k">const</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
 
-<span style="color:#66d9ef">const</span> alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>
-<span style="color:#66d9ef">const</span> nla_type <span style="color:#f92672">=</span> NLADefault()
-<span style="color:#66d9ef">const</span> extended_states <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
-</code></pre></div><p>Something worth pointing out is that for the first time we have found a value of <code>alpha</code> other than 1: this means we are dealing with a leaky ESN. Following the paper we will try to give a fair comparison between ESN trained with Ridge regression , ESGP and SVESM. Since the parameters for ESN with Ridge and SVESM are missing in the paper, we thought best to use &ldquo;default&rdquo; parameters for all the model involved: using optimization only on one model did not seem like a fair comparison. Both in SVESM and ESGP the kernel function used is Gaussian RBF.</p>
+<span class="k">const</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="k">const</span> <span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLADefault</span><span class="p">()</span>
+<span class="k">const</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Something worth pointing out is that for the first time we have found a value of <code>alpha</code> other than 1: this means we are dealing with a leaky ESN. Following the paper we will try to give a fair comparison between ESN trained with Ridge regression , ESGP and SVESM. Since the parameters for ESN with Ridge and SVESM are missing in the paper, we thought best to use &ldquo;default&rdquo; parameters for all the model involved: using optimization only on one model did not seem like a fair comparison. Both in SVESM and ESGP the kernel function used is Gaussian RBF.</p>
 <p>The results are as follows:</p>
-<pre><code>ESGP RBF rmse: 0.0298
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">ESGP RBF rmse: 0.0298
 ESN ridge rmse: 0.1718
 SVESM RBF rmse: 0.1922
-</code></pre><p>We can clearly see that the proposed model is outperforming the other models proposed. We mentioned that one of the improvements of this models was the measure of uncertainty relative to the prediction. The <code>ESGPpredict</code> function also returns the variance of the prediction, that can be plotted alongside the results:</p>
-<p><img src="https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png" alt="full_pred2"></p>
+</code></pre></td></tr></table>
+</div>
+</div><p>We can clearly see that the proposed model is outperforming the other models proposed. We mentioned that one of the improvements of this models was the measure of uncertainty relative to the prediction. The <code>ESGPpredict</code> function also returns the variance of the prediction, that can be plotted alongside the results:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png, https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png 1.5x, https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/85236826-af86f800-b421-11ea-81c5-e05cd85e8a6c.png"
+        title="full_pred2" /></p>
 <p>From the plot is even more clear that the ESGP is more capable of reproducing the behaviour of the Mackey-Glass system. Like in the paper the worst performing model for this specific task is the SVESM.</p>
 <p>Beside a better analysis of the parameters to use in this case, it would also be interesting to see a comparison between the normal GPR with different kernel functions and the ESGP with the same kernel functions.</p>
 <p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p>
 <h2 id="documentation">Documentation</h2>
-<p><!-- raw HTML omitted -->[1]<!-- raw HTML omitted -->
+<p><a id="1">[1]</a>
 Rasmussen, Carl Edward. &ldquo;Gaussian processes in machine learning.&rdquo; Summer School on Machine Learning. Springer, Berlin, Heidelberg, 2003.</p>
-<p><!-- raw HTML omitted -->[2]<!-- raw HTML omitted -->
+<p><a id="2">[2]</a>
 Chatzis, Sotirios P., and Yiannis Demiris. &ldquo;Echo state Gaussian process.&rdquo; IEEE Transactions on Neural Networks 22.9 (2011): 1435-1445.</p>
-<p><!-- raw HTML omitted -->[3]<!-- raw HTML omitted -->
-<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
+<p><a id="3">[3]</a>
+<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/" target="_blank" rel="noopener noreffer">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 21216-621-06</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/03_gsoc_week/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
 
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/02_gsoc_week/" class="prev" rel="prev" title="GSoC week 2: Support Vector Regression in Echo State Networks"><i class="fas fa-angle-left fa-fw"></i>GSoC week 2: Support Vector Regression in Echo State Networks</a>
+            <a href="/posts/04_gsoc_week/" class="next" rel="next" title="GSoC week 4: SVD-based Reservoir">GSoC week 4: SVD-based Reservoir<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Francesco Martinuzzi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
 
-
-  </main>
-
-  <footer>
-  <div>
-    &copy; Martinuzzi Francesco 2020
-    ·
-    
-    <a href="https://creativecommons.org/licenses/by-sa/4.0"
-       target="_blank">CC BY-SA 4.0</a>
-    
-    
-  </div>
-</footer>
-
-</body>
-
-    <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        svg: {
-            fontCache: 'global'
-        }
-    };
-</script>
-<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script> 
-
-
-</html>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
-          crossorigin="anonymous"></script>
-
-  
-
-  
-</body>
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

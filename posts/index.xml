@@ -6,74 +6,74 @@
         <generator>Hugo -- gohugo.io</generator><managingEditor>martinuzzi.francesco@gmail.com (Francesco Martinuzzi)</managingEditor>
             <webMaster>martinuzzi.francesco@gmail.com (Francesco Martinuzzi)</webMaster><lastBuildDate>Tue, 25 Aug 2020 16:52:06 &#43;0200</lastBuildDate><atom:link href="https://martinuzzifrancesco.github.io/posts/" rel="self" type="application/rss+xml" /><item>
     <title>Google Summer of Code 2020 Final Report</title>
-    <link>https://martinuzzifrancesco.github.io/12_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/12_gsoc_week/</link>
     <pubDate>Tue, 25 Aug 2020 16:52:06 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/12_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/12_gsoc_week/</guid>
     <description><![CDATA[Introduction My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing. After working for a month on the issue #34 of NeuralPDE.jl I created the initial draft of the ReservoirComputing.jl package, consisting at the time of only the implementation of Echo State Networks (ESNs). Having prior knowledge on the model I started digging a little more on the literature and found a lot of interesting variations of ESNs, which led me to base my proposal entirely on the addition of these models into the existing library.]]></description>
 </item><item>
     <title>GSoC week 11: Gated Recurring Unit-based reservoir</title>
-    <link>https://martinuzzifrancesco.github.io/11_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/11_gsoc_week/</link>
     <pubDate>Sun, 16 Aug 2020 21:14:36 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/11_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/11_gsoc_week/</guid>
     <description><![CDATA[Following an architecture found on [1] this week we decided to implement a reservoir model based on the Gated Recurring Unit (GRU) structure, first described in [2]. This architecture is an evolution of the standard Recurrent Neural Network (RNN) update equations and works in a similar way to Long Short Term Memory (LSTM) with a forget gate but with fewer parameters; the LSTM usually outperfofms the GRU in most task but it could be interesting to see the behavior of this unit in the Echo State Network (ESN) model.]]></description>
 </item><item>
     <title>GSoC week 10: Reservoir Memory Machines</title>
-    <link>https://martinuzzifrancesco.github.io/10_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/10_gsoc_week/</link>
     <pubDate>Thu, 13 Aug 2020 14:41:28 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/10_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/10_gsoc_week/</guid>
     <description><![CDATA[For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year [1]. This was one of the hardest, and longest, implementations to date and I believe there is still some work to be done. In this post we will briefly touch on the theory behind the model, and after an example of their usage will be presented.]]></description>
 </item><item>
     <title>GSoC week 9: Cycle Reservoirs with Regular Jumps</title>
-    <link>https://martinuzzifrancesco.github.io/09_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/09_gsoc_week/</link>
     <pubDate>Sun, 02 Aug 2020 16:45:38 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/09_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/09_gsoc_week/</guid>
     <description><![CDATA[This week body of work is less then the usual amount, since most of my time was spent watching the incredible talks given at JuliaCon 2020. This was my first time attending and I just wanted to spend a few lines congratulating all the speakers for the amazing work they are doing with Julia, and most importantly I wanted to thank the organizers for the fantastic job they did: it really felt like an actual physical conference and the sense of community was truly awesome to experience.]]></description>
 </item><item>
     <title>GSoC week 8: Reservoir Computing with Cellular Automata Part 2</title>
-    <link>https://martinuzzifrancesco.github.io/08_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/08_gsoc_week/</link>
     <pubDate>Sun, 26 Jul 2020 18:14:43 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/08_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/08_gsoc_week/</guid>
     <description><![CDATA[Continuing the work started last week we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir. As always a little theorical introduction is given and then we will illustrate the use of the model implemented in ReservoirComputing.jl.
 Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellular Automata (Conway&rsquo;s Game of Life) In the previous week we used Elementary CA (ECA) to train our model, and this time we want to see if we are able to obtain similar results using a two dimensional CA.]]></description>
 </item><item>
     <title>GSoC week 7: Reservoir Computing with Cellular Automata Part 1</title>
-    <link>https://martinuzzifrancesco.github.io/07_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/07_gsoc_week/</link>
     <pubDate>Sun, 19 Jul 2020 17:27:05 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/07_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/07_gsoc_week/</guid>
     <description><![CDATA[In the past few years a new framework based on the concept of Reservoir Computing has been proposed: the Cellular Automata based Reservoir Computer (ReCA) [1]. The advantage it proposes over standard implementations is given by the binary state of the reservoir and the fact that it doesn&rsquo;t require much parameter tuning to obtain state of the art results. Since the initial conception of the use of ECA for reservoir computing numerous improvement have taken place.]]></description>
 </item><item>
     <title>GSoC week 6: minimum complexity echo state network</title>
-    <link>https://martinuzzifrancesco.github.io/06_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/06_gsoc_week/</link>
     <pubDate>Sun, 12 Jul 2020 14:37:22 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/06_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/06_gsoc_week/</guid>
     <description><![CDATA[Up until now we used reservoir generated mainly through a random process, and this approach requires a lot of fine parameter tuning. And even when the optimal parameters are found, the prediction is run-dependent and can show different results with different generations of the reservoir. Is this the only way possible to contruct an Echo State Network (ESN)? Is there a deterministic way to build a ESN? These are the question posed in [1], and the following post is an illustration of the implementation in ReservoirComputing.]]></description>
 </item><item>
     <title>Data-driven prediction of chaotic systems: comparison of Echo State Network variations </title>
-    <link>https://martinuzzifrancesco.github.io/05_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/05_gsoc_week/</link>
     <pubDate>Sun, 05 Jul 2020 21:54:29 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/05_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/05_gsoc_week/</guid>
     <description><![CDATA[This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of Google Summer of Code. The theoretical background for all the proposed models has already been covered in past posts, so we will not touch on it in this one to keep things as thight as possible; if one is interested all my previous posts can be found here.]]></description>
 </item><item>
     <title>GSoC week 4: SVD-based Reservoir</title>
-    <link>https://martinuzzifrancesco.github.io/04_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/04_gsoc_week/</link>
     <pubDate>Sun, 28 Jun 2020 21:02:54 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/04_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/04_gsoc_week/</guid>
     <description><![CDATA[The standard construction of the reservoir matrix \( \textbf{W} \) for Echo State Networks (ESN) is based on initializing \( \textbf{W} \) using specific schemes, usually generating random numbers and then rescaling it to make sure that the spectral radius is less or equal to a chosen number. This procedure is effective, but in literature other ways are explored. In this week we implemented a Singular Value Decomposition (SVD)-based algorithm, described in [1], that is capable of obtaining a sparse matrix suitable for the ESNs.]]></description>
 </item><item>
     <title>GSoC week 3: Echo State Gaussian Processes</title>
-    <link>https://martinuzzifrancesco.github.io/03_gsoc_week/</link>
+    <link>https://martinuzzifrancesco.github.io/posts/03_gsoc_week/</link>
     <pubDate>Sun, 21 Jun 2020 16:12:50 &#43;0200</pubDate>
     <author>Author</author>
-    <guid>https://martinuzzifrancesco.github.io/03_gsoc_week/</guid>
+    <guid>https://martinuzzifrancesco.github.io/posts/03_gsoc_week/</guid>
     <description><![CDATA[Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.
 Gaussian Process Regression The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs.]]></description>
 </item></channel>
