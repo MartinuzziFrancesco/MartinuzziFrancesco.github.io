@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Google Summer of Code 2020 Final Report - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="Google Summer of Code 2020 Final Report" />
+<meta property="og:description" content="Introduction My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing. After working for a month on the issue #34 of NeuralPDE.jl I created the initial draft of the ReservoirComputing.jl package, consisting at the time of only the implementation of Echo State Networks (ESNs). Having prior knowledge on the model I started digging a little more on the literature and found a lot of interesting variations of ESNs, which led me to base my proposal entirely on the addition of these models into the existing library." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/12_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-08-25T16:52:06+02:00" />
+<meta property="article:modified_time" content="2020-08-25T16:52:06+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+
+<meta name="twitter:title" content="Google Summer of Code 2020 Final Report"/>
+<meta name="twitter:description" content="Introduction My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing. After working for a month on the issue #34 of NeuralPDE.jl I created the initial draft of the ReservoirComputing.jl package, consisting at the time of only the implementation of Echo State Networks (ESNs). Having prior knowledge on the model I started digging a little more on the literature and found a lot of interesting variations of ESNs, which led me to base my proposal entirely on the addition of these models into the existing library."/>
+<meta name="application-name" content="Francesco Martinuzzi">
+<meta name="apple-mobile-web-app-title" content="Francesco Martinuzzi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://martinuzzifrancesco.github.io/12_gsoc_week/" /><link rel="prev" href="https://martinuzzifrancesco.github.io/11_gsoc_week/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Google Summer of Code 2020 Final Report",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/martinuzzifrancesco.github.io\/12_gsoc_week\/"
+        },"image": ["https:\/\/martinuzzifrancesco.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  656 ,
+        "url": "https:\/\/martinuzzifrancesco.github.io\/12_gsoc_week\/","datePublished": "2020-08-25T16:52:06+02:00","dateModified": "2020-08-25T16:52:06+02:00","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/martinuzzifrancesco.github.io\/images\/avatar.png",
+                    "width":  892 ,
+                    "height":  892 
+                }},"author": {
+                "@type": "Person",
+                "name": "Francesco Martinuzzi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="What have I done"> Posts </a><a class="menu-item" href="/about/" title="Who am I"> About </a><a class="menu-item" href="/research/" title="What do I do"> Research </a><a class="menu-item" href="/contact/" title="How to reach me"> Contact </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="What have I done">Posts</a><a class="menu-item" href="/about/" title="Who am I">About</a><a class="menu-item" href="/research/" title="What do I do">Research</a><a class="menu-item" href="/contact/" title="How to reach me">Contact</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Google Summer of Code 2020 Final Report</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Francesco Martinuzzi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="25258-825-08">25258-825-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;656 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><h1 id="introduction">Introduction</h1>
+<p>My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing. After working for a month on the <a href="https://github.com/SciML/NeuralPDE.jl/issues/34" target="_blank" rel="noopener noreffer">issue #34</a> of NeuralPDE.jl I created the initial draft of the ReservoirComputing.jl package, consisting at the time of only the implementation of Echo State Networks (ESNs). Having prior knowledge on the model I started digging a little more on the literature and found a lot of interesting variations of ESNs, which led me to base my proposal entirely on the addition of these models into the existing library. The work done in the three months period was based on weekly goals, which allowed me to keep a steady and consistent pace throughout the project. Most of the implementations done at the end were the one present in the proposal, although there were a couple of little variations from the initial idea.</p>
+<h1 id="work-done-during-gsoc">Work done during GSoC</h1>
+<ul>
+<li>Week 1: implemented different Linear Model solvers for ESN, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/01_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 2: implemented Support Vector Echo State Machines (SVESMs), tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/02_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 3: implemented Echo State Gaussian Processes (ESGPs), tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 4: implemented Singular Value Decomposition-based reservoir, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/04_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 5: comparison of the various models implemented in the task of predicting chaotic systems both short and long term - <a href="https://martinuzzifrancesco.github.io/posts/05_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 6: implemented minimum complexity ESN methods, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/06_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 7: implemented Elementary Cellular Automata-based reservoir computers (RECA), tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 8: implemented two dimensional cellular automata-based reservoir computers, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/08_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 9: implemented Cycle Reservoirs with Regular Jumps, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/09_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 10: implemented Reservoir Memory Machines (RMMs), tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/10_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 11: implemented Gated Recurring Unit-based reservoir, tests for the code and checked the results against the literature - <a href="https://martinuzzifrancesco.github.io/posts/11_gsoc_week/" target="_blank" rel="noopener noreffer">blog post</a>.</li>
+<li>Week 12: added the documentation - <a href="https://reservoir.sciml.ai/dev/" target="_blank" rel="noopener noreffer">link to documentation</a>.</li>
+</ul>
+<p>The code and the library can be found on GitHub, under the SciML organization: <a href="https://github.com/SciML/ReservoirComputing.jl" target="_blank" rel="noopener noreffer">ReservoirComputing.jl</a>.</p>
+<h1 id="future-directions">Future directions</h1>
+<p>I hope to be able to continue to maintain and improve this package in the future, and there are already some ideas of the challenges that could be tackled. Since I started my journey with Julia, my knowledge of the language has increased and looking back there is room for major improvements in the code, both for optimization and usability. Merging all the train and predict function into a single one will surely reduce confusion, and adding more examples to the documentation is already something that I am working on.</p>
+<h1 id="acknowledgements">Acknowledgements</h1>
+<p>First of all I would like to thanks my mentors Chris, David and Ranjan for following me in this project and for giving me incredible autonomy in these months; a special thanks to Chris that has taken the time to help me from the first commits and all throughout the application process. Another big thanks goes to the Julia community, an incredible group of people that are working towards a more open and welcoming scientific ecosystem, and are always ready to help and guide newcomers as myself; I don&rsquo;t think I have ever felt so welcomed by people I have yet to meet face to face before. Finally thanks to the Google Open Source program for providing both the opportunity to have this experience and the funding to help people partecipate to it.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 25258-825-08</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/12_gsoc_week/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/11_gsoc_week/" class="prev" rel="prev" title="GSoC week 11: Gated Recurring Unit-based reservoir"><i class="fas fa-angle-left fa-fw"></i>GSoC week 11: Gated Recurring Unit-based reservoir</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Francesco Martinuzzi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

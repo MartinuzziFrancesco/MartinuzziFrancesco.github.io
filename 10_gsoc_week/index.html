@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>GSoC week 10: Reservoir Memory Machines - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 10: Reservoir Memory Machines" />
+<meta property="og:description" content="For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year [1]. This was one of the hardest, and longest, implementations to date and I believe there is still some work to be done. In this post we will briefly touch on the theory behind the model, and after an example of their usage will be presented." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/10_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-08-13T14:41:28+02:00" />
+<meta property="article:modified_time" content="2020-08-13T14:41:28+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+
+<meta name="twitter:title" content="GSoC week 10: Reservoir Memory Machines"/>
+<meta name="twitter:description" content="For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year [1]. This was one of the hardest, and longest, implementations to date and I believe there is still some work to be done. In this post we will briefly touch on the theory behind the model, and after an example of their usage will be presented."/>
+<meta name="application-name" content="Francesco Martinuzzi">
+<meta name="apple-mobile-web-app-title" content="Francesco Martinuzzi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://martinuzzifrancesco.github.io/10_gsoc_week/" /><link rel="prev" href="https://martinuzzifrancesco.github.io/09_gsoc_week/" /><link rel="next" href="https://martinuzzifrancesco.github.io/11_gsoc_week/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "GSoC week 10: Reservoir Memory Machines",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/martinuzzifrancesco.github.io\/10_gsoc_week\/"
+        },"image": ["https:\/\/martinuzzifrancesco.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1385 ,
+        "url": "https:\/\/martinuzzifrancesco.github.io\/10_gsoc_week\/","datePublished": "2020-08-13T14:41:28+02:00","dateModified": "2020-08-13T14:41:28+02:00","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/martinuzzifrancesco.github.io\/images\/avatar.png",
+                    "width":  892 ,
+                    "height":  892 
+                }},"author": {
+                "@type": "Person",
+                "name": "Francesco Martinuzzi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="What have I done"> Posts </a><a class="menu-item" href="/about/" title="Who am I"> About </a><a class="menu-item" href="/research/" title="What do I do"> Research </a><a class="menu-item" href="/contact/" title="How to reach me"> Contact </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="What have I done">Posts</a><a class="menu-item" href="/about/" title="Who am I">About</a><a class="menu-item" href="/research/" title="What do I do">Research</a><a class="menu-item" href="/contact/" title="How to reach me">Contact</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">GSoC week 10: Reservoir Memory Machines</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Francesco Martinuzzi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="13138-813-08">13138-813-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1385 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;7 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#documentation">Documentation</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year <a href="#1" rel="">[1]</a>. This was one of the hardest, and longest, implementations to date and I believe there is still some work to be done. In this post we will briefly touch on the theory behind the model, and after an example of their usage will be presented.</p>
+<h1 id="theoretical-background">Theoretical Background</h1>
+<p>Born as an alternative to the Neural Turing Machine <a href="#2" rel="">[2]</a> the RMM is an extension of the Echo State Network model, with the addition of an actual memory \( \textbf{M}_t \in \mathbb{R}^{K \times n} \), a write head and a read head. The dynamics of the RMM are the following:</p>
+<ul>
+<li>In the first step the previous memory state is copied \( \textbf{M}_t = \textbf{M}_{t-1} \), with the initial memory step being initialized to zero.</li>
+<li>The write head is then controlled by the value \( c_t^w = \textbf{u}^w \textbf{x}^t + \textbf{v}^r \textbf{h}^t \) where \( \textbf{u}^w, \textbf{v}^r \) are learnable parameters and \( \textbf{x}^t, \textbf{h}^t \) are the input vector and state vector at time t respectively. If \( c_t^w &gt; 0 \) then the input is written to memory, \( \textbf{m}_{t, k} = \textbf{x}^t \) and \( k_t = k_{t-1}+1 \). \( k \) is resetted to 1 if it exceeds the memory size \( K \). In the other case the memory and \( k \) are left as they are.</li>
+<li>Each time step the read head is controlled in a similar way using the vector \( \textbf{c}_t^r = \textbf{U}^r \textbf{x}^t + \textbf{V}^r \textbf{h}^t \) where \( \textbf{U}^r, \textbf{V}^r \) are learnable parameters. If \( c^r_{t, 2} = max{c^r_{t, 1}, c^r_{t, 2}, c^r_{t, 3}} \) \( l_t = l_{t-1}+1 \), otherwise \( l_t = 1 \). After that the memory read at time \( t \) is set as the \(  l\)th row of \( \textbf{M}_t \), \( \textbf{r}^t = \textbf{m}_{t, l_t} \)</li>
+</ul>
+<p>The output of the system is determined by \( \textbf{y_t} = \textbf{V} \textbf{h}^t + \textbf{R} \textbf{r}^t \) where \( \textbf{V}, \textbf{R} \) are learnable parameters. Setting \( \textbf{R} = 0 \) we can see that the result is the standard ESN.</p>
+<p>For a more detailed explanation of the procedure and of the training process please refer to the original paper.</p>
+<h1 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h1>
+<p>Following both the paper and the code provided (original in Python, click <a href="https://gitlab.ub.uni-bielefeld.de/bpaassen/reservoir-memory-machines" target="_blank" rel="noopener noreffer">here</a>) we were able to implement a <code>RMM</code> mutable struct and a <code>RMMdirect_predict</code> function able to train and do predictions with the RMM model. The default constructor for <code>RMM</code> takes as input</p>
+<ul>
+<li><code>W</code> the reservoir matrix</li>
+<li><code>in_data</code> the training data</li>
+<li><code>out_data</code> the desired output</li>
+<li><code>W_in</code> the input layer matrix</li>
+<li><code>memory_size</code> the size \( K \) of the memory</li>
+<li><code>activation</code> optional activation function for the reservoir states, with default <code>tanh</code></li>
+<li><code>alpha</code> optional leaking rate, with default 1.0</li>
+<li><code>nla_type</code> optional non linear algorithm, eith default <code>NLADefault()</code></li>
+<li><code>extended_states</code> optional boolean for the extended states option, with default <code>false</code></li>
+</ul>
+<p>The constructor trains the RMM, so ance it is initialized there is only need for a predict function. The <code>RMMdirect_predict</code> takes as input</p>
+<ul>
+<li><code>rmmm</code> an initialized RMM</li>
+<li><code>input</code> the input data
+and gives as output the prediction based on the input data given. The prediction process is relatively different from the implementation used in ReservoirComputing.jl, so we will not be able to do a proper comparison with the other models we implemented. In the future we do want to uniform the RMM with the other architectures present in the library, but it seems like a moth worth of work, so for the moment we are happy with the basic implementations obtained.</li>
+</ul>
+<h1 id="examples">Examples</h1>
+<p>For example we will use the next step prediction for the <a href="https://en.wikipedia.org/wiki/H%C3%A9non_map" target="_blank" rel="noopener noreffer">Henon map</a>, used also in last week test. The map is defined as</p>
+<p>$$x_{x+1} = 1 - ax_n^2 + y_n$$
+$$ y_{n+1} = bx_n $$</p>
+<p>Let us start by installing and importing all the needed packages:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Pkg</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;ReservoirComputing&#34;</span><span class="p">)</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;DynamicalSystems&#34;</span><span class="p">)</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;LinearAlgebra&#34;</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<span class="k">using</span> <span class="n">DynamicalSystems</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Now we can generate the Henon map, and we will shift the data points by -0.5 and scale them by 2 to reproduce the data we had last week. The initial transient will be washed out and we will create four datasets called <code>train_x</code>, <code>train_y</code>, <code>test_x</code> and <code>test_y</code>:`</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">ds</span> <span class="o">=</span> <span class="n">Systems</span><span class="o">.</span><span class="n">henon</span><span class="p">()</span>
+<span class="n">traj</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="mi">7000</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">.-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">.*</span> <span class="mi">2</span>
+<span class="n">shift</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">train_len</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">predict_len</span> <span class="o">=</span> <span class="mi">3000</span>
+<span class="n">train_x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">shift</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+<span class="n">train_y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">shift</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+
+<span class="n">test_x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">+</span><span class="n">predict_len</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+<span class="n">test_y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">+</span><span class="n">predict_len</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Having the needed data we can proceed to the prediction task. In the RMM paper the model is tested using Cycle Reservoirs with Regular Jumps <a href="#3" rel="">[3]</a> so we will do the same for our test. In addition to that we will also use the other minimum complexity reservoirs <a href="#4" rel="">[4]</a> that we implemented in <a href="https://martinuzzifrancesco.github.io/posts/06_gsoc_week/" target="_blank" rel="noopener noreffer">week 6</a>. The input layer used is obtained with the function <code>irrational_sign_input()</code>, that builds a fully connected layer with the same values which signs are determined by the values of an irrational number, in our case pi. Setting the parameters for the construction of the RMM</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">10</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">extended_states</span> <span class="o">=</span> <span class="nb">false</span>
+
+<span class="n">input_weight</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">cyrcle_weight</span> <span class="o">=</span> <span class="mf">0.99</span>
+<span class="n">jump_weight</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">jumps</span> <span class="o">=</span> <span class="mi">12</span>
+
+<span class="n">memory_size</span> <span class="o">=</span> <span class="mi">16</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>We can now build the reservoir and the RMMs needed for the comparison of the results:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">Wcrj</span> <span class="o">=</span> <span class="n">CRJ</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">,</span> <span class="n">jump_weight</span><span class="p">,</span> <span class="n">jumps</span><span class="p">)</span>
+<span class="n">Wscr</span> <span class="o">=</span> <span class="n">SCR</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">)</span>
+<span class="n">Wdlrb</span> <span class="o">=</span> <span class="n">DLRB</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">,</span> <span class="n">jump_weight</span><span class="p">)</span>
+<span class="n">Wdlr</span> <span class="o">=</span> <span class="n">DLR</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">)</span>
+
+<span class="n">W_in</span> <span class="o">=</span> <span class="n">irrational_sign_input</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">input_weight</span><span class="p">)</span>
+
+<span class="n">rmmcrj</span> <span class="o">=</span> <span class="n">RMM</span><span class="p">(</span><span class="n">Wcrj</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">memory_size</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<span class="n">rmmscr</span> <span class="o">=</span> <span class="n">RMM</span><span class="p">(</span><span class="n">Wscr</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">memory_size</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<span class="n">rmmdlrb</span> <span class="o">=</span> <span class="n">RMM</span><span class="p">(</span><span class="n">Wdlrb</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">memory_size</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<span class="n">rmmdlr</span> <span class="o">=</span> <span class="n">RMM</span><span class="p">(</span><span class="n">Wdlr</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">memory_size</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Now that we have our trained RMM we want to predict the one step ahead henon map and compare the results obtained with different reservoirs. In oreder to do so we are first going to implement a quick nmse function :</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">NMSE</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">den</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">append!</span><span class="p">(</span><span class="n">sums</span><span class="p">,</span> <span class="n">sum</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">i</span><span class="p">]))</span>
+    <span class="k">end</span>
+    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span><span class="o">^</span><span class="mf">2.0</span>
+        <span class="n">den</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span><span class="o">-</span><span class="n">sums</span><span class="o">./</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">^</span><span class="mf">2.0</span>
+    <span class="k">end</span>
+    <span class="n">nmse</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">den</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">nmse</span>
+<span class="k">end</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>after that we are going to predict the system and compare the results:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">rmms</span> <span class="o">=</span> <span class="p">[</span><span class="n">rmmcrj</span><span class="p">,</span> <span class="n">rmmscr</span><span class="p">,</span> <span class="n">rmmdlrb</span><span class="p">,</span> <span class="n">rmmdlr</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">rmm</span> <span class="k">in</span> <span class="n">rmms</span>
+    <span class="n">output2</span> <span class="o">=</span> <span class="n">RMMdirect_predict</span><span class="p">(</span><span class="n">rmm</span><span class="p">,</span> <span class="n">test_x</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">NMSE</span><span class="p">(</span><span class="n">train_y</span><span class="p">,</span> <span class="n">output2</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">1.4856355716974217
+1.4868276240921912
+1.5624183281454223
+1.5237046076873637
+</code></pre></td></tr></table>
+</div>
+</div><p>As we can see the best performing architecture is the one with the CRJ reservoir. The SCR closely follows.</p>
+<p>This tests are not the one used in the paper, but given that I was a little behind with the implementation I thought to do a couple of quick and easy ones instead. The model is really interesting and I want to continue to explore the possibilities that it offers. The implementation, while working, is not yet finished: there are a couple of finishing touches to give and a couple of more checks to do. I really want to be able to reproduce the results of the paper but the base implementations of ESN in ReservoirComputing and the paper code are really different, and it will take at least another week of full work to unravel all the small details. Huge thanks to the author <a href="https://bpaassen.gitlab.io/" target="_blank" rel="noopener noreffer">Benjamin Paaßen</a> that answered quickly and kindly to my emails.</p>
+<p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p>
+<h2 id="documentation">Documentation</h2>
+<p><a id="1">[1]</a>
+Paaßen, Benjamin, and Alexander Schulz. &ldquo;Reservoir memory machines.&rdquo; arXiv preprint arXiv:2003.04793 (2020).</p>
+<p><a id="2">[2]</a>
+Graves, Alex, Greg Wayne, and Ivo Danihelka. &ldquo;Neural turing machines.&rdquo; arXiv preprint arXiv:1410.5401 (2014).</p>
+<p><a id="3">[3]</a>
+Rodan, Ali, and Peter Tiňo. &ldquo;Simple deterministically constructed cycle reservoirs with regular jumps.&rdquo; Neural computation 24.7 (2012): 1822-1852.</p>
+<p><a id="4">[4]</a>
+Rodan, Ali, and Peter Tino. &ldquo;Minimum complexity echo state network.&rdquo; IEEE transactions on neural networks 22.1 (2010): 131-144.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 13138-813-08</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/10_gsoc_week/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/09_gsoc_week/" class="prev" rel="prev" title="GSoC week 9: Cycle Reservoirs with Regular Jumps"><i class="fas fa-angle-left fa-fw"></i>GSoC week 9: Cycle Reservoirs with Regular Jumps</a>
+            <a href="/11_gsoc_week/" class="next" rel="next" title="GSoC week 11: Gated Recurring Unit-based reservoir">GSoC week 11: Gated Recurring Unit-based reservoir<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Francesco Martinuzzi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

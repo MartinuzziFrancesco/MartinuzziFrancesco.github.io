@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>A brief introduction to Reservoir Computing - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="A brief introduction to Reservoir Computing" />
+<meta property="og:description" content="This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.jl as example tool. This package is a work in progress and it is currently the main project I am working on as part of the Google Summer of Code program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/a-brief-introduction-to-reservoir-computing/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-26T22:17:09+02:00" />
+<meta property="article:modified_time" content="2020-05-26T22:17:09+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+
+<meta name="twitter:title" content="A brief introduction to Reservoir Computing"/>
+<meta name="twitter:description" content="This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.jl as example tool. This package is a work in progress and it is currently the main project I am working on as part of the Google Summer of Code program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples."/>
+<meta name="application-name" content="Francesco Martinuzzi">
+<meta name="apple-mobile-web-app-title" content="Francesco Martinuzzi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://martinuzzifrancesco.github.io/a-brief-introduction-to-reservoir-computing/" /><link rel="next" href="https://martinuzzifrancesco.github.io/01_gsoc_week/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "A brief introduction to Reservoir Computing",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/martinuzzifrancesco.github.io\/a-brief-introduction-to-reservoir-computing\/"
+        },"image": ["https:\/\/martinuzzifrancesco.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1808 ,
+        "url": "https:\/\/martinuzzifrancesco.github.io\/a-brief-introduction-to-reservoir-computing\/","datePublished": "2020-05-26T22:17:09+02:00","dateModified": "2020-05-26T22:17:09+02:00","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/martinuzzifrancesco.github.io\/images\/avatar.png",
+                    "width":  892 ,
+                    "height":  892 
+                }},"author": {
+                "@type": "Person",
+                "name": "Francesco Martinuzzi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="What have I done"> Posts </a><a class="menu-item" href="/about/" title="Who am I"> About </a><a class="menu-item" href="/research/" title="What do I do"> Research </a><a class="menu-item" href="/contact/" title="How to reach me"> Contact </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="What have I done">Posts</a><a class="menu-item" href="/about/" title="Who am I">About</a><a class="menu-item" href="/research/" title="What do I do">Research</a><a class="menu-item" href="/contact/" title="How to reach me">Contact</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">A brief introduction to Reservoir Computing</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Francesco Martinuzzi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="26265-526-05">26265-526-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1808 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;9 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#theoretical-background">Theoretical Background</a></li>
+    <li><a href="#lorenz-system-prediction">Lorenz system prediction</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package <a href="https://github.com/SciML/ReservoirComputing.jl" target="_blank" rel="noopener noreffer">ReservoirComputing.jl</a> as example tool. This package is a work in progress and it is currently the main project I am working on as part of the <a href="https://summerofcode.withgoogle.com/projects/#5374375945043968" target="_blank" rel="noopener noreffer">Google Summer of Code</a> program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples.</p>
+<h1 id="what-is-reservoir-computing">What is Reservoir Computing?</h1>
+<p>Reservoir Computing is an umbrella term used to identify a general framework of computation derived from Recurrent Neural Networks (RNN), indipendently developed by Jaeger <a href="#1" rel="">[1]</a> and Maass et al. <a href="#2" rel="">[2]</a>. These papers introduced the concepts of Echo State Networks (ESN) and Liquid State Machines (LSM) respectively. Further improvements over these two models constitute what is now called the field of Reservoir Computing. The main idea lies in leveraging a fixed non-linear system, of higher dimension than the input, onto which to input signal is mapped. After this mapping is only necessary to use a simple readout layer to harvest the state of the reservoir and to train it to the desired output. In principle, given a complex enough system, this architecture should be capable of any computation <a href="#3" rel="">[3]</a>. The intuition was born from the fact that in training RNNs most of the times the weights showing most change were the ones in the last layer <a href="#4" rel="">[4]</a>. In the next section we will also see that ESNs actually use a fixed random RNN as the reservoir. Given the static nature of this implementation usually ESNs can yield faster results and in some cases even better, in particular when dealing with chaotic time series predictions <a href="#5" rel="">[5]</a>.</p>
+<p>But not every complex system is suited to be a good reservoir. A good reservoir is one that is able to separate inputs; different external inputs should drive the system to different regions of the configuration space <a href="#3" rel="">[3]</a>. This is called the <em>separability condition</em>. Furthermore an important property for the reservoirs of ESNs is the <em>Echo State property</em> which states that inputs to the reservoir echo in the system forever, or util they dissipate. A more formal definition of this property can be found in <a href="#6" rel="">[6]</a>.</p>
+<p>In order to better show the inner workings of models of this family I am going to explain in mathematical details the ESN, a model that is already implemented in the package, so it will be useful for making examples.</p>
+<h1 id="echo-state-networks">Echo State Networks</h1>
+<h2 id="theoretical-background">Theoretical Background</h2>
+<p>This intends to be a quick overview of the theory behind the ESN to get the reader acquainted with the concepts and workings of this particular model, and it is by no means comprehensive. For in depth reviews and explanations please refer to <a href="#7" rel="">[7]</a> and <a href="#8" rel="">[8]</a>. All of the information laid out in this section is adapted from these two sources, unless stated otherwise.</p>
+<p>Let us suppose we have an input signal \( \textbf{u}(t) \in R^M \) where \( t = 1, &hellip;, T \) is the discrete time and \( T \) the number of data points in the training set. In order to project this input onto the reservoir we will need an input to reservoir coupler, identified by the matrix \( \textbf{W}_{\text{in}} \in R^{N \times M} \). Usually this matrix is built in the same way the reservior is, and at the same time. For the implementation used in ReservoirComputing.jl we have followed the same construction proposed in <a href="#9" rel="">[9]</a> where the i-th of the \( M \) input signals is connected to \( N/M \) reservoir nodes with connection weights in the i-th column of \( \textbf{W}_{\text{in}} \). The non-zero elements are chosen randomly from a uniform distribution and then scaled in the range \( [-\sigma , \sigma ] \).</p>
+<p>The reservoir is constitued by \( N \) neurons connected in a Erdős–Rényi graph configuration and it is represented by an adjacency matrix \( \textbf{W} \) of size \( N \times N \) with values drawn from a uniform random distribution on the interval \( [-1, 1] \) <a href="5" rel="">[5]</a>. This is the most important aspect of the ESN, so in order to build one in an efficient manner we must first understand all of its components.</p>
+<ul>
+<li>The size \( N \) is of course the single most important one: the more challenging the task, the bigger the size should be. Of course a bigger matrix will mean more computational time so the advice of Lukoševičius is to start small and then scale.</li>
+<li>The sparsity of the reservoir. In most papers we see that each reservoir node is connected to a small number of other nodes, ranging from 5 to 12. The sparseness, beside theoretical implications, is also useful to speed up computations.</li>
+<li>Spectral radius. After the generation of a random sparse reservoir matrix, its spectral radius \( \rho (\textbf{W}) \) is computed and \( \textbf{W} \) is divided by it. This allows us to obtain a matrix with a unit spectral radius, that can be scaled to a more suited value. Altough there are exceptions (when the inputs \( \textbf{u}(t) \) are non-zero for example), a spectral radius smaller than unity \( \rho (\textbf{W}) &lt; 1 \) ensures the echo state property. More generally this parameter should be selected to maximize the performance, keeping the unitary value as a useful reference point.</li>
+</ul>
+<p>After the construction of the input layer and the reservoir we can focus on harvesting the states. The update equations of the ESN are:</p>
+<p>$$\textbf{x}(t+\Delta t) = (1-\alpha) \textbf{x}(t)+\alpha f( \textbf{W} \textbf{x}(t)+ \textbf{W}_{\text{in}} \textbf{u}(t))$$</p>
+<p>$$\textbf{v}(t+\Delta t) = g( \textbf{W}_{\text{out}} \textbf{x}(t))$$</p>
+<p>where</p>
+<ul>
+<li>\( \textbf{v}(t) \in R^{M} \) is the predicted output</li>
+<li>\( \textbf{x}(t) \in R^{N} \) is the state vector</li>
+<li>\( \textbf{W}_{\text{out}} \in R^{M \times N} \) is the output layer</li>
+<li>\( f \) and \( g \) are two activation functions, most commonly the hyperbolic tangent and identity respectively</li>
+<li>\( \alpha \) is the leaking rate</li>
+</ul>
+<p>The computation of \( \textbf{W}_{\text{out}} \) can be expressed in terms of solving a system of linear equations</p>
+<p>$$\textbf{Y}^{\text{target}}=\textbf{W}_{\text{out}} \textbf{X}$$</p>
+<p>where \( \textbf{X} \) is the states matrix, built using the single states vector \( \textbf{x}(t) \) as column for every \( t=1, &hellip;, T \), and \( \textbf{Y}^{\text{target}} \) is built in the same way only using \( \textbf{y}^{\text{target}}(t) \). The chosen solution for this problem is usually the <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization" target="_blank" rel="noopener noreffer">Tikhonov regularization</a>, also called ridge regression which has the following close form:</p>
+<p>$$\textbf{W}_{\text{out}} = \textbf{Y}^{\text{target}} \textbf{X}^{\text{T}}(\textbf{X} \textbf{X}^{\text{T}} + \beta \textbf{I})^{-1}$$</p>
+<p>where \( \textbf{I} \) is the identity matrix and \(\beta \) is a regularization coefficient.</p>
+<p>After the training of the ESN, the prediction phase uses the same update equations showed above, but the input \( \textbf{u}(t) \) is represented by the computed output \( \textbf{v}(t-\Delta t) \) of the preceding step.</p>
+<p>In short this is the core theory behind the ESNs. In order to visualize how they work let&rsquo;s look at an example.</p>
+<h2 id="lorenz-system-prediction">Lorenz system prediction</h2>
+<p>This is a task already tackled in literature, so our intent is to try and replicate the results found in <a href="10" rel="">[10]</a>. This example can be followed in its entirety <a href="https://github.com/SciML/ReservoirComputing.jl/blob/master/examples/lorenz_example.jl" target="_blank" rel="noopener noreffer">here</a>. In this section we will just give part of the code to illustrate the theory explained above, so some important parts are not displayed.</p>
+<p>Supposing we have already created the train data, constituted by 5000 timesteps of the chaotic Lorenz system, we are going to use the same parameters found in the paper:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLAT2</span><span class="p">()</span>
+<span class="n">extended_states</span> <span class="o">=</span> <span class="nb">false</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The ESN can easily be called in the following way:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">esn</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span>
+    <span class="n">train</span><span class="p">,</span>
+    <span class="n">degree</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">,</span>
+    <span class="n">activation</span><span class="p">,</span> <span class="c">#default = tanh</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="c">#default = 1.0</span>
+    <span class="n">sigma</span><span class="p">,</span> <span class="c">#default = 0.1</span>
+    <span class="n">nla_type</span> <span class="c">#default = NLADefault(),</span>
+    <span class="n">extended_states</span> <span class="c">#default = false</span>
+    <span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The training and the prediction, for 1250 timestps, are carried out as follows</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>In order to visualize the solution we can plot the individual trajectories</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/81470264-42f5c800-91ea-11ea-98a2-a8a8d7d96155.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/81470264-42f5c800-91ea-11ea-98a2-a8a8d7d96155.png, https://user-images.githubusercontent.com/10376688/81470264-42f5c800-91ea-11ea-98a2-a8a8d7d96155.png 1.5x, https://user-images.githubusercontent.com/10376688/81470264-42f5c800-91ea-11ea-98a2-a8a8d7d96155.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/81470264-42f5c800-91ea-11ea-98a2-a8a8d7d96155.png"
+        title="lorenz_coord" /></p>
+<p>and the attractors</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/81470281-5a34b580-91ea-11ea-9eea-d2b266da19f4.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/81470281-5a34b580-91ea-11ea-9eea-d2b266da19f4.png, https://user-images.githubusercontent.com/10376688/81470281-5a34b580-91ea-11ea-9eea-d2b266da19f4.png 1.5x, https://user-images.githubusercontent.com/10376688/81470281-5a34b580-91ea-11ea-9eea-d2b266da19f4.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/81470281-5a34b580-91ea-11ea-9eea-d2b266da19f4.png"
+        title="lorenz_attractor" /></p>
+<p>As expected the short term predictions are very good, and in the long term the behaviour of the system is mantained.</p>
+<p>But what happens if the parameters are not ideal? In the paper is given an example where the spectral radius is bigger than the ideal value and the predictions are compromised as a result. We can also show that if the value is less than one, as suggested in order to mantain the echo state property, the results are nowhere near optimal.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">radius</span> <span class="o">=</span> <span class="mf">0.8</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/83355574-91693300-a360-11ea-9794-cdbc9dc5388c.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/83355574-91693300-a360-11ea-9794-cdbc9dc5388c.png, https://user-images.githubusercontent.com/10376688/83355574-91693300-a360-11ea-9794-cdbc9dc5388c.png 1.5x, https://user-images.githubusercontent.com/10376688/83355574-91693300-a360-11ea-9794-cdbc9dc5388c.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/83355574-91693300-a360-11ea-9794-cdbc9dc5388c.png"
+        title="lorenz_coord" /></p>
+<p>While incrementing the reservoir size is known to improve the results, up to a certain point, a smaller one will almost surely worsen them.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">60</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/83355661-279d5900-a361-11ea-864c-fefc570eb6a1.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/83355661-279d5900-a361-11ea-864c-fefc570eb6a1.png, https://user-images.githubusercontent.com/10376688/83355661-279d5900-a361-11ea-864c-fefc570eb6a1.png 1.5x, https://user-images.githubusercontent.com/10376688/83355661-279d5900-a361-11ea-864c-fefc570eb6a1.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/83355661-279d5900-a361-11ea-864c-fefc570eb6a1.png"
+        title="lorenz_coord" /></p>
+<p>As we can see, the choice of the parameters is of the upmost importance in this model, as it is in most models in the field of Machine Learning. There are ways of searching the optimal parameters in the state space such as grid search or random search, though experience with the model will give you the ability to know what to thinker with most of the times.</p>
+<p>If you have any questions regarding the model, the package or you have found errors in my post, please don&rsquo;t hesitate to contact me!</p>
+<h2 id="references">References</h2>
+<p><a id="1">[1]</a></p>
+<p>Jaeger, Herbert. &ldquo;The “echo state” approach to analysing and training recurrent neural networks-with an erratum note.&rdquo; Bonn, Germany: German National Research Center for Information Technology GMD Technical Report 148.34 (2001): 13.</p>
+<p><a id="2">[2]</a>
+Maass W, Natschläger T, Markram H. Real-time computing without stable states: a new framework for neural computation based on perturbations. Neural Comput. 2002;14(11):2531‐2560.</p>
+<p><a id="3">[3]</a>
+Konkoli Z.: Reservoir Computing. In: Meyers R. (eds) Encyclopedia of Complexity and Systems Science. Springer, Berlin, Heidelberg (2017)</p>
+<p><a id="4">[4]</a>
+Schiller, Ulf D., and Jochen J. Steil. &ldquo;Analyzing the weight dynamics of recurrent learning algorithms.&rdquo; Neurocomputing 63 (2005): 5-23.</p>
+<p><a id="5">[5]</a>
+Chattopadhyay, Ashesh, et al. &ldquo;Data-driven prediction of a multi-scale Lorenz 96 chaotic system using a hierarchy of deep learning methods: Reservoir computing, ANN, and RNN-LSTM.&rdquo; arXiv preprint arXiv:1906.08829 (2019).</p>
+<p><a id="6">[6]</a>
+Yildiz, Izzet B., Herbert Jaeger, and Stefan J. Kiebel. &ldquo;Re-visiting the echo state property.&rdquo; Neural networks 35 (2012): 1-9.</p>
+<p><a id="7">[7]</a>
+Lukoševičius, Mantas. &ldquo;A practical guide to applying echo state networks.&rdquo; Neural networks: Tricks of the trade. Springer, Berlin, Heidelberg, 2012. 659-686.</p>
+<p><a id="8">[8]</a>
+Lukoševičius, Mantas, and Herbert Jaeger. &ldquo;Reservoir computing approaches to recurrent neural network training.&rdquo; Computer Science Review 3.3 (2009): 127-149.</p>
+<p><a id="9">[9]</a>
+Lu, Zhixin, et al. &ldquo;Reservoir observers: Model-free inference of unmeasured variables in chaotic systems.&rdquo; Chaos: An Interdisciplinary Journal of Nonlinear Science 27.4 (2017): 041102.</p>
+<p><a id="10">[10]</a>
+Pathak, Jaideep, et al. &ldquo;Using machine learning to replicate chaotic attractors and calculate Lyapunov exponents from data.&rdquo; Chaos: An Interdisciplinary Journal of Nonlinear Science 27.12 (2017): 121102.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 26265-526-05</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/a-brief-introduction-to-reservoir-computing/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+            <a href="/01_gsoc_week/" class="next" rel="next" title="GSoC week 1: lasso, Elastic Net and Huber loss">GSoC week 1: lasso, Elastic Net and Huber loss<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Francesco Martinuzzi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>GSoC week 2: Support Vector Regression in Echo State Networks - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 2: Support Vector Regression in Echo State Networks" />
+<meta property="og:description" content="The second week of the Google Summer of Code project with ReservoirComputing.jl dealt with the implementation of a Support Vector based regression for the Echo State Network model, resulting in the Support Vector Echo-State Machine (SVESM). In this post we will quickly touch on the theory behind Support Vector Regression (SVR), and then we will see the results of the implementation into the library. At the end a couple of examples are given, togheter with a comparison between SVR and SVESMs." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/02_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-14T15:07:04+02:00" />
+<meta property="article:modified_time" content="2020-06-14T15:07:04+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+
+<meta name="twitter:title" content="GSoC week 2: Support Vector Regression in Echo State Networks"/>
+<meta name="twitter:description" content="The second week of the Google Summer of Code project with ReservoirComputing.jl dealt with the implementation of a Support Vector based regression for the Echo State Network model, resulting in the Support Vector Echo-State Machine (SVESM). In this post we will quickly touch on the theory behind Support Vector Regression (SVR), and then we will see the results of the implementation into the library. At the end a couple of examples are given, togheter with a comparison between SVR and SVESMs."/>
+<meta name="application-name" content="Francesco Martinuzzi">
+<meta name="apple-mobile-web-app-title" content="Francesco Martinuzzi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://martinuzzifrancesco.github.io/02_gsoc_week/" /><link rel="prev" href="https://martinuzzifrancesco.github.io/01_gsoc_week/" /><link rel="next" href="https://martinuzzifrancesco.github.io/03_gsoc_week/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "GSoC week 2: Support Vector Regression in Echo State Networks",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/martinuzzifrancesco.github.io\/02_gsoc_week\/"
+        },"image": ["https:\/\/martinuzzifrancesco.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1558 ,
+        "url": "https:\/\/martinuzzifrancesco.github.io\/02_gsoc_week\/","datePublished": "2020-06-14T15:07:04+02:00","dateModified": "2020-06-14T15:07:04+02:00","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/martinuzzifrancesco.github.io\/images\/avatar.png",
+                    "width":  892 ,
+                    "height":  892 
+                }},"author": {
+                "@type": "Person",
+                "name": "Francesco Martinuzzi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="What have I done"> Posts </a><a class="menu-item" href="/about/" title="Who am I"> About </a><a class="menu-item" href="/research/" title="What do I do"> Research </a><a class="menu-item" href="/contact/" title="How to reach me"> Contact </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Francesco Martinuzzi">Francesco Martinuzzi</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="What have I done">Posts</a><a class="menu-item" href="/about/" title="Who am I">About</a><a class="menu-item" href="/research/" title="What do I do">Research</a><a class="menu-item" href="/contact/" title="How to reach me">Contact</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">GSoC week 2: Support Vector Regression in Echo State Networks</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Francesco Martinuzzi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="14146-614-06">14146-614-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1558 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#support-vector-regression">Support Vector Regression</a></li>
+    <li><a href="#support-vector-echo-state-machines">Support Vector Echo State Machines</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#noiseless-training-and-testing">Noiseless training and testing</a></li>
+    <li><a href="#noisy-training-and-noiseless-testing">Noisy training and noiseless testing</a></li>
+    <li><a href="#noisy-training-and-testing">Noisy training and testing</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>The second week of the Google Summer of Code project with ReservoirComputing.jl dealt with the implementation of a Support Vector based regression for the Echo State Network model, resulting in the Support Vector Echo-State Machine (SVESM). In this post we will quickly touch on the theory behind Support Vector Regression (SVR), and then we will see the results of the implementation into the library. At the end a couple of examples are given, togheter with a comparison between SVR and SVESMs.</p>
+<h1 id="theoretical-background">Theoretical Background</h1>
+<h2 id="support-vector-regression">Support Vector Regression</h2>
+<p>What follows is just an overview of the theory behind SVR, which takes for granted a priori knowledge of the reader of the more general concepts of Support Vector Machines. A more knowledgable and in depth exposition can be found in <a href="#1" rel="">[1]</a> and <a href="#2" rel="">[2]</a>. Most of the information presented in this section is taken from these papers unless stated otherwise.</p>
+<p>In a general setting, a regression task can be expressed as the minimization of the following primal objective function:
+$$C \sum_{j=1}^{N}L[\textbf{x}_j, y_{dj}, f ] + ||\textbf{w}||^2$$
+where</p>
+<ul>
+<li>\(L\) is a general loss function</li>
+<li>\(f\) is the prediction function defined by \(\textbf{W}\) and \(b\)</li>
+<li>\(C\) is a regularization constant</li>
+</ul>
+<p>If the loss function is quadratic the objective function can be minimized by means of linear algebra, and the methodology is called Ridge Regression.</p>
+<p>The most used function in SVR is called \(\epsilon\)-insensitive loss function <a href="#3" rel="">[3]</a>:</p>
+<p>$$L = 0 \ \text{ if } |f(x)-y| &lt; \epsilon$$
+$$L = |f(x)-y| - \epsilon \text{ otherwise }$$</p>
+<p>More specifically we can consider the equation</p>
+<p>$$\text{min}||\textbf{w}||^2+C\sum_{j=1^{N_t}}(\xi _j+\hat{\xi}_j)$$</p>
+<p>with constraints (for \(j=1,&hellip;,N_t\)):
+$$(\textbf{w}^T \textbf{x}_j+b)-y_j \le \epsilon - \xi_j$$
+$$y_j-(\textbf{w}^T \textbf{x}_j+b) \le \epsilon - \xi_j$$
+$$\xi _j,\hat{\xi}_j \ge 0$$</p>
+<p>the solution of which can be found using the following dual problem</p>
+<p>$$\text{min}_{\alpha , \alpha^*} \frac{1}{2} \sum_{i, j = 1}^{N_t}(\alpha_i-\alpha_i^*)(\alpha_j-\alpha_j^*)\textbf{x}^T\textbf{x}-\sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) y_i + \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*) \epsilon$$</p>
+<p>with constraints:</p>
+<p>$$0 \le \alpha _i, \alpha _i^* \le C, \sum_{i=1}^{N_t}(\alpha_i-\alpha_i^*)=0$$</p>
+<p>We can clearly see that to solve this task one has to resort to quadratic programming. The solution will have the form</p>
+<p>$$f(\textbf{x}) = \sum_{i=1}^{N_p}(\alpha_i-\alpha_i^*) k(\textbf{x}_i, \textbf{x})$$</p>
+<p>where \(k\) is a so-called kernel function, an implicit mapping of the data into an higher dimension, used to turn a non linear problem into a linear one. This is the &ldquo;kernel trick&rdquo;, where the mapping is not explicitly done, but is obtained using function that only require the computation of the inner products. Common kernels includes:</p>
+<ul>
+<li>Linear \( k(\textbf{x}_i, \textbf{x}_j) = \textbf{x}_i \cdot \textbf{x}_j\)</li>
+<li>Polynomial \(k(\textbf{x}_i, \textbf{x}_j) = (\textbf{x}_i \cdot \textbf{x}_j)^d \)</li>
+<li>Gaussian Radial Basis Function \( k(\textbf{x}_i, \textbf{x}_j) = e^{ \lambda ||\textbf{x}_i - \textbf{x}_j||^2} \)</li>
+</ul>
+<h2 id="support-vector-echo-state-machines">Support Vector Echo State Machines</h2>
+<p>We can see that the intuition behind the Reservoir Computing approach is similar to the kernel methods: using a fixed Recurrent Neural Network (for the case of the ESN) we are also mapping the input into a higher dimension. Therefore the connection between the two models was almost immediate and the idea developed in <a href="#4" rel="">[4]</a> was to perform a linear SVR in the higer dimensional reservoir state space.</p>
+<p>In the paper different loss function are analized: quadratic loss function, \( \epsilon \)-insensitive loss function and the Huber loss function. A new method of prediction is also proposed, called the direct method. This method is a variation of the one step ahead prediction, in which the desired output is not the next step, but a \( h \) steps ahead one. The input-output training sequences can be described as \( \textbf{d}(k), \textbf{x}(k+h), k=1, 2, 3,&hellip;, N_t \) where \( \textbf{d}(k) \) is the embedding of the target time series and \( \textbf{x}(k+h) \) is the \( h \) steps ahead target output for training/testing.</p>
+<h1 id="implementation-in-reservoircomputingjl">Implementation in ReservoirComputing.jl</h1>
+<p>The implementation of SVESM into the library is done leveraging the LIBSVM.jl package, a wrapper for the <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/" target="_blank" rel="noopener noreffer">package</a> of the same name written in C++. With this we were able to implement the \( \epsilon \)-insensitive loss function based SVR, creating a new <code>SVESMtrain</code> function as well as a <code>SVESM_direct_predict</code> function. The <code>SVESMtrain</code> takes as input</p>
+<ul>
+<li>svr: a <code>AbstractSVR</code> object that can be both <code>EpsilonSVR</code> or <code>NuSVR</code>. This implementation also allows the user to choose a kernel other than the linear one like the one used in the paper. Actually in comparisons done in other papers, different kernels have been used with SVESMs.</li>
+<li>esn: the previously constructed ESN</li>
+<li>y_target: the one-dimensional target output \( \textbf{x}(k+h) \)</li>
+</ul>
+<p>The <code>SVESM_direct_predict</code> function takes as input</p>
+<ul>
+<li>esn: the previously constructed ESN</li>
+<li>test_in: the testing portion of the input data \( \textbf{d}(k) \)</li>
+<li>m: the output from <code>SVESMtrain</code></li>
+</ul>
+<p>The quadratic loss function and Huber loss function are already implemented and the ESN can be trained using one of them through <code>ESNtrain(Ridge(), esn)</code> or <code>ESNtrain(RobustHuber(), esn)</code>.</p>
+<h1 id="examples">Examples</h1>
+<p>Following the example used in the paper we will try to predict the 84 steps ahead <a href="http://www.scholarpedia.org/article/Mackey-Glass_equation" target="_blank" rel="noopener noreffer">Mackey Glass</a> system. It can be described by</p>
+<p>$$\frac{dx}{dt} = \beta x(t)+\frac{\alpha x(t-\delta)}{1+x(t-\delta)^2}$$</p>
+<p>and the values adopted in <a href="#4" rel="">[4]</a> are</p>
+<ul>
+<li>\(\beta = -0.1 \)</li>
+<li>\(\alpha = 0.2 \)</li>
+<li>\(\delta = 17 \)</li>
+</ul>
+<p>The timeseries is then embedded</p>
+<p>$$\textbf{d}(k) = [x(k), x(k-\tau), x(k-2 \tau), x(k-3 \tau)]$$
+with dimension 4 and \(\tau = 6\). The target output is \( y_d(k) = x(k+84) \). We are going to evaluate the precision of our prediction using nrmse, defined as
+$$\textbf{nmrse} = \sqrt{\frac{\sum_{i=1}^{T_n}(y_d(i)-y(i))^2}{T_n \cdot \sigma ^2}}$$</p>
+<p>where</p>
+<ul>
+<li>\(y_d(i) \) is the target value</li>
+<li>\(y(i) \) is the predicted value</li>
+<li>\(T_d \) is the number of test examples</li>
+<li>\(\sigma ^2 \) is the variance of the original time series</li>
+</ul>
+<p>The data is obtained using Runge Kutta of order 4 with a stepsize of 0.1.</p>
+<p>We will perform three tests, and in all three we are also going to give the results of SVR using different kernel to make a comparison with the results obtained by SVESM. The first test is conducted on noiseless test and training samples. In the second one we will add noise in the training portion of \( \textbf{d}(k) \), and in the last noise will be added both in training and testing. The target values remain noiseless in all three tests. The noise level is determined by the ratio of the standard deviation of the noise and the signal standard deviation, and it is chosen to be 20%.</p>
+<p>Before the exposition of the results we need to address the fact that sadly in the original paper only a few parameters are given: the size of the reservoir, sparseness and spectral radius of the reservoir matrix and the scaling of the input weights. Missing parameters like \( C \) or \( \epsilon \) for the SVESM training of course means that our results are not comparable with those showed in the paper. Nevertheless, using the default parameters, the results obtained show that the model proposed can outperform SVR with both polynomial and radial basis kernels in all three tests.</p>
+<p>The parameters used for the ESN are as follows</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="k">const</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">84</span>
+
+<span class="k">const</span> <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">700</span>
+<span class="k">const</span> <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="k">const</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
+<span class="k">const</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.98</span>
+<span class="k">const</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.25</span>
+
+<span class="k">const</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="k">const</span> <span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLADefault</span><span class="p">()</span>
+<span class="k">const</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
+ 
+<span class="n">W</span> <span class="o">=</span> <span class="n">init_reservoir_givensp</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sparsity</span><span class="p">)</span>
+<span class="n">W_in</span> <span class="o">=</span> <span class="n">init_dense_input_layer</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">train_in</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sigma</span><span class="p">)</span>
+<span class="n">esn</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">train_in</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">nla_type</span><span class="p">,</span> <span class="n">extended_states</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="noiseless-training-and-testing">Noiseless training and testing</h2>
+<p>Using a dataset of lenght 500 we can see that the results for the noiseless training and testing are</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">SVESM nmrse for the noiseless test: 0.343
+SVM Poly kernel nmrse for the noiseless test: 0.489
+SVM RadialBasis kernel nmrse for the noiseless test: 0.393
+</code></pre></td></tr></table>
+</div>
+</div><p>We can also plot the results to better appreciate the results (the lenght of the prediction chosen for the plots is higher in order to better visualize the differences in trajectories):</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png, https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png 1.5x, https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/84597690-fd21c480-ae65-11ea-9fc1-5a8219c3e65f.png"
+        title="svesm_noiseless_comparison" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png, https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png 1.5x, https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/84597698-0874f000-ae66-11ea-9615-f9e5af3ce26c.png"
+        title="svm_noiseless_comparison" /></p>
+<p>From the results it is clear that the SVESM performs better.</p>
+<h2 id="noisy-training-and-noiseless-testing">Noisy training and noiseless testing</h2>
+<p>Adding normally distributed white noise to the training input dataset we obtain the following results for the nmrse:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Training on noisy data and testing on noiseless data...
+SVESM nmrse for noisy training and noiseless testing: 0.415
+SVM Poly kernel nmrse for noisy training and noiseless testing: 0.643
+SVM RadialBasis kernel nmrse for noisy training and noiseless testing: 0.557
+</code></pre></td></tr></table>
+</div>
+</div><p>The plots are</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png, https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png 1.5x, https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/84598112-918d2680-ae68-11ea-925c-b507e8d3ad12.png"
+        title="svesm_noisytrain_comparison" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png"
+        data-srcset="https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png, https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png 1.5x, https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png 2x"
+        data-sizes="auto"
+        alt="https://user-images.githubusercontent.com/10376688/84598119-97830780-ae68-11ea-96a6-dbbf3e4b9f16.png"
+        title="svm_noisytrain_comparison" /></p>
+<p>Also in this case the performance of the SVESM is superior to SVR.</p>
+<h2 id="noisy-training-and-testing">Noisy training and testing</h2>
+<p>For the last comparison the results are as follows</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Training and testing on noisy data...
+SVESM nmrse for noisy training and testing: 0.439
+SVM Poly kernel nmrse for noisy training and testing: 0.724
+SVM RadialBasis kernel nmrse for noisy training and testing: 0.648
+</code></pre></td></tr></table>
+</div>
+</div><p>And in this case as well the proposed model outperforms SVR.</p>
+<p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don&rsquo;t hesitate to contact me!</p>
+<h2 id="references">References</h2>
+<p><a id="1">[1]</a>
+Drucker, Harris, et al. &ldquo;Support vector regression machines.&rdquo; Advances in neural information processing systems. 1997.</p>
+<p><a id="2">[2]</a>
+Smola, Alex J., and Bernhard Schölkopf. &ldquo;A tutorial on support vector regression.&rdquo; Statistics and computing 14.3 (2004): 199-222.</p>
+<p><a id="3">[3]</a>
+VladimirN. Vapnik, The Nature of Statistical Learning Theory, Springer, 1995.</p>
+<p><a id="4">[4]</a>
+Shi, Zhiwei, and Min Han. &ldquo;Support vector echo-state machine for chaotic time-series prediction.&rdquo; IEEE transactions on neural networks 18.2 (2007): 359-372.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 14146-614-06</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/02_gsoc_week/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/01_gsoc_week/" class="prev" rel="prev" title="GSoC week 1: lasso, Elastic Net and Huber loss"><i class="fas fa-angle-left fa-fw"></i>GSoC week 1: lasso, Elastic Net and Huber loss</a>
+            <a href="/03_gsoc_week/" class="next" rel="next" title="GSoC week 3: Echo State Gaussian Processes">GSoC week 3: Echo State Gaussian Processes<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Francesco Martinuzzi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
