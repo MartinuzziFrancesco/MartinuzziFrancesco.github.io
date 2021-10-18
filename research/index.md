@@ -15,6 +15,11 @@ _14th Modelica Conference 2021, (2021)_
 - **_Chaotic time series predictions with ReservoirComputing.jl_**. [[Video](https://www.youtube.com/watch?v=kEx_OqOu9dI)] <br>
 _JuliaCon 2021, (2021)_
 
+# Notable Software
+- [ReservoirComputing.jl](https://github.com/SciML/ReservoirComputing.jl): Julia implementation of a vast range of different Reservoir Computing algorithms.
+- [CellularAutomata.jl](https://github.com/MartinuzziFrancesco/CellularAutomata.jl): lightweight Julia implementation of Cellular Automata, both one dimensional and two dimensional.
+
+
 # Conferences and Summer Schools
 - [JuliaCon 2021](https://juliacon.org/2021/): attend as speaker
 - [Arpa-e Summit 2021](https://www.arpae-summit.com/): attended as awardee with Julia Computing
