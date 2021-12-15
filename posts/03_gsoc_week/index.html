@@ -115,7 +115,7 @@ An usual choice for the mean function is the zero mean function \( m(\textbf{x} 
 <p>$$y_i \sim \mathcal{N} (f(\textbf{x}_i), \sigma ^2), i=1,&hellip;,N$$</p>
 <p>Once defined mean and kernel functions one can obtain the predicted mean and variance:
 $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{-1}\textbf{y}$$</p>
-<p>$$\sigma ^2 _* = k(\textbf{x}_*, \textbf{x} _*) - \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{-1} \textbf{k}(\textbf{x}_*)$$</p>
+<p>$$\sigma ^2 _* = k(\textbf{x}_<em>, \textbf{x} _</em>) - \textbf{k}(\textbf{x}_<em>)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{-1} \textbf{k}(\textbf{x}_</em>)$$</p>
 <p>where \( \textbf{K}(X, X) \) is the matrix of the covariances (design matrix). The optimization of the hyperparameters is usually done by maximization of the model marginal likelihood.</p>
 <h1 id="echo-state-gaussian-processes">Echo State Gaussian Processes</h1>
 <p>Using the definition given in the paper <a href="#2" rel="">[2]</a> an ESGP is a GP the covariance of which is taken as a kernel function over the states of a ESN, postulated to capture the dynamics within a set of sequentially interdependent observations. In this case the feature mapping is explicit, no kernel trick is adopted.</p>
