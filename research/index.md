@@ -11,7 +11,7 @@ Anantharaman, R., AbdelRehim, A., **Martinuzzi, F.**, Yalburgi, S., Fischer, K.,
 _AAAI 2022 Workshop on AI for Design and Manufacturing (ADAM), (2022)_
 
 - **_Composing Modeling and Simulation with Machine Learning in Julia._** [[arXiv](https://arxiv.org/abs/2105.05946), [pdf](https://arxiv.org/pdf/2105.05946.pdf)] <br>
-Rackauckas, C., Anantharaman, R., Edelman, A., Gowda, S., Gwozdz, M., Jain, A., Laughman, C., Ma, Y., **Martinuzzi, F.**, Pal, A. and Rajput, U. <br>
+Rackauckas, C., Anantharaman, R., Edelman, A., Gowda, S., Gwozdz, M., Jain, A., Laughman, C., Ma, Y., **Martinuzzi, F.**, Pal, A., Rajput, U., Saba, E. and Shah, V. B. <br>
 _14th Modelica Conference 2021, (2021)_ 
 
 
