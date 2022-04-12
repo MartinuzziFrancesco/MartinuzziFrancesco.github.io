@@ -9,10 +9,10 @@
 <meta property="og:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.
 Gaussian Process Regression The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-06-21T16:12:50+02:00" />
 <meta property="article:modified_time" content="2020-06-21T16:12:50+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -178,7 +178,7 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <p>The ESN parameters are as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -193,7 +193,7 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">6000</span>
 <span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span><span class="mi">1500</span>
 
@@ -212,12 +212,12 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <p>The results are as follows:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">ESGP RBF rmse: 0.0298
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ESGP RBF rmse: 0.0298
 ESN ridge rmse: 0.1718
 SVESM RBF rmse: 0.1922
 </code></pre></td></tr></table>
@@ -240,7 +240,7 @@ Rasmussen, Carl Edward. &ldquo;Gaussian processes in machine learning.&rdquo; Su
 <p><a id="2">[2]</a>
 Chatzis, Sotirios P., and Yiannis Demiris. &ldquo;Echo state Gaussian process.&rdquo; IEEE Transactions on Neural Networks 22.9 (2011): 1435-1445.</p>
 <p><a id="3">[3]</a>
-<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/" target="_blank" rel="noopener noreffer">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
+<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">

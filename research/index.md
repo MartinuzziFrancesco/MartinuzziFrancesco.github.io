@@ -6,11 +6,14 @@
 My research is focused on analyzing the dynamics of extreme events and their consequences on the environment. For this task I am using a particular Machine Learning family of models, called Reservoir Computing. More broadly, my interests vary from applications of Machine Learning, to Dynamical Systems and Self Organization. I like every thing computational, and odds are if something has to do with programming I am going to enjoy it. 
 
 # Pubblications
-- **_Composable and Reusable Neural Surrogates to Predict System Response of Causal Model Components_** <br>
+- **_ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models_** [[arXiv](https://arxiv.org/abs/2204.05117)], <br>
+**Martinuzzi, F.**, Rackauckas, C., AbdelRehim, A., Mahecha, M. D. and Mora, K. <br>
+_arXiv preprint (2022)_ 
+- **_Composable and Reusable Neural Surrogates to Predict System Response of Causal Model Components_** [[pdf](https://openreview.net/pdf?id=CFB_X4D_gQb)]<br>
 Anantharaman, R., AbdelRehim, A., **Martinuzzi, F.**, Yalburgi, S., Fischer, K., Hertz, G., de Vos, P., Laughman, C., Ma, Y., Shah, V., Edelman, A. and Rackauckas, C. <br>
 _AAAI 2022 Workshop on AI for Design and Manufacturing (ADAM), (2022)_
 
-- **_Composing Modeling and Simulation with Machine Learning in Julia._** [[arXiv](https://arxiv.org/abs/2105.05946), [pdf](https://arxiv.org/pdf/2105.05946.pdf)] <br>
+- **_Composing Modeling and Simulation with Machine Learning in Julia_** [[arXiv](https://arxiv.org/abs/2105.05946)] <br>
 Rackauckas, C., Anantharaman, R., Edelman, A., Gowda, S., Gwozdz, M., Jain, A., Laughman, C., Ma, Y., **Martinuzzi, F.**, Pal, A., Rajput, U., Saba, E. and Shah, V. B. <br>
 _14th Modelica Conference 2021, (2021)_ 
 

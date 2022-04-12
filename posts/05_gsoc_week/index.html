@@ -8,10 +8,10 @@
         <title>Data-driven prediction of chaotic systems: comparison of Echo State Network variations  - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="Data-driven prediction of chaotic systems: comparison of Echo State Network variations " />
 <meta property="og:description" content="This post is meant to be a high level comparison of different variations of the Echo State Network (ESN) model, implemented in the first month of Google Summer of Code. The theoretical background for all the proposed models has already been covered in past posts, so we will not touch on it in this one to keep things as thight as possible; if one is interested all my previous posts can be found here." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/05_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/05_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-07-05T21:54:29+02:00" />
 <meta property="article:modified_time" content="2020-07-05T21:54:29+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -120,7 +120,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -130,7 +130,7 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">rmse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">rmse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
     <span class="n">rmse</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">rmse</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">yt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">^</span><span class="mf">2.0</span>
@@ -145,7 +145,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -157,7 +157,7 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Images</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Images</span>
 <span class="k">function</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
     <span class="n">maxs_cart</span> <span class="o">=</span> <span class="n">findlocalmaxima</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
     <span class="n">maxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="k">in</span> <span class="n">maxs_cart</span><span class="p">]</span>
@@ -172,7 +172,7 @@
 </div><p>The data used for all the training and prediction for the ESN in this work is obtained in the following way:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -195,7 +195,7 @@
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">u0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]</span>                       
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">u0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]</span>                       
 <span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2000.0</span><span class="p">)</span>                      
 <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">28.0</span><span class="p">,</span><span class="mi">8</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span>
 <span class="c">#define lorenz system </span>
@@ -223,7 +223,7 @@
 <p>The Ordinary Least Squares (OLS) trained ESN is the model used in <a href="#1" rel="">[1]</a> to accurately predict the Lorenz system in the short term and replicate its climate in the long term. We will use the same construction given in their paper, and most of these parameters will be used also for the other variation presented in this post. The parameters and the training for the ESN are as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -243,7 +243,7 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
 <span class="k">using</span> <span class="n">Random</span> 
 
 <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
@@ -265,20 +265,20 @@
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">1.963047 seconds (5.79 M allocations: 310.671 MiB, 4.29% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">1.963047 seconds (5.79 M allocations: 310.671 MiB, 4.29% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>We can plot a comparison to have a visual feedback for the coordinates</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -293,24 +293,24 @@
 From just a quick eye test we can see that the short term prediction is rather good, and in the long term the behaviour seems to be in line with the numerical solution. For the short term prediction we are going to use the already defined <code>rmse</code> function an all three the variables to check the accuracy. The arbitrary length of the short time horizon is set to 400 and will stay the same all throughout this work.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.9484793317137318
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.9484793317137318
 1.4450094312490096
 1.769172087306121
 </code></pre></td></tr></table>
@@ -319,7 +319,7 @@ From just a quick eye test we can see that the short term prediction is rather g
 <p>To have quantitative confirmation that our models is capable of predicting a reliable synthetic dataset we are going to predict the system using the <code>return_map</code> dataset, and then plot the consecutives maxima of the \( z(t) \) coordinate.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -328,7 +328,7 @@ From just a quick eye test we can see that the short term prediction is rather g
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -350,7 +350,7 @@ From just a quick eye test we can see that the short term prediction is rather g
 <p>One usual problem that can be encountered when dealing with OLS is the insurgence of numerical instabilities when inverting \( (\textbf{X} \textbf{X}^T) \) <a href="#2" rel="">[2]</a> where \( \textbf{X} \) is the feature matrix (states matrix in the case of ESNs). A solution to this is to apply a regularization to the loss function, and one of the most common is the \( L_2 \) regularization. This way we obtain what is called ridge regression or Tikhonov regularization. The ridge ESN is trained in an equal manner as the OLS ESN we discussed above, only setting a parameter <code>beta</code> different than zero. The parameter that we chose is by no mean optimized and it is chosen by manual search, and this holds sadly for all the parameters in the models here presented. In the Conclusions section we will talk a little more about this aspect of this work.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -367,7 +367,7 @@ From just a quick eye test we can see that the short term prediction is rather g
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
@@ -386,20 +386,20 @@ From just a quick eye test we can see that the short term prediction is rather g
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">2.223003 seconds (5.79 M allocations: 310.671 MiB, 2.85% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">2.223003 seconds (5.79 M allocations: 310.671 MiB, 2.85% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>This methods is just a little slower, as it has to be expected. It is still an acceptable by any means. Plotting the results we obtain:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -414,24 +414,24 @@ From just a quick eye test we can see that the short term prediction is rather g
 The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the short and long term.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">5.3658081215986
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">5.3658081215986
 6.552586461430827
 4.995926155420491
 </code></pre></td></tr></table>
@@ -439,7 +439,7 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 </div><p>It was clearly visible before that the short term behaviour was not as good as the standard counterpart. The long term predictions are still acceptable, as we can see here:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -448,7 +448,7 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -470,7 +470,7 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 <p>Another common regularization for the OLS regression is the \( L_1 \) regularization, resulting in a regression model called Lasso. This is a stronger regularization, and it shows from the results. The ESN is built in the same way as before, only this time the parameter <code>beta</code> indicates the Lasso regularizer. Since the expression doesn&rsquo;t have a closed form solution we will need a different solver, in this case <code>ProxGrad</code>. For this we will need to import a different package, called MLJLinearModels.jl.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -488,7 +488,7 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">MLJLinearModels</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">MLJLinearModels</span>
 <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
@@ -508,20 +508,20 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">24.400234 seconds (9.82 M allocations: 1.534 GiB, 1.17% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">24.400234 seconds (9.82 M allocations: 1.534 GiB, 1.17% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>The training time is slower than the couple of models we showed before. This difference is mainly to the already mentioned lack of closed form solution for the Lasso regression. Let us plot the results to start the analysis the results.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -536,24 +536,24 @@ The behaviour is similar to the standard ESN, but let&rsquo;s take a look at the
 It is clear that this regularization is not capable of returning an accurate prediction, both short term and long term. Let&rsquo;s print the rmse</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">11.769042467212172
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">11.769042467212172
 13.599065187854675
 10.651859641213985
 </code></pre></td></tr></table>
@@ -561,7 +561,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div><p>and plot the return map</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -570,7 +570,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -594,7 +594,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 <p>Again leveraging the MLJLinearModels package we can construct our ESN</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -611,7 +611,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
@@ -630,20 +630,20 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">9.397286 seconds (14.37 M allocations: 1.748 GiB, 2.88% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">9.397286 seconds (14.37 M allocations: 1.748 GiB, 2.88% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>The training time is less than the Lasso regularization, but more than the OLS and Ridge training. Plotting the data we obtain:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -658,24 +658,24 @@ It is clear that this regularization is not capable of returning an accurate pre
 <p>Let&rsquo;s go explore the rmse for the short term:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">5.36580225918975
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">5.36580225918975
 6.552573774882654
 4.995989255679152
 </code></pre></td></tr></table>
@@ -683,7 +683,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div><p>The results seem similar to the Ridge ESN. For the long term the return map shows the following:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -692,7 +692,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -714,7 +714,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 <p>Since the Lasso ESN showed the worst results of all the model seen until now this could indicate that the \( L_1 \) norm is not suited for this task. To have confirmation of this intuition we can train the Huber ESN with the \( L_1 \) norm to see if it yields better results than the Lasso ESN.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -731,7 +731,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
@@ -750,20 +750,20 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">30.699361 seconds (12.60 M allocations: 3.398 GiB, 1.40% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">30.699361 seconds (12.60 M allocations: 3.398 GiB, 1.40% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>As expected the training time is in line with the Lasso ESN. Plotting the results we can see that sadly they are worst than the Lasso counterpart</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -778,24 +778,24 @@ It is clear that this regularization is not capable of returning an accurate pre
 <p>Calculating the rmse for the first 400 steps returns</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">8.247263444106135
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">8.247263444106135
 9.896322405158461
 12.569601968865513
 </code></pre></td></tr></table>
@@ -803,7 +803,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div><p>And the return map clearly shows a periodic long term behaviour:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -812,7 +812,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -834,7 +834,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 <p>For all the model proposed we used the standard construction of the reservoir, based on the rescaling of the spectral radius to be less than a given value. In literature there are other alternatives explored and in the ReservoirComputing.jl package is present the implementation of an algorithm for the construction of the reservoir matrix based on the Single Value Decomposition (SVD), proposed in <a href="#4" rel="">[4]</a>. We are going to give the results using this construction only for the OLS ESN, but a more wide study could be done comparing the performances of all the proposed models using the two different implementations of the reservoir.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -853,7 +853,7 @@ It is clear that this regularization is not capable of returning an accurate pre
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">max_value</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
@@ -874,20 +874,20 @@ It is clear that this regularization is not capable of returning an accurate pre
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.994207 seconds (3.18 M allocations: 188.436 MiB, 3.64% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.994207 seconds (3.18 M allocations: 188.436 MiB, 3.64% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>The training time is as fast as the normal OLS ESN, as it is to be expected. Plotting the result we obtain</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -902,24 +902,24 @@ It is clear that this regularization is not capable of returning an accurate pre
 From the plot it seems that the model is producing an acceptable Lorenz system surrogate dataset. The short term will not be the best but in the long term maybe the model could behave as the OLS ESN.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">8.299351042330624
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">8.299351042330624
 9.954728072605832
 9.507147274321735
 </code></pre></td></tr></table>
@@ -927,7 +927,7 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 </div><p>Not as good as the normal reservoir counterpart, but let&rsquo;s look at the return map for the long term behaviour:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -936,7 +936,7 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -960,7 +960,7 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 <p>Starting from the kernel used in the original paper, we also set the non linear algorithm to the default one, equal to none. The behaviour with different algorithms for this family of models has not been investigated and could be subject of future works, but for now we will just limit the work to the standard one. Keeping the other parameters equal the ESGP can be built in the following way</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -982,7 +982,7 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">GaussianProcesses</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">GaussianProcesses</span>
 <span class="c">#model parameters</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
@@ -1006,20 +1006,20 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">43.323255 seconds (6.81 M allocations: 2.053 GiB, 2.53% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">43.323255 seconds (6.81 M allocations: 2.053 GiB, 2.53% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>The slowest time so far, but maybe the results will be worth the extra seconds it took to train</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -1034,24 +1034,24 @@ From the plot it seems that the model is producing an acceptable Lorenz system s
 The results do not look bad, in the short term sadly emerges a discrepancy early on that will lower the rmse values</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">10.5883475480527
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">10.5883475480527
 11.759694995689005
 6.745353916847517
 </code></pre></td></tr></table>
@@ -1059,7 +1059,7 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 </div><p>As expected the rmses are not the greatest, but the model can still recover with a nice display of long term behaviour</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1068,7 +1068,7 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -1090,7 +1090,7 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 <p>Another common kernel is the Matern kernel, and training the ESGP using this kernel is a straightforward process, identical to the one we just followed for the Radial Basis kernel:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1111,7 +1111,7 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="c">#model parameters</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="c">#model parameters</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -1134,20 +1134,20 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">40.309179 seconds (1.08 M allocations: 1.761 GiB, 7.58% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">40.309179 seconds (1.08 M allocations: 1.761 GiB, 7.58% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>Plotting the results</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -1162,24 +1162,24 @@ The results do not look bad, in the short term sadly emerges a discrepancy early
 The results seem similar to the ones obtained using the Radial Basis kernel. To be sure of this we need to calculate the rmse</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">7.150484170664864
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">7.150484170664864
 8.520570924338477
 7.037257939507858
 </code></pre></td></tr></table>
@@ -1187,7 +1187,7 @@ The results seem similar to the ones obtained using the Radial Basis kernel. To 
 </div><p>The lower rmses shows a better short term prediction. Plotting the return map to analize the long term results</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1196,7 +1196,7 @@ The results seem similar to the ones obtained using the Radial Basis kernel. To 
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>
@@ -1218,7 +1218,7 @@ The return map is not a clear cut as we saw in other models, but for the majorit
 <p>The last kernel for the ESGP is the Polynomial kernel. We are now familiar with the construction</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1239,7 +1239,7 @@ The return map is not a clear cut as we saw in other models, but for the majorit
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="c">#model parameters</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="c">#model parameters</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -1262,20 +1262,20 @@ The return map is not a clear cut as we saw in other models, but for the majorit
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">16.979100 seconds (4.27 M allocations: 3.025 GiB, 10.13% gc time)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">16.979100 seconds (4.27 M allocations: 3.025 GiB, 10.13% gc time)
 </code></pre></td></tr></table>
 </div>
 </div><p>Plotting the results</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">plot</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">output</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;predicted&#34;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -1290,24 +1290,24 @@ The return map is not a clear cut as we saw in other models, but for the majorit
 we can see a nice prediction on the short term. Using once again the rmse</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">400</span><span class="p">]))</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.9128150765679983
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.9128150765679983
 1.3969462542792563
 1.6437787377104938
 </code></pre></td></tr></table>
@@ -1315,7 +1315,7 @@ we can see a nice prediction on the short term. Using once again the rmse</p>
 </div><p>The short term rmse are the best out of the ESGP kernel used until now. Taking a look also to the long term we can see the following</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1324,7 +1324,7 @@ we can see a nice prediction on the short term. Using once again the rmse</p>
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">output_map</span><span class="p">,</span> <span class="n">sigma_map</span> <span class="o">=</span> <span class="n">ESGPpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">return_map_size</span><span class="p">,</span> <span class="n">gp</span><span class="p">)</span>
 <span class="n">max_esn</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">output_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">max_ode</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">return_map</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">])</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">max_ode</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_ode</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;Actual&#34;</span><span class="p">)</span>

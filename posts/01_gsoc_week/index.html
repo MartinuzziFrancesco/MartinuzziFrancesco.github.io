@@ -8,10 +8,10 @@
         <title>GSoC week 1: lasso, Elastic Net and Huber loss - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 1: lasso, Elastic Net and Huber loss" />
 <meta property="og:description" content="The first week tackled the implementation of different kind of linear regression for the creation of the last layer in the Echo State Network. More specifically were added the possibility to add a \( l_1 \) regularization to the loss function (Lasso regression), both \( l_1 \) and \( l_2 \) regularizations (Elastic Net regression) and also added the possibility to choose the Huber loss function. As in the last post we will start from a brief theoretical background to explain the code and then we will showcase some examples taken from the literature." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/01_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/01_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-06-07T19:06:37+02:00" />
 <meta property="article:modified_time" content="2020-06-07T19:06:37+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -150,7 +150,7 @@ andit exhibits chaotic behavior for \( a = 0.2 \), \( b = 0.2 \) and \( c = 5.7 
 <p>The parameter for the ESN are then set as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -169,7 +169,7 @@ andit exhibits chaotic behavior for \( a = 0.2 \), \( b = 0.2 \) and \( c = 5.7 
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
 <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
 
 <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.05</span>
@@ -217,7 +217,7 @@ Xu, Meiling, and Min Han. &ldquo;Adaptive elastic echo state network for multiva
 <p><a id="4">[4]</a>
 Guo, Yu, et al. &ldquo;Robust echo state networks based on correntropy induced loss function.&rdquo; Neurocomputing 267 (2017): 295-303.</p>
 <p><a id="5">[5]</a>
-<a href="http://www.scholarpedia.org/article/Attractor_reconstruction" target="_blank" rel="noopener noreffer">http://www.scholarpedia.org/article/Attractor_reconstruction</a></p>
+<a href="http://www.scholarpedia.org/article/Attractor_reconstruction">http://www.scholarpedia.org/article/Attractor_reconstruction</a></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">

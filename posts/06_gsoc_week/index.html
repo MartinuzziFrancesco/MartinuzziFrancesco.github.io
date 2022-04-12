@@ -8,10 +8,10 @@
         <title>GSoC week 6: minimum complexity echo state network - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 6: minimum complexity echo state network" />
 <meta property="og:description" content="Up until now we used reservoir generated mainly through a random process, and this approach requires a lot of fine parameter tuning. And even when the optimal parameters are found, the prediction is run-dependent and can show different results with different generations of the reservoir. Is this the only way possible to contruct an Echo State Network (ESN)? Is there a deterministic way to build a ESN? These are the question posed in [1], and the following post is an illustration of the implementation in ReservoirComputing." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/06_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/06_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-07-12T14:37:22+02:00" />
 <meta property="article:modified_time" content="2020-07-12T14:37:22+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -133,7 +133,7 @@ $$ y_{n+1} = bx_n $$</p>
 <p>To obtain a dataset for the Henon map this time we will use the <a href="https://juliadynamics.github.io/DynamicalSystems.jl/latest/" target="_blank" rel="noopener noreffer">DynamicalSystems</a> package. Before starting the work we will need to download all the necessary utilies and import them:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -142,7 +142,7 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Pkg</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Pkg</span>
 <span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;ReservoirComputing&#34;</span><span class="p">)</span>
 <span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;Plots&#34;</span><span class="p">)</span>
 <span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;DynamicalSystems&#34;</span><span class="p">)</span>
@@ -153,7 +153,7 @@ $$ y_{n+1} = bx_n $$</p>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -161,7 +161,7 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
 <span class="k">using</span> <span class="n">Plots</span>
 <span class="k">using</span> <span class="n">DynamicalSystems</span>
 <span class="k">using</span> <span class="n">Statistics</span>
@@ -172,7 +172,7 @@ $$ y_{n+1} = bx_n $$</p>
 </div><p>Now we can generate the Henon map, which will be shifted by -0.5 and scaled by 2, in order to have consistency with the paper. At the same time we are going to wash out any initial transient and construct the training,  <code>train</code>, and testing, <code>test</code>, datasets, following the values given by the paper:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -184,7 +184,7 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">ds</span> <span class="o">=</span> <span class="n">Systems</span><span class="o">.</span><span class="n">henon</span><span class="p">()</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">ds</span> <span class="o">=</span> <span class="n">Systems</span><span class="o">.</span><span class="n">henon</span><span class="p">()</span>
 <span class="n">traj</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="mi">7000</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="o">&#39;</span>
 
@@ -200,7 +200,7 @@ $$ y_{n+1} = bx_n $$</p>
 <p>Now we can set the parameters for the construction of the ESN, for which we followed closely the ones given in the paper, outside for the ridge regression value. Note that since some values are corresponding to our default (activation function, alpha and non linear algorithm) we will omit them for clarity.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -212,7 +212,7 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">100</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -227,7 +227,7 @@ $$ y_{n+1} = bx_n $$</p>
 </div><p>We can now build both the standard ESN and three other ESNs based on the novel reservoir implementation. We are going to need the four of them for a comparison of the results:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -244,7 +244,7 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="c">#fixed seed for reproducibility</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="c">#fixed seed for reproducibility</span>
 <span class="nd">@time</span> <span class="n">W</span> <span class="o">=</span> <span class="n">init_reservoir_givensp</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sparsity</span><span class="p">)</span>
 <span class="n">W_in</span> <span class="o">=</span> <span class="n">init_dense_input_layer</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sigma</span><span class="p">)</span>
 <span class="n">esn</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="n">extended_states</span><span class="p">)</span>
@@ -263,13 +263,13 @@ $$ y_{n+1} = bx_n $$</p>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.012062 seconds (33 allocations: 359.922 KiB)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.012062 seconds (33 allocations: 359.922 KiB)
 0.000020 seconds (6 allocations: 78.359 KiB)
 0.000019 seconds (6 allocations: 78.359 KiB)
 0.000019 seconds (6 allocations: 78.359 KiB)
@@ -280,7 +280,7 @@ $$NMSE = \frac{&lt;||\hat{y}(t)-y(t)||^2&gt;}{&lt;||y(t)-&lt;y(t)&gt;||^2&gt;}$$
 where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \( &lt;\cdot&gt; \) indicates the empirical mean and \( ||\cdot|| \) is the Euclidean norm. A simple <code>NMSE</code> function is created:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -296,7 +296,7 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">NMSE</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">NMSE</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
     <span class="n">num</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">den</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">sums</span> <span class="o">=</span> <span class="p">[]</span>
@@ -315,7 +315,7 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 </div><p>Now we can iterate and test the output of all the different implementations in a one step ahead prediction task:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -323,7 +323,7 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">esns</span> <span class="o">=</span> <span class="p">[</span><span class="n">esn</span><span class="p">,</span> <span class="n">esndlr</span><span class="p">,</span> <span class="n">esndlrb</span><span class="p">,</span> <span class="n">esnscr</span><span class="p">]</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">esns</span> <span class="o">=</span> <span class="p">[</span><span class="n">esn</span><span class="p">,</span> <span class="n">esndlr</span><span class="p">,</span> <span class="n">esndlrb</span><span class="p">,</span> <span class="n">esnscr</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">esns</span>
     <span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict_h_steps</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
@@ -333,13 +333,13 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.000766235182367319
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.000766235182367319
 0.0013015853534120024
 0.0011355988458350088
 0.001843450482139491
@@ -351,10 +351,10 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 <p>To start we will plot the actual data, in order to have something to compare the resuls to:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
 </div><p><img
@@ -368,12 +368,12 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 <p>Now let&rsquo;s see if the standard ESN is able to predict correctly this attractor</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;ESN&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
@@ -389,12 +389,12 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 <p>Not bad, but we already know the capabilities of the ESN. We are here to test the minimum complexity construction, so let us start with DLR</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esndlr</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esndlr</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esndlr</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;ESN-DLR&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
@@ -410,12 +410,12 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
 <p>The predictions are not as clear cut as we would like, but the behaviour is manteined nevertheless. Actually impressive considering the simple construction of the reservoir. Trying the two other constructions gives the following:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esndlrb</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esndlrb</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esndlrb</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;ESN-DLRB&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>
@@ -430,12 +430,12 @@ where \( \hat{y}(t) \) is the readout output, \( y(t) \) is the target output, \
         title="ESN-DLRB" /></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esnscr</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esnscr</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esnscr</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
 <span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;ESN-SCR&#34;</span><span class="p">)</span>
 </code></pre></td></tr></table>

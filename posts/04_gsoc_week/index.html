@@ -8,10 +8,10 @@
         <title>GSoC week 4: SVD-based Reservoir - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 4: SVD-based Reservoir" />
 <meta property="og:description" content="The standard construction of the reservoir matrix \( \textbf{W} \) for Echo State Networks (ESN) is based on initializing \( \textbf{W} \) using specific schemes, usually generating random numbers and then rescaling it to make sure that the spectral radius is less or equal to a chosen number. This procedure is effective, but in literature other ways are explored. In this week we implemented a Singular Value Decomposition (SVD)-based algorithm, described in [1], that is capable of obtaining a sparse matrix suitable for the ESNs." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/04_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/04_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-06-28T21:02:54+02:00" />
 <meta property="article:modified_time" content="2020-06-28T21:02:54+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -121,7 +121,7 @@
 <p>Testing the SVD construction on the original ESN we can try to reproduce the Lorenz attractor, with similar parameters as given in the <a href="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/" target="_blank" rel="noopener noreffer">Introduction to Reservoir Computing</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -133,7 +133,7 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">max_value</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -176,7 +176,7 @@
 <p>The ESN parameters are as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -192,7 +192,7 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">6000</span>
 <span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span><span class="mi">1500</span>
 
@@ -211,7 +211,7 @@
 </div><p>The largest singular value was set equal to the spectral radius for the standard construction. Averaging on ten runs the results are as follows:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -222,7 +222,7 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">rmse ESGP:
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">rmse ESGP:
 Classic reservoir: 0.077
 SVD reservoir: 0.205
 rmse ridge ESN:

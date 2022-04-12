@@ -9,10 +9,10 @@
 <meta property="og:description" content="Continuing the work started last week we are going to further explore the capabilities of Reservoir Computing using Cellular Automata (CA) as the reservoir. As always a little theorical introduction is given and then we will illustrate the use of the model implemented in ReservoirComputing.jl.
 Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellular Automata (Conway&rsquo;s Game of Life) In the previous week we used Elementary CA (ECA) to train our model, and this time we want to see if we are able to obtain similar results using a two dimensional CA." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/08_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/08_gsoc_week/" />
+<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 <meta property="article:published_time" content="2020-07-26T18:14:43+02:00" />
 <meta property="article:modified_time" content="2020-07-26T18:14:43+02:00" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -120,39 +120,39 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 <p>We can obtain a GIF of the system using the package ReservoirComputing and Plots in a couple of lines of code: first let&rsquo;s import the packages</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
 <span class="k">using</span> <span class="n">Plots</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>We can now define the variables for the GoL CA, namely dimensions and generations, and defining the GoL object at the same time:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">generations</span> <span class="o">=</span> <span class="mi">250</span>
 <span class="nd">@time</span> <span class="n">gol</span> <span class="o">=</span> <span class="n">GameOfLife</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="kt">Bool</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">generations</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.091884 seconds (8 allocations: 2.394 MiB)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.091884 seconds (8 allocations: 2.394 MiB)
 </code></pre></td></tr></table>
 </div>
 </div><p>and now we can plot the obtiained GoL system:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -160,7 +160,7 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="nd">@gif</span> <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">generations</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="nd">@gif</span> <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">generations</span>
     <span class="n">heatmap</span><span class="p">(</span><span class="n">gol</span><span class="o">.</span><span class="n">all_runs</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="o">:</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">cgrad</span><span class="p">([</span><span class="ss">:white</span><span class="p">,</span><span class="ss">:black</span><span class="p">]),</span>
     <span class="n">legend</span> <span class="o">=</span> <span class="ss">:none</span><span class="p">,</span>
     <span class="n">axis</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span>
@@ -212,13 +212,13 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 <p>For example we will try to reproduce the 5 bit memory task, described <a href="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/" target="_blank" rel="noopener noreffer">last week</a>. If you want to follow along and experiment with the model, the data can be found <a href="https://github.com/SciML/ReservoirComputing.jl/files/4978264/5bit200.zip" target="_blank" rel="noopener noreffer">here</a>: the <code>5bitinput.txt</code> is the input data and the <code>5bitoutput</code> is the desired output. To read the data we can use the following</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">DelimitedFiles</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">DelimitedFiles</span>
 
 <span class="n">input</span> <span class="o">=</span> <span class="n">readdlm</span><span class="p">(</span><span class="s">&#34;./5bitinput.txt&#34;</span><span class="p">,</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">readdlm</span><span class="p">(</span><span class="s">&#34;./5bitoutput.txt&#34;</span><span class="p">,</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
@@ -227,7 +227,7 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 </div><p>Now that we have the data we can train the model and see if it is capable of solving the 5 bit memory task with a distractor period of 200.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -235,7 +235,7 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
 
 <span class="n">reca</span> <span class="o">=</span> <span class="n">RECA_TwoDim</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">110</span><span class="p">)</span>
 <span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">reca</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">;</span> <span class="n">train_data</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="kt">AbstractArray</span><span class="p">{</span><span class="kt">Float64</span><span class="p">},</span> <span class="n">output</span><span class="p">))</span>
@@ -245,10 +245,10 @@ Reservoir Computing with Two Dimensional Cellular Automata Two Dimensional Cellu
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">true
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">true
 </code></pre></td></tr></table>
 </div>
 </div><p>It seems that for architecture used in this example the task is easily solvable. A more deep investigation can be made iterating over different values of reservoir size, permutations and generations, but it can take some time. The results for 100 runs for some of the combinations are given in the table below:</p>
@@ -268,7 +268,7 @@ Yilmaz, Ozgur. &ldquo;Reservoir computing using cellular automata.&rdquo; arXiv 
 <p><a id="2">[2]</a>
 Gardner, Martin. &ldquo;Mathematical games: The fantastic combinations of John Conway’s new solitaire game “life”.&rdquo; Scientific American 223.4 (1970): 120-123.</p>
 <p><a id="3">[3]</a>
-Weisstein, Eric W. &ldquo;Moore Neighborhood.&rdquo; From MathWorld&ndash;A Wolfram Web Resource. <a href="https://mathworld.wolfram.com/MooreNeighborhood.html" target="_blank" rel="noopener noreffer">https://mathworld.wolfram.com/MooreNeighborhood.html</a></p>
+Weisstein, Eric W. &ldquo;Moore Neighborhood.&rdquo; From MathWorld&ndash;A Wolfram Web Resource. <a href="https://mathworld.wolfram.com/MooreNeighborhood.html">https://mathworld.wolfram.com/MooreNeighborhood.html</a></p>
 <p><a id="4">[4]</a>
 Wolfram, Stephen. A new kind of science. Vol. 5. Champaign, IL: Wolfram media, 2002.</p>
 <p><a id="5">[5]</a>
