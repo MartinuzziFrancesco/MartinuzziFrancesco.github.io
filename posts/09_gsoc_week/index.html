@@ -8,10 +8,10 @@
         <title>GSoC week 9: Cycle Reservoirs with Regular Jumps - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 9: Cycle Reservoirs with Regular Jumps" />
 <meta property="og:description" content="This week body of work is less then the usual amount, since most of my time was spent watching the incredible talks given at JuliaCon 2020. This was my first time attending and I just wanted to spend a few lines congratulating all the speakers for the amazing work they are doing with Julia, and most importantly I wanted to thank the organizers for the fantastic job they did: it really felt like an actual physical conference and the sense of community was truly awesome to experience." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/09_gsoc_week/" />
-<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/09_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-08-02T16:45:38+02:00" />
 <meta property="article:modified_time" content="2020-08-02T16:45:38+02:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -134,7 +134,7 @@ $$ y_{n+1} = bx_n $$</p>
 <p>To obtaine the data for out tests we are going to use DynamicalSystems.jl. Before starting the work let&rsquo;s download and inport all useful packages</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -142,34 +142,34 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Pkg</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;ReservoirComputing&#34;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;Plots&#34;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;DynamicalSystems&#34;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;LinearAlgebra&#34;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;Random&#34;</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Pkg</span>
+</span></span><span class="line"><span class="cl"><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;ReservoirComputing&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;Plots&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;DynamicalSystems&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;LinearAlgebra&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#34;Random&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
-<span class="k">using</span> <span class="n">Plots</span>
-<span class="k">using</span> <span class="n">DynamicalSystems</span>
-<span class="k">using</span> <span class="n">LinearAlgebra</span>
-<span class="k">using</span> <span class="n">Random</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Plots</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">DynamicalSystems</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">LinearAlgebra</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Random</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Now we can generate the Henon map, and we will shift the data points by -0.5 and scale them by 2 to reproduce the data we had last time. The initial transient will be washed out and we will create two datasets called <code>train</code> and <code>test</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -181,24 +181,24 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">ds</span> <span class="o">=</span> <span class="n">Systems</span><span class="o">.</span><span class="n">henon</span><span class="p">()</span>
-<span class="n">traj</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="mi">7000</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="o">&#39;</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">.-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">.*</span> <span class="mi">2</span>
-<span class="n">shift</span> <span class="o">=</span> <span class="mi">200</span>
-<span class="n">train_len</span> <span class="o">=</span> <span class="mi">2000</span>
-<span class="n">predict_len</span> <span class="o">=</span> <span class="mi">3000</span>
-<span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">shift</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">+</span><span class="n">predict_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">ds</span> <span class="o">=</span> <span class="n">Systems</span><span class="o">.</span><span class="n">henon</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">traj</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="mi">7000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">traj</span><span class="p">)</span><span class="o">&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">.-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">.*</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">shift</span> <span class="o">=</span> <span class="mi">200</span>
+</span></span><span class="line"><span class="cl"><span class="n">train_len</span> <span class="o">=</span> <span class="mi">2000</span>
+</span></span><span class="line"><span class="cl"><span class="n">predict_len</span> <span class="o">=</span> <span class="mi">3000</span>
+</span></span><span class="line"><span class="cl"><span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">shift</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">:</span><span class="n">shift</span><span class="o">+</span><span class="n">train_len</span><span class="o">+</span><span class="n">predict_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Having the needed data we can proceed to the prediction tasks.</p>
 <h2 id="one-step-ahead-prediction">One step ahead prediction</h2>
 <p>For sake of comparison we are going to use the same values as last time for the construction of the ESN:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -211,39 +211,39 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">radius</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">10</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
-
-<span class="n">input_weight</span> <span class="o">=</span> <span class="mf">0.95</span>
-<span class="n">cyrcle_weight</span> <span class="o">=</span> <span class="mf">0.95</span>
-<span class="n">jump_weight</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">jumps</span> <span class="o">=</span> <span class="mi">5</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="n">radius</span> <span class="o">=</span> <span class="mf">0.3</span>
+</span></span><span class="line"><span class="cl"><span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">10</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">input_weight</span> <span class="o">=</span> <span class="mf">0.95</span>
+</span></span><span class="line"><span class="cl"><span class="n">cyrcle_weight</span> <span class="o">=</span> <span class="mf">0.95</span>
+</span></span><span class="line"><span class="cl"><span class="n">jump_weight</span> <span class="o">=</span> <span class="mf">0.2</span>
+</span></span><span class="line"><span class="cl"><span class="n">jumps</span> <span class="o">=</span> <span class="mi">5</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Since this task was not used in the paper <a href="#2" rel="">[2]</a> the new parameters <code>jump_weight</code> and <code>jumps</code> are obtained using a manual grid search and as such are probably not as optimized as the other values. We can proceed to the construction of the ESN with the CRJ reservoir and irrational-determined input layer:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="nd">@time</span> <span class="n">W</span> <span class="o">=</span> <span class="n">CRJ</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">,</span> <span class="n">jump_weight</span><span class="p">,</span> <span class="n">jumps</span><span class="p">)</span>
-<span class="n">W_in</span> <span class="o">=</span> <span class="n">irrational_sign_input</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">input_weight</span><span class="p">)</span>
-<span class="n">esn_crj</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="n">extended_states</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="nd">@time</span> <span class="n">W</span> <span class="o">=</span> <span class="n">CRJ</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">cyrcle_weight</span><span class="p">,</span> <span class="n">jump_weight</span><span class="p">,</span> <span class="n">jumps</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">W_in</span> <span class="o">=</span> <span class="n">irrational_sign_input</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">input_weight</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">esn_crj</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">W_in</span><span class="p">,</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="n">extended_states</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.000053 seconds (6 allocations: 78.359 KiB)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.000053 seconds (6 allocations: 78.359 KiB)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Following the procedure we used lst time, in order to test the accuracy of the prediction we are going to use the Normalized Mean Square Error (NMSE), defined as</p>
 <p>$$NMSE = \frac{&lt;||\hat{y}(t)-y(t)||^2&gt;}{&lt;||y(t)-&lt;y(t)&gt;||^2&gt;}$$</p>
@@ -257,7 +257,7 @@ $$ y_{n+1} = bx_n $$</p>
 <p>A simple <code>NMSE</code> function can be created following:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -273,53 +273,53 @@ $$ y_{n+1} = bx_n $$</p>
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">NMSE</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-    <span class="n">num</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">den</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">sums</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">append!</span><span class="p">(</span><span class="n">sums</span><span class="p">,</span> <span class="n">sum</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">:</span><span class="p">]))</span>
-    <span class="k">end</span>
-    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">num</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">])</span><span class="o">^</span><span class="mf">2.0</span>
-        <span class="n">den</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">sums</span><span class="o">./</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">^</span><span class="mf">2.0</span>
-    <span class="k">end</span>
-    <span class="n">nmse</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">den</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">nmse</span>
-<span class="k">end</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">function</span> <span class="n">NMSE</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">num</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">den</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sums</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">append!</span><span class="p">(</span><span class="n">sums</span><span class="p">,</span> <span class="n">sum</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">:</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">num</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">])</span><span class="o">^</span><span class="mf">2.0</span>
+</span></span><span class="line"><span class="cl">        <span class="n">den</span> <span class="o">+=</span> <span class="n">norm</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">sums</span><span class="o">./</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">^</span><span class="mf">2.0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nmse</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">den</span><span class="o">/</span><span class="n">size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">nmse</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Testing the one step ahead predicting capabilities of this new implementation we obtain:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict_h_steps</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
-<span class="n">println</span><span class="p">(</span><span class="n">NMSE</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict_h_steps</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">println</span><span class="p">(</span><span class="n">NMSE</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">0.0010032069150514866
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.0010032069150514866
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This result outperforms all the architectures tested in week 6, getting a little closer to the standard ESN implementation result. Even though this task is not present in the paper the better results shows that the implementation is valid nevertheless.</p>
 <h2 id="attractor-reconstruction">Attractor reconstruction</h2>
 <p>Following the work done in week 6 we want to explore the capabilities of this construction in the reconstruction of the chaotic attractor of the Henon map. Using the already built <code>ESN</code> we will predict the system for <code>predict_len</code> steps and at the end we will plot the results to see if they are in line with the one obtained with the other architectures. To refresh our memory we will start by plotting the actual Henon map:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">scatter</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#34;actual&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -332,15 +332,15 @@ $$ y_{n+1} = bx_n $$</p>
 <p>Let&rsquo;s see if the CRJ-based ESN is capable of reproducing the climate of this attractor:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
-<span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">lable</span> <span class="o">=</span> <span class="s">&#34;ESN-CRJ&#34;</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">wout</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn_crj</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">wout</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">scatter</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">lable</span> <span class="o">=</span> <span class="s">&#34;ESN-CRJ&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"

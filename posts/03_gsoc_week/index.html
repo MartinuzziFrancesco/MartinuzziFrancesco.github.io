@@ -9,10 +9,10 @@
 <meta property="og:description" content="Continuing to leverage similarities between Reservoir Computing models and Kernel machines, this week&rsquo;s implementation merges the Bayesian approach of Gaussian Process Regression (GPR) to the Echo State Networks (ESN). After the usual overview of the theory, a computational example will be shown.
 Gaussian Process Regression The following section is meant as a quick reminder of the deep theory behind Gaussian Processes and its purpose is to illustrate how this approach is a good fit for ESNs." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" />
-<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/03_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-06-21T16:12:50+02:00" />
 <meta property="article:modified_time" content="2020-06-21T16:12:50+02:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -107,9 +107,9 @@ An in depth chapter on GP regression can be found in <a href="#1" rel="">[1]</a>
 <p>A Gaussian Process (GP) is defined as a collection of random variables, any finite of which have a joint Gaussian distribution.
 A (GP) is completely specified by its mean function and covariance function:
 $$m(\textbf{x}) = \mathbb{E}[f(\textbf{x})]$$
-$$k(\textbf{x}, \textbf{x}') = \mathbb{E}[(f(\textbf{x})-m(\textbf{x}))(f(\textbf{x}')-m(\textbf{x}'))] $$
+$$k(\textbf{x}, \textbf{x}&rsquo;) = \mathbb{E}[(f(\textbf{x})-m(\textbf{x}))(f(\textbf{x}&rsquo;)-m(\textbf{x}&rsquo;))] $$
 and the GP can be written as
-$$f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}'))$$
+$$f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}&rsquo;))$$
 An usual choice for the mean function is the zero mean function \( m(\textbf{x} = 0) \), and for the covariance function there is a large variety of kernel functions to choose from. In fact there are so many that one can be overwhelmed by the choice; if this is the case, a good introduction and overview can be found in <a href="#3" rel="">[3]</a>.</p>
 <p>Given our data, consisting in the samples \( ( (\textbf{x}_i, y_i) | i = 1,&hellip;,N ) \), where \( \textbf{x}_i \) is the d-dimensional observation and \( y_i \) is the correleted target values, we want to be able to predict \( y_* \) given \( \textbf{x}_* \). The response variables \( y_i \) are assumed to be dependent on the predictors \( \textbf{x}_i \):</p>
 <p>$$y_i \sim \mathcal{N} (f(\textbf{x}_i), \sigma ^2), i=1,&hellip;,N$$</p>
@@ -178,7 +178,7 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 <p>The ESN parameters are as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -193,34 +193,34 @@ $$\mu _* = \textbf{k}(\textbf{x}_*)^T(\textbf{K}(X, X)+\sigma ^2 \textbf{I}_N)^{
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">6000</span>
-<span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span><span class="mi">1500</span>
-
-<span class="k">const</span> <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">400</span>
-<span class="k">const</span> <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.1</span>
-<span class="k">const</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
-<span class="k">const</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.99</span>
-<span class="k">const</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
-
-<span class="k">const</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="k">const</span> <span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLADefault</span><span class="p">()</span>
-<span class="k">const</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">const</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">train_len</span> <span class="o">=</span> <span class="mi">6000</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">test_len</span> <span class="o">=</span><span class="mi">1500</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">400</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">0.1</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.99</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLADefault</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">extended_states</span> <span class="o">=</span> <span class="nb">true</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Something worth pointing out is that for the first time we have found a value of <code>alpha</code> other than 1: this means we are dealing with a leaky ESN. Following the paper we will try to give a fair comparison between ESN trained with Ridge regression , ESGP and SVESM. Since the parameters for ESN with Ridge and SVESM are missing in the paper, we thought best to use &ldquo;default&rdquo; parameters for all the model involved: using optimization only on one model did not seem like a fair comparison. Both in SVESM and ESGP the kernel function used is Gaussian RBF.</p>
 <p>The results are as follows:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">ESGP RBF rmse: 0.0298
-ESN ridge rmse: 0.1718
-SVESM RBF rmse: 0.1922
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ESGP RBF rmse: 0.0298
+</span></span><span class="line"><span class="cl">ESN ridge rmse: 0.1718
+</span></span><span class="line"><span class="cl">SVESM RBF rmse: 0.1922
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>We can clearly see that the proposed model is outperforming the other models proposed. We mentioned that one of the improvements of this models was the measure of uncertainty relative to the prediction. The <code>ESGPpredict</code> function also returns the variance of the prediction, that can be plotted alongside the results:</p>
 <p><img
@@ -240,7 +240,7 @@ Rasmussen, Carl Edward. &ldquo;Gaussian processes in machine learning.&rdquo; Su
 <p><a id="2">[2]</a>
 Chatzis, Sotirios P., and Yiannis Demiris. &ldquo;Echo state Gaussian process.&rdquo; IEEE Transactions on Neural Networks 22.9 (2011): 1435-1445.</p>
 <p><a id="3">[3]</a>
-<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
+<a href="https://www.cs.toronto.edu/~duvenaud/cookbook/" target="_blank" rel="noopener noreffer">https://www.cs.toronto.edu/~duvenaud/cookbook/</a></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">

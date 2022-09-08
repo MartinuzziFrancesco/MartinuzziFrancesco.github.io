@@ -8,10 +8,10 @@
         <title>GSoC week 7: Reservoir Computing with Cellular Automata Part 1 - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="GSoC week 7: Reservoir Computing with Cellular Automata Part 1" />
 <meta property="og:description" content="In the past few years a new framework based on the concept of Reservoir Computing has been proposed: the Cellular Automata based Reservoir Computer (ReCA) [1]. The advantage it proposes over standard implementations is given by the binary state of the reservoir and the fact that it doesn&rsquo;t require much parameter tuning to obtain state of the art results. Since the initial conception of the use of ECA for reservoir computing numerous improvement have taken place." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/" />
-<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/07_gsoc_week/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-07-19T17:27:05+02:00" />
 <meta property="article:modified_time" content="2020-07-19T17:27:05+02:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -168,15 +168,15 @@
 <p>The lines of code needed for the training and prediction of the 5 bit memory task with the ReCA are the following:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">reca</span> <span class="o">=</span> <span class="n">RECA_discrete</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-<span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">reca</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">train_data</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="kt">AbstractArray</span><span class="p">{</span><span class="kt">Float64</span><span class="p">},</span> <span class="n">output</span><span class="p">))</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">RECAdirect_predict_discrete</span><span class="p">(</span><span class="n">reca</span><span class="p">,</span> <span class="n">W_out</span><span class="p">,</span> <span class="n">input</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">reca</span> <span class="o">=</span> <span class="n">RECA_discrete</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">reca</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">train_data</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="kt">AbstractArray</span><span class="p">{</span><span class="kt">Float64</span><span class="p">},</span> <span class="n">output</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">result</span> <span class="o">=</span> <span class="n">RECAdirect_predict_discrete</span><span class="p">(</span><span class="n">reca</span><span class="p">,</span> <span class="n">W_out</span><span class="p">,</span> <span class="n">input</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Where <code>input</code> and <code>output</code> are the datasets explained above, and the parameters to change for the results are <code>rule</code>, <code>generations</code> and <code>permutations</code>, in this example set to 60, 8, 8. Doing a cylce over each of them, for 100 runs we obtain the results below:</p>
 <p><img

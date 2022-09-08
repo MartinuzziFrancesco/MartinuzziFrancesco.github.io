@@ -8,10 +8,10 @@
         <title>A brief introduction to Reservoir Computing - Francesco Martinuzzi</title><meta name="Description" content="Francesco Martinuzzi"><meta property="og:title" content="A brief introduction to Reservoir Computing" />
 <meta property="og:description" content="This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.jl as example tool. This package is a work in progress and it is currently the main project I am working on as part of the Google Summer of Code program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/" />
-<meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
+<meta property="og:url" content="https://martinuzzifrancesco.github.io/posts/a-brief-introduction-to-reservoir-computing/" /><meta property="og:image" content="https://martinuzzifrancesco.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-05-26T22:17:09+02:00" />
 <meta property="article:modified_time" content="2020-05-26T22:17:09+02:00" />
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://martinuzzifrancesco.github.io/logo.png"/>
 
@@ -136,7 +136,7 @@
 <p>Supposing we have already created the train data, constituted by 5000 timesteps of the chaotic Lorenz system, we are going to use the same parameters found in the paper:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -148,22 +148,22 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ReservoirComputing</span>
-<span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
-<span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
-<span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
-<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
-<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLAT2</span><span class="p">()</span>
-<span class="n">extended_states</span> <span class="o">=</span> <span class="nb">false</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">ReservoirComputing</span>
+</span></span><span class="line"><span class="cl"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">300</span>
+</span></span><span class="line"><span class="cl"><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.2</span>
+</span></span><span class="line"><span class="cl"><span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
+</span></span><span class="line"><span class="cl"><span class="n">activation</span> <span class="o">=</span> <span class="n">tanh</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
+</span></span><span class="line"><span class="cl"><span class="n">beta</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">nla_type</span> <span class="o">=</span> <span class="n">NLAT2</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">extended_states</span> <span class="o">=</span> <span class="nb">false</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The ESN can easily be called in the following way:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -175,28 +175,28 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">esn</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span>
-    <span class="n">train</span><span class="p">,</span>
-    <span class="n">degree</span><span class="p">,</span>
-    <span class="n">radius</span><span class="p">,</span>
-    <span class="n">activation</span><span class="p">,</span> <span class="c">#default = tanh</span>
-    <span class="n">alpha</span><span class="p">,</span> <span class="c">#default = 1.0</span>
-    <span class="n">sigma</span><span class="p">,</span> <span class="c">#default = 0.1</span>
-    <span class="n">nla_type</span> <span class="c">#default = NLADefault(),</span>
-    <span class="n">extended_states</span> <span class="c">#default = false</span>
-    <span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">esn</span> <span class="o">=</span> <span class="n">ESN</span><span class="p">(</span><span class="n">approx_res_size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">train</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">degree</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">radius</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">activation</span><span class="p">,</span> <span class="c">#default = tanh</span>
+</span></span><span class="line"><span class="cl">    <span class="n">alpha</span><span class="p">,</span> <span class="c">#default = 1.0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sigma</span><span class="p">,</span> <span class="c">#default = 0.1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nla_type</span> <span class="c">#default = NLADefault(),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">extended_states</span> <span class="c">#default = false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The training and the prediction, for 1250 timestps, are carried out as follows</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">W_out</span> <span class="o">=</span> <span class="n">ESNtrain</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">output</span> <span class="o">=</span> <span class="n">ESNpredict</span><span class="p">(</span><span class="n">esn</span><span class="p">,</span> <span class="n">predict_len</span><span class="p">,</span> <span class="n">W_out</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>In order to visualize the solution we can plot the individual trajectories</p>
 <p><img
@@ -220,11 +220,11 @@
 <p>But what happens if the parameters are not ideal? In the paper is given an example where the spectral radius is bigger than the ideal value and the predictions are compromised as a result. We can also show that if the value is less than one, as suggested in order to mantain the echo state property, the results are nowhere near optimal.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">radius</span> <span class="o">=</span> <span class="mf">0.8</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">radius</span> <span class="o">=</span> <span class="mf">0.8</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -237,11 +237,11 @@
 <p>While incrementing the reservoir size is known to improve the results, up to a certain point, a smaller one will almost surely worsen them.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">60</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">approx_res_size</span> <span class="o">=</span> <span class="mi">60</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
