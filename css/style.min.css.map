@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "style.min.css",
-	"sourceRoot": "/home/francesco/Documents/martinuzzifrancesco",
+	"sourceRoot": "/home/francesco/MEGA/martinuzzifrancesco",
 	"sources": [
 		"themes/LoveIt/assets/css/style.scss",
 		"themes/LoveIt/assets/css/_variables.scss",

@@ -28,6 +28,7 @@ _JuliaCon 2021, (2021)_
 
 
 # Conferences and Summer Schools
+- [ELLIS Doctoral Symposium 2022](https://ellisalicante.org/eds2022/): admitted and attended [[poster](posters/20220922reservoircomputingjl.pdf)]
 - [JuliaCon 2022](https://juliacon.org/2022/): attended
 - [Artificial Intelligence for Detection and Attribution of Climate Extremes](https://indico.ictp.it/event/9802/): summer school: admitted and attended
 - [Ph.D. Course on Scientific Machine Learning](https://www2.compute.dtu.dk/~apek/SCIML2022/): attended as **Teaching Assistant**
