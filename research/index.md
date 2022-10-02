@@ -6,7 +6,7 @@
 My research is focused on analyzing the dynamics of extreme events and their consequences on the environment. For this task I am using a particular Machine Learning family of models, called Reservoir Computing. More broadly, my interests vary from applications of Machine Learning, to Dynamical Systems and Self Organization. I like every thing computational, and odds are if something has to do with programming I am going to enjoy it. 
 
 # Pubblications
-- **_ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models_** [[arXiv](https://arxiv.org/abs/2204.05117)], <br>
+- **_ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models_** [[arXiv](https://arxiv.org/abs/2204.05117)] [[pdf](https://www.jmlr.org/papers/volume23/22-0611/22-0611.pdf)], <br>
 **Martinuzzi, F.**, Rackauckas, C., AbdelRehim, A., Mahecha, M. D. and Mora, K. <br>
 _Journal of Machine Learning Research (2022)_ 
 - **_Composable and Reusable Neural Surrogates to Predict System Response of Causal Model Components_** [[pdf](https://openreview.net/pdf?id=CFB_X4D_gQb)]<br>
