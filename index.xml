@@ -149,14 +149,5 @@ where (dot) = . and (at) = @</description>
       <description>This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package ReservoirComputing.jl as example tool. This package is a work in progress and it is currently the main project I am working on as part of the Google Summer of Code program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples.</description>
     </item>
     
-    <item>
-      <title>About</title>
-      <link>https://martinuzzifrancesco.github.io/about/</link>
-      <pubDate>Tue, 26 May 2020 21:54:40 +0200</pubDate>
-      
-      <guid>https://martinuzzifrancesco.github.io/about/</guid>
-      <description>Introduction Hello there! I am Francesco Martinuzzi, a PhD student in Physics and Earth Sciences at Leipzig University in Germany. I am under the supervision of Prof. Miguel D. Mahecha and Dr. Karin Mora at the Remote Sensing Centre for Earth System Research RSC4Earth. My research is kindly funded by the Center for Scalable Data Analytics and Artificial Intelligence ScaDS.AI. I am also part of the ELLIS Society, and as part of its exchange program I will spend six month at the Universitat de València working with Prof.</description>
-    </item>
-    
   </channel>
 </rss>
