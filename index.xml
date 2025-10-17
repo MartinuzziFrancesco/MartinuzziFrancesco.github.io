@@ -126,6 +126,19 @@ As in the last post we will start from a brief theoretical background to explain
       <description>&lt;p&gt;This post is meant to work as an high level introduction to the concept of Reservoir Computing, using the Julia package &lt;a href=&#34;https://github.com/SciML/ReservoirComputing.jl&#34;&gt;ReservoirComputing.jl&lt;/a&gt; as example tool. This package is a work in progress and it is currently the main project I am working on as part of the &lt;a href=&#34;https://summerofcode.withgoogle.com/projects/#5374375945043968&#34;&gt;Google Summer of Code&lt;/a&gt; program. Future posts are going to further explain the various implementations and improvements to the code by means of comparisons with the literature and examples.&lt;/p&gt;</description>
     </item>
     <item>
+      <title></title>
+      <link>https://martinuzzifrancesco.github.io/papers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://martinuzzifrancesco.github.io/papers/</guid>
+      <description>&lt;h2 id=&#34;papers&#34;&gt;Papers&lt;/h2&gt;
+&lt;p&gt;This page provide a (not always) up to date list of my publications. be sure to check my scholar for a more up to date list.
+All my papers are open access. If you find one paywalled for any reason please let me know and I will
+send you with a PDF.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;13.&lt;/strong&gt; &lt;em&gt;Minimal Deterministic Echo State Networks Outperform Random Reservoirs in Learning Chaotic Dynamics.&lt;/em&gt; &lt;a href=&#34;https://doi.org/10.1063/5.0288751&#34;&gt;&lt;code&gt;pub&lt;/code&gt;&lt;/a&gt;
+&lt;strong&gt;Martinuzzi, F.&lt;/strong&gt;
+&lt;em&gt;Chaos: An Interdisciplinary Journal of Nonlinear Science 35 (2025)&lt;/em&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Research</title>
       <link>https://martinuzzifrancesco.github.io/research/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
