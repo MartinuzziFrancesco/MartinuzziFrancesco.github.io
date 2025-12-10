@@ -4,7 +4,7 @@
     <title>Francesco Martinuzzi</title>
     <link>https://martinuzzifrancesco.github.io/</link>
     <description>Recent content on Francesco Martinuzzi</description>
-    <generator>Hugo -- 0.150.0</generator>
+    <generator>Hugo -- 0.152.2</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 25 Aug 2020 16:52:06 +0200</lastBuildDate>
     <atom:link href="https://martinuzzifrancesco.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -134,22 +134,37 @@ As in the last post we will start from a brief theoretical background to explain
 &lt;p&gt;This page provide a (not always) up to date list of my publications. be sure to check my scholar for a more up to date list.
 All my papers are open access. If you find one paywalled for any reason please let me know and I will
 send you with a PDF.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;13.&lt;/strong&gt; &lt;em&gt;Minimal Deterministic Echo State Networks Outperform Random Reservoirs in Learning Chaotic Dynamics.&lt;/em&gt; &lt;a href=&#34;https://doi.org/10.1063/5.0288751&#34;&gt;&lt;code&gt;pub&lt;/code&gt;&lt;/a&gt;
-&lt;strong&gt;Martinuzzi, F.&lt;/strong&gt;
-&lt;em&gt;Chaos: An Interdisciplinary Journal of Nonlinear Science 35 (2025)&lt;/em&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;strong&gt;15.&lt;/strong&gt; &lt;em&gt;Transformers vs. Recurrent Models for Estimating Forest Gross Primary Production&lt;/em&gt; &lt;a href=&#34;https://arxiv.org/abs/2511.11880&#34;&gt;&lt;code&gt;arxiv&lt;/code&gt;&lt;/a&gt;
+Montero, D., Mahecha, M.D., &lt;strong&gt;Martinuzzi, F.&lt;/strong&gt;, Aybar, C., Klosterhalfen, A., Knohl, A., Anaya, J., Mosig, C. and Wieneke, S.,
+&lt;em&gt;arXiv preprint arXiv:2511.11880 (2025)&lt;/em&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://martinuzzifrancesco.github.io/presentations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://martinuzzifrancesco.github.io/presentations/</guid>
+      <description>&lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Learning Single and Multiple Chaotic Systems with Minimal Reservoir Computing&lt;/em&gt;&lt;/strong&gt; Machine Learning and Dynamical Systems (MLDS) Seminar Series (12/2025), &lt;strong&gt;Conference talk&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Extending (F)Lux.jl’s Recurrent Neural Network Offerings with (Lux)RecurrentLayers.jl&lt;/em&gt;&lt;/strong&gt; JuliaCon Local 2025, Paris, France (10/2025), &lt;strong&gt;Conference talk&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;On the Predictability of Vegetation Greenness with Recurrent Neural Networks&lt;/em&gt;&lt;/strong&gt; MPI for the Physics of Complex Systems, Dresden, Germany (01/2025), &lt;strong&gt;Invited talk&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;On the Predictability of Biosphere Dynamics with Machine Learning&lt;/em&gt;&lt;/strong&gt; Technical University Munich, Munich, Germany (10/2024), &lt;strong&gt;Invited talk&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Research</title>
       <link>https://martinuzzifrancesco.github.io/research/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://martinuzzifrancesco.github.io/research/</guid>
-      <description>&lt;p&gt;My research focuses on using machine learning models to explore chaotic dynamics. I am specifically interested in reservoir computing models, and applications of scientific machine learning to nonlinear dynamics.&lt;/p&gt;
-&lt;h1 id=&#34;selected-publications&#34;&gt;Selected Publications&lt;/h1&gt;
-&lt;p&gt;For a full and always up to date list please check my &lt;a href=&#34;https://scholar.google.com/citations?user=5zVK6KIAAAAJ&amp;amp;hl=en&#34;&gt;Scholar&lt;/a&gt; profile.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;Minimal deterministic echo state networks outperform random reservoirs in learning chaotic dynamics.&lt;/em&gt;&lt;/strong&gt; &lt;a href=&#34;https://pubs.aip.org/aip/cha/article/35/9/091108/3361670&#34;&gt;&lt;code&gt;pub&lt;/code&gt;&lt;/a&gt; &lt;!-- raw HTML omitted --&gt;
-&lt;strong&gt;Martinuzzi, F.&lt;/strong&gt; &lt;!-- raw HTML omitted --&gt; &lt;em&gt;Chaos: An Interdisciplinary Journal of Nonlinear Science, 35, no. 9&lt;/em&gt; (2025).&lt;/p&gt;</description>
+      <description>&lt;p&gt;My research interest spans several themes, mainly centered on applying scientific machine learning (SciML) to nonlinear dynamics. Across these directions, I focus on developing methodologies that integrate theory-driven modeling, data-driven inference, and computational tools to better understand and predict complex phenomena.&lt;/p&gt;
+&lt;h2 id=&#34;learning-chaotic-dynamics&#34;&gt;Learning Chaotic dynamics&lt;/h2&gt;
+&lt;p&gt;My primary interest lies in using SciML frameworks to learn, represent, and analyze chaotic systems. Here, “learning” is meant in a broad sense: it includes discovering governing equations, reconstructing chaotic attractors from data, and enabling accurate short-term forecasting. My work investigates how modern machine learning architectures (such as neural differential equations, operator-learning models, and reservoir computing) can enhance classical techniques in nonlinear dynamics. The objective is to identify representations that remain robust under noise, sparse data regimes, and for unknown models, while offering new insights into the structure of chaotic behavior.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
