@@ -31,75 +31,83 @@
       <div class="post">
 <p>For the 10th week of the GSoC program I wanterd to implement a fairly new model, namely the Reservoir Memory Machines (RMM), proposed earlier this year <a href=#1>[1]</a>. This was one of the hardest, and longest, implementations to date and I believe there is still some work to be done. In this post we will briefly touch on the theory behind the model, and after an example of their usage will be presented.</p><h2 id=theoretical-background>Theoretical Background</h2><p>Born as an alternative to the Neural Turing Machine <a href=#2>[2]</a> the RMM is an extension of the Echo State Network model, with the addition of an actual memory \( \textbf{M}_t \in \mathbb{R}^{K \times n} \), a write head and a read head. The dynamics of the RMM are the following:</p><ul><li>In the first step the previous memory state is copied \( \textbf{M}_t = \textbf{M}_{t-1} \), with the initial memory step being initialized to zero.</li><li>The write head is then controlled by the value \( c_t^w = \textbf{u}^w \textbf{x}^t + \textbf{v}^r \textbf{h}^t \) where \( \textbf{u}^w, \textbf{v}^r \) are learnable parameters and \( \textbf{x}^t, \textbf{h}^t \) are the input vector and state vector at time t respectively. If \( c_t^w > 0 \) then the input is written to memory, \( \textbf{m}_{t, k} = \textbf{x}^t \) and \( k_t = k_{t-1}+1 \). \( k \) is resetted to 1 if it exceeds the memory size \( K \). In the other case the memory and \( k \) are left as they are.</li><li>Each time step the read head is controlled in a similar way using the vector \( \textbf{c}_t^r = \textbf{U}^r \textbf{x}^t + \textbf{V}^r \textbf{h}^t \) where \( \textbf{U}^r, \textbf{V}^r \) are learnable parameters. If \( c^r_{t, 2} = max{c^r_{t, 1}, c^r_{t, 2}, c^r_{t, 3}} \) \( l_t = l_{t-1}+1 \), otherwise \( l_t = 1 \). After that the memory read at time \( t \) is set as the \( l\)th row of \( \textbf{M}_t \), \( \textbf{r}^t = \textbf{m}_{t, l_t} \)</li></ul><p>The output of the system is determined by \( \textbf{y_t} = \textbf{V} \textbf{h}^t + \textbf{R} \textbf{r}^t \) where \( \textbf{V}, \textbf{R} \) are learnable parameters. Setting \( \textbf{R} = 0 \) we can see that the result is the standard ESN.</p><p>For a more detailed explanation of the procedure and of the training process please refer to the original paper.</p><h2 id=implementation-in-reservoircomputingjl>Implementation in ReservoirComputing.jl</h2><p>Following both the paper and the code provided (original in Python, click <a href=https://gitlab.ub.uni-bielefeld.de/bpaassen/reservoir-memory-machines>here</a>) we were able to implement a <code>RMM</code> mutable struct and a <code>RMMdirect_predict</code> function able to train and do predictions with the RMM model. The default constructor for <code>RMM</code> takes as input</p><ul><li><code>W</code> the reservoir matrix</li><li><code>in_data</code> the training data</li><li><code>out_data</code> the desired output</li><li><code>W_in</code> the input layer matrix</li><li><code>memory_size</code> the size \( K \) of the memory</li><li><code>activation</code> optional activation function for the reservoir states, with default <code>tanh</code></li><li><code>alpha</code> optional leaking rate, with default 1.0</li><li><code>nla_type</code> optional non linear algorithm, eith default <code>NLADefault()</code></li><li><code>extended_states</code> optional boolean for the extended states option, with default <code>false</code></li></ul><p>The constructor trains the RMM, so ance it is initialized there is only need for a predict function. The <code>RMMdirect_predict</code> takes as input</p><ul><li><code>rmmm</code> an initialized RMM</li><li><code>input</code> the input data
 and gives as output the prediction based on the input data given. The prediction process is relatively different from the implementation used in ReservoirComputing.jl, so we will not be able to do a proper comparison with the other models we implemented. In the future we do want to uniform the RMM with the other architectures present in the library, but it seems like a moth worth of work, so for the moment we are happy with the basic implementations obtained.</li></ul><h2 id=examples>Examples</h2><p>For example we will use the next step prediction for the <a href=https://en.wikipedia.org/wiki/H%C3%A9non_map>Henon map</a>, used also in last week test. The map is defined as</p><p>$$x_{x+1} = 1 - ax_n^2 + y_n$$
-$$ y_{n+1} = bx_n $$</p><p>Let us start by installing and importing all the needed packages:</p><pre><code>using Pkg
-Pkg.add("ReservoirComputing")
-Pkg.add("DynamicalSystems")
-Pkg.add("LinearAlgebra")</code></pre><pre><code>using ReservoirComputing
-using DynamicalSystems
-using LinearAlgebra</code></pre><p>Now we can generate the Henon map, and we will shift the data points by -0.5 and scale them by 2 to reproduce the data we had last week. The initial transient will be washed out and we will create four datasets called <code>train_x</code>, <code>train_y</code>, <code>test_x</code> and <code>test_y</code>:`</p><pre><code>ds = Systems.henon()
-traj = trajectory(ds, 7000)
-data = Matrix(traj)
-
-data = (data .-0.5) .* 2
-shift = 200
-train_len = 2000
-predict_len = 3000
-train_x = data[shift:shift+train_len-1, :]
-train_y = data[shift+1:shift+train_len, :]
-
-test_x = data[shift+train_len:shift+train_len+predict_len-1, :]
-test_y = data[shift+train_len+1:shift+train_len+predict_len, :]</code></pre><p>Having the needed data we can proceed to the prediction task. In the RMM paper the model is tested using Cycle Reservoirs with Regular Jumps <a href=#3>[3]</a> so we will do the same for our test. In addition to that we will also use the other minimum complexity reservoirs <a href=#4>[4]</a> that we implemented in <a href=../gsoc-week-06/>week 6</a>. The input layer used is obtained with the function <code>irrational_sign_input()</code>, that builds a fully connected layer with the same values which signs are determined by the values of an irrational number, in our case pi. Setting the parameters for the construction of the RMM</p><pre><code>approx_res_size = 128
-sigma = 1.0
-beta = 1*10^(-5)
-extended_states = false
-
-input_weight = 0.1
-cyrcle_weight = 0.99
-jump_weight = 0.1
-jumps = 12
-
-memory_size = 16</code></pre><p>We can now build the reservoir and the RMMs needed for the comparison of the results:</p><pre><code>Wcrj = CRJ(approx_res_size, cyrcle_weight, jump_weight, jumps)
-Wscr = SCR(approx_res_size, cyrcle_weight)
-Wdlrb = DLRB(approx_res_size, cyrcle_weight, jump_weight)
-Wdlr = DLR(approx_res_size, cyrcle_weight)
-
-W_in = irrational_sign_input(approx_res_size, size(train_x, 2), input_weight)
-
-rmmcrj = RMM(Wcrj, train_x, train_y, W_in, memory_size, beta)
-rmmscr = RMM(Wscr, train_x, train_y, W_in, memory_size, beta)
-rmmdlrb = RMM(Wdlrb, train_x, train_y, W_in, memory_size, beta)
-rmmdlr = RMM(Wdlr, train_x, train_y, W_in, memory_size, beta)</code></pre><p>Now that we have our trained RMM we want to predict the one step ahead henon map and compare the results obtained with different reservoirs. In oreder to do so we are first going to implement a quick nmse function :</p><pre><code>function NMSE(target, output)
-    num = 0.0
-    den = 0.0
-    sums = []
-    for i=1:size(target, 2)
-        append!(sums, sum(target[:, i]))
-    end
-    for i=1:size(target, 1)
-        num += norm(output[i, :]-target[i, :])^2.0
-        den += norm(target[i, :]-sums./size(target, 1))^2.0
-    end
-    nmse = (num/size(target, 1))/(den/size(target, 1))
-    return nmse
-end</code></pre><p>after that we are going to predict the system and compare the results:</p><pre><code>rmms = [rmmcrj, rmmscr, rmmdlrb, rmmdlr]
-
-for rmm in rmms
-    output2 = RMMdirect_predict(rmm, test_x)
-    println(NMSE(train_y, output2))
-end</code></pre><pre tabindex=0><code>1.4856355716974217
+$$ y_{n+1} = bx_n $$</p><p>Let us start by installing and importing all the needed packages:</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=k>using</span> <span class=n>Pkg</span>
+</span></span><span class=line><span class=cl><span class=n>Pkg</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=s>&#34;ReservoirComputing&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Pkg</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=s>&#34;DynamicalSystems&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Pkg</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=s>&#34;LinearAlgebra&#34;</span><span class=p>)</span>
+</span></span></code></pre><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=k>using</span> <span class=n>ReservoirComputing</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=n>DynamicalSystems</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=n>LinearAlgebra</span>
+</span></span></code></pre><p>Now we can generate the Henon map, and we will shift the data points by -0.5 and scale them by 2 to reproduce the data we had last week. The initial transient will be washed out and we will create four datasets called <code>train_x</code>, <code>train_y</code>, <code>test_x</code> and <code>test_y</code>:`</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=n>ds</span> <span class=o>=</span> <span class=n>Systems</span><span class=o>.</span><span class=n>henon</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>traj</span> <span class=o>=</span> <span class=n>trajectory</span><span class=p>(</span><span class=n>ds</span><span class=p>,</span> <span class=mi>7000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=kt>Matrix</span><span class=p>(</span><span class=n>traj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=p>(</span><span class=n>data</span> <span class=o>.-</span><span class=mf>0.5</span><span class=p>)</span> <span class=o>.*</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=n>shift</span> <span class=o>=</span> <span class=mi>200</span>
+</span></span><span class=line><span class=cl><span class=n>train_len</span> <span class=o>=</span> <span class=mi>2000</span>
+</span></span><span class=line><span class=cl><span class=n>predict_len</span> <span class=o>=</span> <span class=mi>3000</span>
+</span></span><span class=line><span class=cl><span class=n>train_x</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>shift</span><span class=o>:</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>train_y</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>shift</span><span class=o>+</span><span class=mi>1</span><span class=o>:</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>test_x</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=o>:</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=o>+</span><span class=n>predict_len</span><span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>test_y</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=o>+</span><span class=mi>1</span><span class=o>:</span><span class=n>shift</span><span class=o>+</span><span class=n>train_len</span><span class=o>+</span><span class=n>predict_len</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span>
+</span></span></code></pre><p>Having the needed data we can proceed to the prediction task. In the RMM paper the model is tested using Cycle Reservoirs with Regular Jumps <a href=#3>[3]</a> so we will do the same for our test. In addition to that we will also use the other minimum complexity reservoirs <a href=#4>[4]</a> that we implemented in <a href=../gsoc-week-06/>week 6</a>. The input layer used is obtained with the function <code>irrational_sign_input()</code>, that builds a fully connected layer with the same values which signs are determined by the values of an irrational number, in our case pi. Setting the parameters for the construction of the RMM</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=n>approx_res_size</span> <span class=o>=</span> <span class=mi>128</span>
+</span></span><span class=line><span class=cl><span class=n>sigma</span> <span class=o>=</span> <span class=mf>1.0</span>
+</span></span><span class=line><span class=cl><span class=n>beta</span> <span class=o>=</span> <span class=mi>1</span><span class=o>*</span><span class=mi>10</span><span class=o>^</span><span class=p>(</span><span class=o>-</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>extended_states</span> <span class=o>=</span> <span class=nb>false</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>input_weight</span> <span class=o>=</span> <span class=mf>0.1</span>
+</span></span><span class=line><span class=cl><span class=n>cyrcle_weight</span> <span class=o>=</span> <span class=mf>0.99</span>
+</span></span><span class=line><span class=cl><span class=n>jump_weight</span> <span class=o>=</span> <span class=mf>0.1</span>
+</span></span><span class=line><span class=cl><span class=n>jumps</span> <span class=o>=</span> <span class=mi>12</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>memory_size</span> <span class=o>=</span> <span class=mi>16</span>
+</span></span></code></pre><p>We can now build the reservoir and the RMMs needed for the comparison of the results:</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=n>Wcrj</span> <span class=o>=</span> <span class=n>CRJ</span><span class=p>(</span><span class=n>approx_res_size</span><span class=p>,</span> <span class=n>cyrcle_weight</span><span class=p>,</span> <span class=n>jump_weight</span><span class=p>,</span> <span class=n>jumps</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Wscr</span> <span class=o>=</span> <span class=n>SCR</span><span class=p>(</span><span class=n>approx_res_size</span><span class=p>,</span> <span class=n>cyrcle_weight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Wdlrb</span> <span class=o>=</span> <span class=n>DLRB</span><span class=p>(</span><span class=n>approx_res_size</span><span class=p>,</span> <span class=n>cyrcle_weight</span><span class=p>,</span> <span class=n>jump_weight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Wdlr</span> <span class=o>=</span> <span class=n>DLR</span><span class=p>(</span><span class=n>approx_res_size</span><span class=p>,</span> <span class=n>cyrcle_weight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>W_in</span> <span class=o>=</span> <span class=n>irrational_sign_input</span><span class=p>(</span><span class=n>approx_res_size</span><span class=p>,</span> <span class=n>size</span><span class=p>(</span><span class=n>train_x</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>input_weight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>rmmcrj</span> <span class=o>=</span> <span class=n>RMM</span><span class=p>(</span><span class=n>Wcrj</span><span class=p>,</span> <span class=n>train_x</span><span class=p>,</span> <span class=n>train_y</span><span class=p>,</span> <span class=n>W_in</span><span class=p>,</span> <span class=n>memory_size</span><span class=p>,</span> <span class=n>beta</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>rmmscr</span> <span class=o>=</span> <span class=n>RMM</span><span class=p>(</span><span class=n>Wscr</span><span class=p>,</span> <span class=n>train_x</span><span class=p>,</span> <span class=n>train_y</span><span class=p>,</span> <span class=n>W_in</span><span class=p>,</span> <span class=n>memory_size</span><span class=p>,</span> <span class=n>beta</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>rmmdlrb</span> <span class=o>=</span> <span class=n>RMM</span><span class=p>(</span><span class=n>Wdlrb</span><span class=p>,</span> <span class=n>train_x</span><span class=p>,</span> <span class=n>train_y</span><span class=p>,</span> <span class=n>W_in</span><span class=p>,</span> <span class=n>memory_size</span><span class=p>,</span> <span class=n>beta</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>rmmdlr</span> <span class=o>=</span> <span class=n>RMM</span><span class=p>(</span><span class=n>Wdlr</span><span class=p>,</span> <span class=n>train_x</span><span class=p>,</span> <span class=n>train_y</span><span class=p>,</span> <span class=n>W_in</span><span class=p>,</span> <span class=n>memory_size</span><span class=p>,</span> <span class=n>beta</span><span class=p>)</span>
+</span></span></code></pre><p>Now that we have our trained RMM we want to predict the one step ahead henon map and compare the results obtained with different reservoirs. In oreder to do so we are first going to implement a quick nmse function :</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=k>function</span> <span class=n>NMSE</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=n>output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>num</span> <span class=o>=</span> <span class=mf>0.0</span>
+</span></span><span class=line><span class=cl>    <span class=n>den</span> <span class=o>=</span> <span class=mf>0.0</span>
+</span></span><span class=line><span class=cl>    <span class=n>sums</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=o>=</span><span class=mi>1</span><span class=o>:</span><span class=n>size</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>append!</span><span class=p>(</span><span class=n>sums</span><span class=p>,</span> <span class=n>sum</span><span class=p>(</span><span class=n>target</span><span class=p>[</span><span class=o>:</span><span class=p>,</span> <span class=n>i</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=o>=</span><span class=mi>1</span><span class=o>:</span><span class=n>size</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>num</span> <span class=o>+=</span> <span class=n>norm</span><span class=p>(</span><span class=n>output</span><span class=p>[</span><span class=n>i</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span><span class=o>-</span><span class=n>target</span><span class=p>[</span><span class=n>i</span><span class=p>,</span> <span class=o>:</span><span class=p>])</span><span class=o>^</span><span class=mf>2.0</span>
+</span></span><span class=line><span class=cl>        <span class=n>den</span> <span class=o>+=</span> <span class=n>norm</span><span class=p>(</span><span class=n>target</span><span class=p>[</span><span class=n>i</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span><span class=o>-</span><span class=n>sums</span><span class=o>./</span><span class=n>size</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=mi>1</span><span class=p>))</span><span class=o>^</span><span class=mf>2.0</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>    <span class=n>nmse</span> <span class=o>=</span> <span class=p>(</span><span class=n>num</span><span class=o>/</span><span class=n>size</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=mi>1</span><span class=p>))</span><span class=o>/</span><span class=p>(</span><span class=n>den</span><span class=o>/</span><span class=n>size</span><span class=p>(</span><span class=n>target</span><span class=p>,</span> <span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>nmse</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span></code></pre><p>after that we are going to predict the system and compare the results:</p><pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=line><span class=cl><span class=n>rmms</span> <span class=o>=</span> <span class=p>[</span><span class=n>rmmcrj</span><span class=p>,</span> <span class=n>rmmscr</span><span class=p>,</span> <span class=n>rmmdlrb</span><span class=p>,</span> <span class=n>rmmdlr</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>rmm</span> <span class=k>in</span> <span class=n>rmms</span>
+</span></span><span class=line><span class=cl>    <span class=n>output2</span> <span class=o>=</span> <span class=n>RMMdirect_predict</span><span class=p>(</span><span class=n>rmm</span><span class=p>,</span> <span class=n>test_x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>println</span><span class=p>(</span><span class=n>NMSE</span><span class=p>(</span><span class=n>train_y</span><span class=p>,</span> <span class=n>output2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span></code></pre><pre tabindex=0><code>1.4856355716974217
 1.4868276240921912
 1.5624183281454223
 1.5237046076873637
-</code></pre><p>As we can see the best performing architecture is the one with the CRJ reservoir. The SCR closely follows.</p><p>This tests are not the one used in the paper, but given that I was a little behind with the implementation I thought to do a couple of quick and easy ones instead. The model is really interesting and I want to continue to explore the possibilities that it offers. The implementation, while working, is not yet finished: there are a couple of finishing touches to give and a couple of more checks to do. I really want to be able to reproduce the results of the paper but the base implementations of ESN in ReservoirComputing and the paper code are really different, and it will take at least another week of full work to unravel all the small details. Huge thanks to the author <a href=https://bpaassen.gitlab.io/>Benjamin Paaßen</a> that answered quickly and kindly to my emails.</p><p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p><h3 id=citing>Citing</h3><p>Part of the work done for this project has been published. If this post or the ReservoirComputing.jl software has been helpful, please consider citing the accompanying paper:</p><pre><code>@article{JMLR:v23:22-0611,
-  author  = {Francesco Martinuzzi and Chris Rackauckas and Anas Abdelrehim and Miguel D. Mahecha and Karin Mora},
-  title   = {ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models},
-  journal = {Journal of Machine Learning Research},
-  year    = {2022},
-  volume  = {23},
-  number  = {288},
-  pages   = {1--8},
-  url     = {http://jmlr.org/papers/v23/22-0611.html}
-}</code></pre><h3 id=documentation>Documentation</h3><p><a id=1>[1]</a>
+</code></pre><p>As we can see the best performing architecture is the one with the CRJ reservoir. The SCR closely follows.</p><p>This tests are not the one used in the paper, but given that I was a little behind with the implementation I thought to do a couple of quick and easy ones instead. The model is really interesting and I want to continue to explore the possibilities that it offers. The implementation, while working, is not yet finished: there are a couple of finishing touches to give and a couple of more checks to do. I really want to be able to reproduce the results of the paper but the base implementations of ESN in ReservoirComputing and the paper code are really different, and it will take at least another week of full work to unravel all the small details. Huge thanks to the author <a href=https://bpaassen.gitlab.io/>Benjamin Paaßen</a> that answered quickly and kindly to my emails.</p><p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p><h3 id=citing>Citing</h3><p>Part of the work done for this project has been published. If this post or the ReservoirComputing.jl software has been helpful, please consider citing the accompanying paper:</p><pre tabindex=0 class=chroma><code class=language-bibtex data-lang=bibtex><span class=line><span class=cl><span class=nc>@article</span><span class=p>{</span><span class=nl>JMLR:v23:22-0611</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>author</span>  <span class=p>=</span> <span class=s>{Francesco Martinuzzi and Chris Rackauckas and Anas Abdelrehim and Miguel D. Mahecha and Karin Mora}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>title</span>   <span class=p>=</span> <span class=s>{ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>journal</span> <span class=p>=</span> <span class=s>{Journal of Machine Learning Research}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>year</span>    <span class=p>=</span> <span class=s>{2022}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>volume</span>  <span class=p>=</span> <span class=s>{23}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>number</span>  <span class=p>=</span> <span class=s>{288}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>pages</span>   <span class=p>=</span> <span class=s>{1--8}</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=na>url</span>     <span class=p>=</span> <span class=s>{http://jmlr.org/papers/v23/22-0611.html}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre><h3 id=documentation>Documentation</h3><p><a id=1>[1]</a>
 Paaßen, Benjamin, and Alexander Schulz. &ldquo;Reservoir memory machines.&rdquo; arXiv preprint arXiv:2003.04793 (2020).</p><p><a id=2>[2]</a>
 Graves, Alex, Greg Wayne, and Ivo Danihelka. &ldquo;Neural turing machines.&rdquo; arXiv preprint arXiv:1410.5401 (2014).</p><p><a id=3>[3]</a>
 Rodan, Ali, and Peter Tiňo. &ldquo;Simple deterministically constructed cycle reservoirs with regular jumps.&rdquo; Neural computation 24.7 (2012): 1822-1852.</p><p><a id=4>[4]</a>

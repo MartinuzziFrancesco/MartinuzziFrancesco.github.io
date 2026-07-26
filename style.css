@@ -15,6 +15,7 @@
   --accent2:   #3f6b66;   /* muted teal, used sparingly */
   --link:      #1a4f8a;
   --link-vis:  #6a3d9a;
+  --code-num:  #8a6d1a;   /* amber, code-block numbers only */
   --mono: "Courier New", "DejaVu Sans Mono", ui-monospace, monospace;
   --serif: Georgia, "Times New Roman", Times, serif;
 }
@@ -29,17 +30,18 @@
     --accent2:   #7fbdb5;
     --link:      #7fb0e6;
     --link-vis:  #c39be0;
+    --code-num:  #d9b25f;
   }
 }
 
 /* explicit toggle choice beats the OS preference above (higher selector specificity) */
 :root[data-theme="light"] {
   --bg: #fbfaf7; --ink: #1c1c1c; --muted: #68655f; --line: #e4e1da;
-  --accent: #9a3b2f; --accent2: #3f6b66; --link: #1a4f8a; --link-vis: #6a3d9a;
+  --accent: #9a3b2f; --accent2: #3f6b66; --link: #1a4f8a; --link-vis: #6a3d9a; --code-num: #8a6d1a;
 }
 :root[data-theme="dark"] {
   --bg: #141414; --ink: #e7e4dc; --muted: #9c988f; --line: #333029;
-  --accent: #d97a5f; --accent2: #7fbdb5; --link: #7fb0e6; --link-vis: #c39be0;
+  --accent: #d97a5f; --accent2: #7fbdb5; --link: #7fb0e6; --link-vis: #c39be0; --code-num: #d9b25f;
 }
 
 * { box-sizing: border-box; }
@@ -251,6 +253,18 @@ footer {
 .post img { max-width: 100%; height: auto; border-radius: 4px; margin: 10px 0 20px; display: block; }
 .post pre { background: rgba(127,127,127,0.1); padding: 14px 16px; overflow-x: auto; margin: 0 0 18px; border-radius: 4px; }
 .post pre code { background: none; padding: 0; font-size: 0.85em; white-space: pre; }
+
+/* Chroma token classes (Julia, Python, and anything else Hugo highlights),
+   mapped to the site's own palette so code follows light/dark theme. */
+.post pre .k, .post pre .kn, .post pre .kd, .post pre .kc, .post pre .kp, .post pre .kr, .post pre .ow { color: var(--accent); }
+.post pre .kt, .post pre .nb, .post pre .bp { color: var(--link-vis); }
+.post pre .nn, .post pre .nf, .post pre .nc { color: var(--link); }
+.post pre .c, .post pre .c1, .post pre .ch, .post pre .cm, .post pre .cp, .post pre .cs { color: var(--muted); font-style: italic; }
+.post pre .s, .post pre .s1, .post pre .s2, .post pre .sa, .post pre .sb, .post pre .sc,
+.post pre .dl, .post pre .sd, .post pre .se, .post pre .sh, .post pre .si, .post pre .sx,
+.post pre .sr, .post pre .ss { color: var(--accent2); }
+.post pre .m, .post pre .mb, .post pre .mf, .post pre .mh, .post pre .mi, .post pre .mo, .post pre .il { color: var(--code-num); }
+.post pre .o, .post pre .p { color: var(--muted); }
 
 @media (max-width: 520px) {
   body { font-size: 16px; }
