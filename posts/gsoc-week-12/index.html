@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Francesco Martinuzzi — Google Summer of Code 2020 Final Report</title>
+<script>(function(t){try{t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="window">
+    <nav class="menu">
+      <a href="../../">Home</a>
+      <a href="../../research/">Research</a>
+      <a href="../../papers/">Papers</a>
+      <a href="../../talks/">Talks</a>
+      <a class="nav-blog" href="../../posts/" aria-current="page">Blog</a>
+      <a href="../../contact/">Contact</a>
+    </nav>
+    <div class="titlebar">
+      <span class="spacer"></span><span class="tag-right">~/posts/gsoc-week-12</span>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">☀</button>
+    </div>
+    <div class="body">
+      <p class="post-date"><a href="../">&larr; all posts</a> &middot; 25 Aug 2020</p>
+      <h1 class="post-title">Google Summer of Code 2020 Final Report</h1>
+
+      <div class="post">
+<h2 id=introduction>Introduction</h2><p>My proposal for the 2020 Google Summer of Code with the Julia Language was based on the implementation of a library for the family of models know as Reservoir Computing. After working for a month on the <a href=https://github.com/SciML/NeuralPDE.jl/issues/34>issue #34</a> of NeuralPDE.jl I created the initial draft of the ReservoirComputing.jl package, consisting at the time of only the implementation of Echo State Networks (ESNs). Having prior knowledge on the model I started digging a little more on the literature and found a lot of interesting variations of ESNs, which led me to base my proposal entirely on the addition of these models into the existing library. The work done in the three months period was based on weekly goals, which allowed me to keep a steady and consistent pace throughout the project. Most of the implementations done at the end were the one present in the proposal, although there were a couple of little variations from the initial idea.</p><h2 id=work-done-during-gsoc>Work done during GSoC</h2><ul><li>Week 1: implemented different Linear Model solvers for ESN, tests for the code and checked the results against the literature - <a href=../gsoc-week-01/>blog post</a>.</li><li>Week 2: implemented Support Vector Echo State Machines (SVESMs), tests for the code and checked the results against the literature - <a href=../gsoc-week-02/>blog post</a>.</li><li>Week 3: implemented Echo State Gaussian Processes (ESGPs), tests for the code and checked the results against the literature - <a href=../gsoc-week-03/>blog post</a>.</li><li>Week 4: implemented Singular Value Decomposition-based reservoir, tests for the code and checked the results against the literature - <a href=../gsoc-week-04/>blog post</a>.</li><li>Week 5: comparison of the various models implemented in the task of predicting chaotic systems both short and long term - <a href=../gsoc-week-05/>blog post</a>.</li><li>Week 6: implemented minimum complexity ESN methods, tests for the code and checked the results against the literature - <a href=../gsoc-week-06/>blog post</a>.</li><li>Week 7: implemented Elementary Cellular Automata-based reservoir computers (RECA), tests for the code and checked the results against the literature - <a href=../gsoc-week-07/>blog post</a>.</li><li>Week 8: implemented two dimensional cellular automata-based reservoir computers, tests for the code and checked the results against the literature - <a href=../gsoc-week-08/>blog post</a>.</li><li>Week 9: implemented Cycle Reservoirs with Regular Jumps, tests for the code and checked the results against the literature - <a href=../gsoc-week-09/>blog post</a>.</li><li>Week 10: implemented Reservoir Memory Machines (RMMs), tests for the code and checked the results against the literature - <a href=../gsoc-week-10/>blog post</a>.</li><li>Week 11: implemented Gated Recurring Unit-based reservoir, tests for the code and checked the results against the literature - <a href=../gsoc-week-11/>blog post</a>.</li><li>Week 12: added the documentation - <a href=https://reservoir.sciml.ai/dev/>link to documentation</a>.</li></ul><p>The code and the library can be found on GitHub, under the SciML organization: <a href=https://github.com/SciML/ReservoirComputing.jl>ReservoirComputing.jl</a>.</p><h2 id=future-directions>Future directions</h2><p>I hope to be able to continue to maintain and improve this package in the future, and there are already some ideas of the challenges that could be tackled. Since I started my journey with Julia, my knowledge of the language has increased and looking back there is room for major improvements in the code, both for optimization and usability. Merging all the train and predict function into a single one will surely reduce confusion, and adding more examples to the documentation is already something that I am working on.</p><h2 id=citing>Citing</h2><p>Part of the work done for this project has been published. If this post or the ReservoirComputing.jl software has been helpful, please consider citing the accompanying paper:</p><pre><code>@article{JMLR:v23:22-0611,
+  author  = {Francesco Martinuzzi and Chris Rackauckas and Anas Abdelrehim and Miguel D. Mahecha and Karin Mora},
+  title   = {ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models},
+  journal = {Journal of Machine Learning Research},
+  year    = {2022},
+  volume  = {23},
+  number  = {288},
+  pages   = {1--8},
+  url     = {http://jmlr.org/papers/v23/22-0611.html}
+}</code></pre><h2 id=acknowledgements>Acknowledgements</h2><p>First of all I would like to thanks my mentors Chris, David and Ranjan for following me in this project and for giving me incredible autonomy in these months; a special thanks to Chris that has taken the time to help me from the first commits and all throughout the application process. Another big thanks goes to the Julia community, an incredible group of people that are working towards a more open and welcoming scientific ecosystem, and are always ready to help and guide newcomers as myself; I don&rsquo;t think I have ever felt so welcomed by people I have yet to meet face to face before. Finally thanks to the Google Open Source program for providing both the opportunity to have this experience and the funding to help people partecipate to it.</p>
+      </div>
+
+      <footer>
+        <span>25 Aug 2020</span>
+        <span><a href="../">&larr; all posts</a></span>
+      </footer>
+    </div>
+  </div>
+
+</div>
+<script src="../../theme.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$',  right: '$',  display: false},
+      {left: '\\[', right: '\\]', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+</body>
+</html>

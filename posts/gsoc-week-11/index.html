@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Francesco Martinuzzi — GSoC week 11: Gated Recurring Unit-based reservoir</title>
+<script>(function(t){try{t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="window">
+    <nav class="menu">
+      <a href="../../">Home</a>
+      <a href="../../research/">Research</a>
+      <a href="../../papers/">Papers</a>
+      <a href="../../talks/">Talks</a>
+      <a class="nav-blog" href="../../posts/" aria-current="page">Blog</a>
+      <a href="../../contact/">Contact</a>
+    </nav>
+    <div class="titlebar">
+      <span class="spacer"></span><span class="tag-right">~/posts/gsoc-week-11</span>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">☀</button>
+    </div>
+    <div class="body">
+      <p class="post-date"><a href="../">&larr; all posts</a> &middot; 16 Aug 2020</p>
+      <h1 class="post-title">GSoC week 11: Gated Recurring Unit-based reservoir</h1>
+
+      <div class="post">
+<p>Following an architecture found on <a href=#1>[1]</a> this week we decided to implement a reservoir model based on the Gated Recurring Unit (GRU) structure, first described in <a href=#2>[2]</a>. This architecture is an evolution of the standard Recurrent Neural Network (RNN) update equations and works in a similar way to Long Short Term Memory (LSTM) with a forget gate but with fewer parameters; the LSTM usually outperfofms the GRU in most task but it could be interesting to see the behavior of this unit in the Echo State Network (ESN) model. In the first part of this post we will briefly explain the theory behind the model and after we will show an example to see the performance of this architecture.</p><h2 id=gated-recurring-unit>Gated Recurring Unit</h2><p>As described in <a href=#2>[2]</a> the update equations in the GRU hidden unit are described as follows:</p><ul><li><p>The reset gate is computed by
+$$\textbf{r}_t = \sigma (\textbf{W}_r \textbf{x}_t + \textbf{U}_r \textbf{h}_{t-1} + \textbf{b}_r)$$
+where \( \sigma \) is the sigmoid function. \( \textbf{x}_t \) is the input at time \( t \) and \( \textbf{h}_{t-1} \) is the previous hidden state. In the ESN case it will be the provious state vector.</p></li><li><p>In a similar way, the update gate is computed by
+$$\textbf{z}_t = \sigma (\textbf{W}_z \textbf{x}_t + \textbf{U}_z \textbf{h}_{t-1} + \textbf{b}_z)$$</p></li><li><p>The candidate activation vector is given by
+$$\tilde{\textbf{h}}_t = f(\textbf{W}_h \textbf{x}_t + \textbf{U}_h (\textbf{r}_t \circ \textbf{h}_{t-1}) + \textbf{b}_h)$$
+where \( \circ \) represents the Hadamard product. In the ESN case \( \textbf{U}_h = \textbf{W}, \textbf{W}_h = \textbf{W}_in \) where \( \textbf{W} \) is the reservoir matrix and \( \textbf{W}_in \) is the input layer matrix. In the original implementation the activation function \( f \) is taken to be the hyperbolic tangent.</p></li><li><p>The final states vector is given by
+$$\textbf{h}_t = (1-\textbf{z}_t) \circ \textbf{h}_{t-1} + \textbf{z}_t \circ \tilde{\textbf{h}}_t$$</p></li></ul><p>Alternative forms are known but for the first implementation we decided to focus more our attention on the standard model. The \( \textbf{W}, \textbf{U} \) layers are fixed and constructed using the irrational number input layer generator (see <a href=#3>[3]</a> or <a href=../gsoc-week-09/>week 9</a>), with a different start for the change of sign but in the future we would like to give more possibilities for the construction of these layers.</p><h2 id=implementation-in-reservoircomputing>Implementation in ReservoirComputing</h2><p>The overall implementation is not the hardest part, band following the instructions of the original paper we were able to implement a <code>gru</code> base function that updates the states vector at every time step. Building on that function we implemented two public function, the constructor <code>GRUESN</code> and the predictor <code>GRUESNpredict</code>. The first one takes as input the same inputs as the <code>ESN</code> constructor with the addition of the <code>gates_weight</code> optional value, set to 0.9 as default. The <code>GRUESNpredict</code> function takes as input the same values as the <code>ESNpredict</code> function and return the prediction made by the GRUESN.</p><h2 id=example>Example</h2><p>Since this model isn not found in literature, only as comparison in <a href=#1>[1]</a> but for different tasks than time series prediction, we chose to use yet again the <a href=https://en.wikipedia.org/wiki/H%C3%A9non_map>Henon map</a> to test the capabilities of this model in the reproduction of a choatic system. This particular model was chosen since is less complex than the Lorenz system and it requires little parameter tuning in order to obtain decent results.</p><p>Let us start by insalling and importing the usual packages</p><pre><code>using Pkg
+Pkg.add("ReservoirComputing")
+Pkg.add("DynamicalSystems")
+Pkg.add("Plots")</code></pre><pre><code>using ReservoirComputing
+using DynamicalSystems
+using Plots</code></pre><p>The construction of the Henon map is straight forward. Again the data points are shifted by -0.5 and scaled by 2:</p><pre><code>ds = Systems.henon()
+traj = trajectory(ds, 7000)
+data = Matrix(traj)'
+
+data = (data .-0.5) .* 2
+shift = 200
+train_len = 2000
+predict_len = 3000
+train = data[:, shift:shift+train_len-1]
+test = data[:, shift+train_len:shift+train_len+predict_len-1]</code></pre><p>For this example we will use the irrational sign input matrix in order to be consistent with the construction of the GRU unit, and for the reservoir matrix we will use the standard implementation</p><pre><code>approx_res_size = 100
+radius = 0.99
+sparsity = 0.1
+sigma = 1.0
+beta = 1*10^(-1)
+extended_states = false
+input_weight = 0.1
+
+W = init_reservoir_givensp(approx_res_size, radius, sparsity)
+W_in = irrational_sign_input(approx_res_size, size(train, 1), input_weight)
+@time gruesn = GRUESN(W, train, W_in, extended_states = extended_states, gates_weight = 0.8)</code></pre><pre tabindex=0><code>0.286364 seconds (51.78 k allocations: 36.200 MiB, 13.94% gc time)
+</code></pre><p>The parameters were chosen by manual grid search, so it is possibile that they are not the best ones for this task. A more in depth research will be needed for this specific prediction. Using these values we can train the GRUESN and make a prediction. We will scatter the results after in order to compare the prediction obtained</p><pre><code>W_out = ESNtrain(gruesn, beta)
+output = GRUESNpredict(gruesn, predict_len, W_out)
+scatter(output[1,:], output[2, :], lable = "ESN-CRJ")</code></pre><p><img alt=gruesn loading=lazy src=https://user-images.githubusercontent.com/10376688/90342956-aaeb5400-e00c-11ea-97a2-3c9ae8b0d208.png></p><p>The actual Henon map is the following</p><pre><code>scatter(test[1,:], test[2,:], label="actual")</code></pre><p><img alt=actual loading=lazy src=https://user-images.githubusercontent.com/10376688/87250878-4dda0c80-c468-11ea-8b38-d7071f051363.png></p><p>As we can see the model is able to replicate the behavior of the chaotic system up to a certain degree. The prediction is not as clear cut as others taht we were able to obtain but it shows the potential of this model, given more time for the parameters tuning. Using a different construction for the hidden layers could also help in improving the predictive capabilities.</p><p>As always, if you have any questions regarding the model, the package or you have found errors in my post, please don’t hesitate to contact me!</p><h3 id=citing>Citing</h3><p>Part of the work done for this project has been published. If this post or the ReservoirComputing.jl software has been helpful, please consider citing the accompanying paper:</p><pre><code>@article{JMLR:v23:22-0611,
+  author  = {Francesco Martinuzzi and Chris Rackauckas and Anas Abdelrehim and Miguel D. Mahecha and Karin Mora},
+  title   = {ReservoirComputing.jl: An Efficient and Modular Library for Reservoir Computing Models},
+  journal = {Journal of Machine Learning Research},
+  year    = {2022},
+  volume  = {23},
+  number  = {288},
+  pages   = {1--8},
+  url     = {http://jmlr.org/papers/v23/22-0611.html}
+}</code></pre><h3 id=documentation>Documentation</h3><p><a id=1>[1]</a>
+Paaßen, Benjamin, and Alexander Schulz. &ldquo;Reservoir memory machines.&rdquo; arXiv preprint arXiv:2003.04793 (2020).</p><p><a id=2>[2]</a>
+Cho, Kyunghyun, et al. &ldquo;Learning phrase representations using RNN encoder-decoder for statistical machine translation.&rdquo; arXiv preprint arXiv:1406.1078 (2014).</p><p><a id=3>[3]</a>
+Rodan, Ali, and Peter Tiňo. &ldquo;Simple deterministically constructed cycle reservoirs with regular jumps.&rdquo; Neural computation 24.7 (2012): 1822-1852.</p>
+      </div>
+
+      <footer>
+        <span>16 Aug 2020</span>
+        <span><a href="../">&larr; all posts</a></span>
+      </footer>
+    </div>
+  </div>
+
+</div>
+<script src="../../theme.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$',  right: '$',  display: false},
+      {left: '\\[', right: '\\]', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+</body>
+</html>
