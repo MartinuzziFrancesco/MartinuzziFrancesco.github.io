@@ -6,6 +6,7 @@
 <title>Francesco Martinuzzi — home</title>
 <meta name="description" content="Francesco Martinuzzi :: complexity, computation, and learning">
 <script>(function(t){try{t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -98,8 +99,6 @@
   var SYSTEMS = [
     { name: "lorenz",  dt: 0.006, p: [0.1, 0, 0], f: function (x, y, z) {
         return [10 * (y - x), x * (28 - z) - y, x * y - 8 / 3 * z]; } },
-    { name: "rossler", dt: 0.025, p: [1, 1, 1], f: function (x, y, z) {
-        return [-y - z, x + 0.2 * y, 0.2 + z * (x - 5.7)]; } },
     { name: "halvorsen", dt: 0.005, p: [-5, 0, 0], f: function (x, y, z) {
         return [-1.89 * x - 4 * y - 4 * z - y * y,
                 -1.89 * y - 4 * z - 4 * x - z * z,
