@@ -44,6 +44,18 @@
   --accent: #d97a5f; --accent2: #7fbdb5; --link: #7fb0e6; --link-vis: #c39be0; --code-num: #d9b25f;
 }
 
+/* dark/light figure pairs: show only the one matching the active theme */
+.dark-img  { display: none; }
+.light-img { display: block; }
+@media (prefers-color-scheme: dark) {
+  .dark-img  { display: block; }
+  .light-img { display: none; }
+}
+:root[data-theme="dark"] .dark-img   { display: block; }
+:root[data-theme="dark"] .light-img  { display: none; }
+:root[data-theme="light"] .dark-img  { display: none; }
+:root[data-theme="light"] .light-img { display: block; }
+
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
